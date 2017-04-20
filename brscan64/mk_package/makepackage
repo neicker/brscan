@@ -2,11 +2,9 @@
 
 if [ "$1" = '1' ];then
 	LISTFILE=brscan
-elif [ "$1" = '2' ];then
-	LISTFILE=brscan2
 else
 	echo ERROR
-	echo usage:  makerpm [1/2] [r/d]
+	echo usage:  makerpm 1 [r/d]
 	exit 0
 fi
 
@@ -37,7 +35,7 @@ elif [ $dstr = 'd' ];then
 	PACK_FORMAT=deb
 else
 	echo ERROR
-	echo usage:  makerpm [1/2] [r/d]
+	echo usage:  makerpm 1 [r/d]
 	exit 0
 fi
 
@@ -96,4 +94,3 @@ PACKAGE1=`echo $PACKAGE | eval sed 's/TEMP3/"$SRC_NAME"/'`
 PACKAGE2=`echo $PACKAGE | eval sed 's/TEMP3/"$DST_NAME"/'`
 
 mv $PACKAGE1 $PACKAGE2
-

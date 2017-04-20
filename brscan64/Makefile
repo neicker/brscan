@@ -31,7 +31,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 
 
 
-SUBDIRS	= backend_brscan  backend_brscan2
+SUBDIRS	= backend_brscan
 
 DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
   ChangeLog-1.0.2 ChangeLog-1.0.3 ChangeLog-1.0.4 ChangeLog-1.0.5 LEVEL2 \
@@ -46,7 +46,7 @@ DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
   depend-recursive dist install install-recursive libcheck lsm \
   sane-backends sort-cvsignore uninstall uninstall-recursive
 
-all:    brscan  brscan2 
+all:    brscan
 
 brscan: include\
         backend_src\
@@ -59,18 +59,6 @@ brscan: include\
 	(cd libbrscandec && make)
 	(cd backend_brscan && make brscan)
 	(cd mk_package  && make brscan)
-
-brscan2:include\
-        backend_src\
-        backend \
-        sanei\
-        lib\
-	make_brscan64_configure_date \
-        po
-	(cd libbrcolm2 && make)
-	(cd libbrscandec2 && make)
-	(cd backend_brscan2 && make brscan2)
-	(cd mk_package  && make brscan2)
 
 make_brscan64_configure_date:
 	ln -s ../brscan/acinclude.m4
@@ -140,9 +128,6 @@ clean: clean-recursive
 	(cd libbrcolm && make clean)
 	(cd libbrscandec && make clean)
 	(cd backend_brscan && make clean)
-	(cd libbrcolm2 && make clean)
-	(cd libbrscandec2 && make clean)
-	(cd backend_brscan2 && make clean)
 	(cd mk_package  && make clean)
 
 
@@ -152,7 +137,7 @@ clean: clean-recursive
 	rm -fR sanei
 	rm -fR po
 	rm -fR lib
-	
+
 	rm -f acinclude.m4
 	rm -f aclocal.m4
 	rm -f config.cache
@@ -177,21 +162,11 @@ distclean: clean distclean-recursive
 
 depend: depend-recursive
 
-rpm-install: rpm-install1 rpm-install2
-
-rpm-install1:
+rpm-install:
 	rpm -ihv  mk_package/linux*/brscan-*.rpm
 
-rpm-install2:
-	rpm -ihv  mk_package/linux*/brscan2-*.rpm
-
-rpm-uninstall: rpm-uninstall1 rpm-uninstall2
-
-rpm-uninstall1:
+rpm-uninstall:
 	rpm -e brscan-*
-
-rpm-uninstall2:
-	rpm -e brscan2-*
 
 all-recursive install-recursive clean-recursive distclean-recursive \
 depend-recursive uninstall-recursive:
@@ -215,4 +190,3 @@ dist: $(DISTFILES)
 #	done
 	tar chzf $(distdir).tar.gz $(distdir)
 	rm -fr $(distdir)
-

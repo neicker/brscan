@@ -64,11 +64,6 @@ COMPILE = $(CC) -c $(CFLAGS) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) $(TARGET
 
 
 PRELOADABLE_BACKENDS = brother
-#PRELOADABLE_BACKENDS = abaton agfafocus apple artec as6e avision bh canon \
-#        coolscan dc25   dmc epson  hp m3096g \
-#	microtek microtek2 mustek mustek_pp mustek_usb nec net pie  \
-#	plustek  qcam ricoh s9036 sharp sm3600 snapscan sp15c \
-#	st400 tamarack umax umax_pp umax1220u v4l
 ALL_BACKENDS = $(PRELOADABLE_BACKENDS) dll
 
 LIBS = $(addprefix libsane-,$(addsuffix .la,$(ALL_BACKENDS)))
