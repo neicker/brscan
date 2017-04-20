@@ -8211,7 +8211,7 @@ fi
 
 
 
-                                                                      ac_config_files="$ac_config_files Makefile lib/Makefile sanei/Makefile backend_brscan/Makefile backend_brscan2/Makefile include/Makefile po/Makefile"
+                                                                      ac_config_files="$ac_config_files Makefile lib/Makefile sanei/Makefile backend_brscan/Makefile include/Makefile po/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -8740,7 +8740,6 @@ do
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "sanei/Makefile" ) CONFIG_FILES="$CONFIG_FILES sanei/Makefile" ;;
   "backend_brscan/Makefile" ) CONFIG_FILES="$CONFIG_FILES backend_brscan/Makefile" ;;
-  "backend_brscan2/Makefile" ) CONFIG_FILES="$CONFIG_FILES backend_brscan2/Makefile" ;;
   "include/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
   "po/Makefile" ) CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
   "include/sane/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/sane/config.h" ;;

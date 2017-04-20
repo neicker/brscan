@@ -30,15 +30,6 @@ sane_strstatus.c \
 stubs.c \
 dll.c"
 
-#if [ $0 = brscan ];then
-#    main=brother.c
-#elif [ $0 = brscan2 ];then
-#    main=brother2.c
-#else
-#    exit 0
-#fi
-
-
 if [ "`grep ^PRELOADABLE_BACKENDS Makefile | grep brother2`" = '' ];then
     echo make libsane-brother
     main=brother.c
@@ -164,4 +155,3 @@ case $1 in
 	echo " $0 rm           : remove source copy"
 	;;
 esac
-

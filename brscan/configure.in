@@ -366,8 +366,7 @@ AC_SUBST(V_MINOR)
 AC_SUBST(V_REV)
 AC_SUBST(DLL_PRELOAD)
 
-AC_OUTPUT([Makefile lib/Makefile sanei/Makefile backend_brscan/Makefile  
-	   backend_brscan2/Makefile 
+AC_OUTPUT([Makefile lib/Makefile sanei/Makefile backend_brscan/Makefile
            include/Makefile po/Makefile ],)
 
 if test "$SANE_CONFIG_PATH" != "no" ; then

@@ -24,7 +24,7 @@ brscan: \
 ./brscan.list \
 ./setupSaneScan
 	rm -f brscan
-	sh makepackage 1 r
+	sh makepackage
 	mkdir -p ../RELEASE
 	cp -p linux-2.6-x86_64/brscan-*.rpm ../RELEASE
 
@@ -42,5 +42,5 @@ Brsane.ini brsanenetdevice.cfg setupSaneScan:
 	ln -s  ../../brscan/mk_package/setupSaneScan
 
 brscand:
-	sh makepackage 1 r
+	sh makepackage
 # DO NOT DELETE

@@ -31,7 +31,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 @SET_MAKE@
 
-SUBDIRS	= backend_brscan  backend_brscan2
+SUBDIRS	= backend_brscan
 
 DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
   ChangeLog-1.0.2 ChangeLog-1.0.3 ChangeLog-1.0.4 ChangeLog-1.0.5 LEVEL2 \
@@ -46,17 +46,12 @@ DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
   depend-recursive dist install install-recursive libcheck lsm \
   sane-backends sort-cvsignore uninstall uninstall-recursive
 
-all:    brscan  brscan2 
+all:    brscan
 
 brscan:
 	(cd backend_brscan && make brscan)
 	(cd netconfig && make brscan)
 	(cd mk_package  && make brscan)
-
-brscan2:
-	(cd backend_brscan2 && make brscan2)
-	(cd netconfig && make brscan2)
-	(cd mk_package  && make brscan2)
 
 clean: clean-recursive
 
@@ -89,4 +84,3 @@ dist: $(DISTFILES)
 #	done
 	tar chzf $(distdir).tar.gz $(distdir)
 	rm -fr $(distdir)
-
