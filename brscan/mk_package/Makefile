@@ -5,7 +5,7 @@ all: brscan
 brscan: \
 ../backend_brscan/.libs/libsane-brother.so.1.0.7 \
 ../libbrscandec/libbrscandec.so.1.0.0 \
-../libbrcolm/libbrcolm.so.1.0.0 \
+../libbrcolm/libbrcolm.so.1.0.1 \
 ./Brsane.ini \
 ./brsanenetdevice.cfg \
 ../netconfig/brsaneconfig \
@@ -26,11 +26,14 @@ brscan: \
 	rm -rf brscan
 	mkdir brscan
 	sh makepackage
-	cp -p linux-2.6-intel/brscan-*.*  ../RELEASE
+	mkdir -p ../RELEASE
+	cp -p linux-2.6-x86_64/brscan-*.rpm ../RELEASE
+
 
 clean:
-	rm -fR  linux-2.6-intel/brscan*
+	rm -fR  linux-2.6-x86_64/brscan*
 	rm -fR brscan
 
 brscand:
 	sh makepackage
+# DO NOT DELETE
