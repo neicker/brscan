@@ -49,6 +49,8 @@ DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
 all:    brscan
 
 brscan:
+	(cd lib && make)
+	(cd sanei && make)
 	(cd backend_brscan && make brscan)
 	(cd netconfig && make brscan)
 	(cd mk_package  && make brscan)
