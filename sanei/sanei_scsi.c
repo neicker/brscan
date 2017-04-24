@@ -1916,7 +1916,7 @@ sanei_scsi_req_enter2 (int fd,
             }
           req->sgdata.sg3.hdr.dxfer_len = src_size;
           memcpy(&req->sgdata.sg3.data[MAX_CDB], src, src_size);
-          (const void*) req->sgdata.sg3.hdr.dxferp = &req->sgdata.sg3.data[MAX_CDB];
+	  req->sgdata.sg3.hdr.dxferp = &req->sgdata.sg3.data[MAX_CDB];
         }
       else
         {
@@ -1930,7 +1930,7 @@ sanei_scsi_req_enter2 (int fd,
           cmd_size = MAX_CDB;
         }
       memcpy(req->sgdata.sg3.data, cmd, cmd_size);
-      (const void*) req->sgdata.sg3.hdr.cmdp = req->sgdata.sg3.data;
+      req->sgdata.sg3.hdr.cmdp = req->sgdata.sg3.data;
       req->sgdata.sg3.hdr.sbp = &(req->sgdata.sg3.sense_buffer[0]);
       /* 1 minute should be ok even for slow scanners */
       req->sgdata.sg3.hdr.timeout = 1000 * SANE_SCSICMD_TIMEOUT;
