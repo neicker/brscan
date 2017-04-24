@@ -64,11 +64,7 @@ COMPILE = $(CC) -c $(CFLAGS) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(LDFLAGS) $(TARGET
 
 
 PRELOADABLE_BACKENDS = brother
-#PRELOADABLE_BACKENDS = abaton agfafocus apple artec as6e avision bh canon \
-#        coolscan dc25   dmc epson  hp m3096g \
-#	microtek microtek2 mustek mustek_pp mustek_usb nec net pie  \
-#	plustek  qcam ricoh s9036 sharp sm3600 snapscan sp15c \
-#	st400 tamarack umax umax_pp umax1220u v4l
+
 ALL_BACKENDS = $(PRELOADABLE_BACKENDS) dll
 
 LIBS = $(addprefix libsane-,$(addsuffix .la,$(ALL_BACKENDS)))
@@ -76,11 +72,6 @@ BRLIBS = $(addprefix libsane-,$(addsuffix .la,$(PRELOADABLE_BACKENDS)))
 CONFIGS = $(addsuffix .conf,$(ALL_BACKENDS)) saned.conf
 
 EXTRA = sane_strstatus.lo ../sanei/sanei_init_debug.lo ../sanei/sanei_config.lo
-
-# With libtool-1.0, we have to mention each library object explicitly... ;-(
-LIBLIB_FUNCS = alloca getenv getopt getopt1 isfdtype sigprocmask snprintf \
-        strdup strndup strsep usleep vsyslog inet_ntop
-LIBOBJS = $(addprefix ../lib/,$(addsuffix .lo,$(LIBLIB_FUNCS)))
 
 DISTFILES = Makefile.in \
   dll.aliases dll.c dll.conf dll.desc sane_strstatus.c stubs.c\
@@ -93,7 +84,7 @@ DISTFILES = Makefile.in \
 
 .PHONY: all clean depend dist distclean install uninstall
 
-libsane-%.la: %.lo %-s.lo $(EXTRA) $(LIBOBJS)  *.c *.h
+libsane-%.la: %.lo %-s.lo $(EXTRA)  *.c *.h
 	@$(LIBTOOL) $(MLINK) $(CC) -export-dynamic -o $@ $($*_LIBS) \
 	$(LDFLAGS) $(BACKENDLIBS) $^ -rpath $(libsanedir) \
 	-version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
@@ -113,7 +104,7 @@ libsane-%.la: %.lo %-s.lo $(EXTRA) $(LIBOBJS)  *.c *.h
 .PRECIOUS: %-s.c %-s.lo %.lo dll-preload.c
 
 brscan:
-	sh mk_backend release
+	sh mk_backend
 
 all:	$(LIBS) libsane.la libsane-brother.la
 
@@ -149,7 +140,7 @@ dll-preload.c:
 	fi
 	echo "};" >> $@
 
-libsane.la: dll.lo dll-s.lo $(EXTRA) $(addsuffix .lo,$(DLL_PRELOAD)) $(LIBOBJS)
+libsane.la: dll.lo dll-s.lo $(EXTRA) $(addsuffix .lo,$(DLL_PRELOAD))
 	@$(LIBTOOL) $(MLINK) $(CC) -o $@ $(LDFLAGS) $(BACKENDLIBS)  $^ \
 		$(addsuffix .lo,$(DLL_PRELOAD_EXTRAS)) \
 		-rpath $(libdir) -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
