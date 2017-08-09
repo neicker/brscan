@@ -236,10 +236,10 @@ hardcode_minus_L=no
 hardcode_shlibpath_var=unsupported
 
 # Compile-time system search path for libraries
-sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+sys_lib_search_path_spec="/lib64 /usr/lib64 /usr/local/lib64"
 
 # Run-time system search path for libraries
-sys_lib_dlsearch_path_spec="/lib /usr/lib"
+sys_lib_dlsearch_path_spec="/lib64 /usr/lib64"
 
 # Fix the shell variable $srcfile for the compiler.
 fix_srcfile_path=""
@@ -2152,7 +2152,7 @@ EOF
 		else
 		  droppeddeps=yes
 		  echo
-		  echo "*** Warning: This library needs some functionality provided by $i."
+		  echo "*** Warning: This xxx library needs some functionality provided by $i."
 		  echo "*** I have the capability to make that library automatically link in when"
 		  echo "*** you link to this library.  But I can only do this if you have a"
 		  echo "*** shared version of the library, which you do not appear to have."
@@ -2182,7 +2182,7 @@ EOF
 		  else
 		    droppeddeps=yes
 		    echo
-		    echo "*** Warning: This library needs some functionality provided by $i."
+		    echo "*** Warning: This yyy library needs some functionality provided by $i."
 		    echo "*** I have the capability to make that library automatically link in when"
 		    echo "*** you link to this library.  But I can only do this if you have a"
 		    echo "*** shared version of the library, which you do not appear to have."
@@ -2242,7 +2242,7 @@ EOF
 	      if test -n "$a_deplib" ; then
 		droppeddeps=yes
 		echo
-		echo "*** Warning: This library needs some functionality provided by $a_deplib."
+		echo "*** Warning: This zzz library needs some functionality provided by $a_deplib."
 		echo "*** I have the capability to make that library automatically link in when"
 		echo "*** you link to this library.  But I can only do this if you have a"
 		echo "*** shared version of the library, which you do not appear to have."
