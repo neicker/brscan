@@ -27,11 +27,12 @@ brscan: \
 	mkdir brscan
 	sh makepackage
 	mkdir -p ../RELEASE
-	cp -p linux-2.6-x86_64/brscan-*.rpm ../RELEASE
+	cp -p linux-4.4-x86_64/brscan-0.2.4-0-linux-4.4-x86_64.rpm \
+		../RELEASE/brscan-0.2.4-0-x86_64.rpm
 
 
 clean:
-	rm -fR  linux-2.6-x86_64/brscan*
+	rm -fR linux-4.4-x86_64
 	rm -fR brscan
 
 brscand:
