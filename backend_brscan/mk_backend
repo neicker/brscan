@@ -27,8 +27,7 @@ brother_netdev.h \
 brother_advini.c \
 brother_advini.h \
 sane_strstatus.c \
-stubs.c \
-dll.c"
+stubs.c"
 
 echo make libsane-brother
 main=brother.c
