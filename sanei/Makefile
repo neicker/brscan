@@ -58,6 +58,8 @@ LIBSANEI_LTOBJS = sanei_ab306.lo sanei_constrain_value.lo sanei_init_debug.lo \
 	sanei_pa4s2.lo sanei_auth.lo sanei_usb.lo sanei_thread.lo \
 	sanei_pv8630.lo sanei_lm983x.lo
 
+USED_OBJS = sanei_config.o sanei_constrain_value.o sanei_init_debug.o
+
 TARGETS = libsanei.a
 TESTPROGRAMS = test_wire
 
@@ -77,11 +79,7 @@ DISTFILES = Makefile.in linux_sg3_err.h os2_srb.h sanei_DomainOS.c \
 	@$(LIBTOOL) $(MCOMP) $(COMPILE) $<
 	@test -f $@ || $(COMPILE) $<
 
-all:	$(TARGETS)
-
-libsanei.a: $(LIBSANEI_OBJS)
-	ar r $@ $(LIBSANEI_OBJS)
-	$(RANLIB) $@
+all:	$(USED_OBJS)
 
 install:
 
