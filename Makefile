@@ -31,7 +31,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 
 
 
-SUBDIRS	= backend_brscan netconfig mk_package
+SUBDIRS	= backend_brscan netconfig mk_package sanei
 
 DISTFILES = AUTHORS COPYING ChangeLog ChangeLog-1.0.0 ChangeLog-1.0.1 \
   ChangeLog-1.0.2 ChangeLog-1.0.3 ChangeLog-1.0.4 ChangeLog-1.0.5 LEVEL2 \
