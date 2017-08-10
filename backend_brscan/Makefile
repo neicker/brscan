@@ -75,6 +75,8 @@ DISTFILES = Makefile.in \
 
 .PHONY: all clean depend dist distclean install uninstall
 
+all: brscan
+
 libsane-%.la: %.lo %-s.lo $(EXTRA)  *.c *.h
 	@$(LIBTOOL) $(MLINK) $(CC) -export-dynamic -o $@ $($*_LIBS) \
 	$(LDFLAGS) $(BACKENDLIBS) $^ -rpath $(libsanedir) \
@@ -94,10 +96,7 @@ libsane-%.la: %.lo %-s.lo $(EXTRA)  *.c *.h
 # Don't delete any intermediate files.
 .PRECIOUS: %-s.c %-s.lo %.lo
 
-brscan:
-	sh mk_backend
-
-all:	$(BRLIBS)
+brscan: $(BRLIBS)
 
 install:
 	$(MKDIR) $(libdir) $(libsanedir) $(configdir)

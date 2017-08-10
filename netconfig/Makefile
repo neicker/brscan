@@ -4,11 +4,12 @@ all: brsaneconfig
 
 brscan: brsaneconfig
 
-brsaneconfig: brsaneconfig.c ../backend_src/brother_advini.c ../backend_src/brother_advini.h resource.h
+brsaneconfig: brsaneconfig.c ../backend_brscan/brother_advini.c	\
+	../backend_brscan/brother_advini.h resource.h
 	sh mk_brsaneconfig
 
 clean:
 	rm -f brsaneconfig
 
 depend:
-	makedepend brsaneconfig.c ../backend_src/brother_advini.c
+	makedepend brsaneconfig.c ../backend_brscan/brother_advini.c

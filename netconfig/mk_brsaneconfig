@@ -3,11 +3,7 @@
 target="brsaneconfig"
 ccflag1="-DBRSANESUFFIX=1 "
 
-if [ "$1" = '-D' ] || [ "$1" = '-d' ];then
-  ccflag2="-g -o -DMKCONFIG -idirafter ../backend_src"
-else
-  ccflag2="-Wall -O0 -DMKCONFIG -idirafter ../backend_src"
-fi
+ccflag2="-Wall -O0 -idirafter ../backend_brscan"
 
-echo "gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_src/brother_advini.c"
-gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_src/brother_advini.c
+echo "gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_brscan/brother_advini.c"
+gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_brscan/brother_advini.c
