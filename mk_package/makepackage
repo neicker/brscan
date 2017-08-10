@@ -6,6 +6,7 @@ arch=x86_64
 PACK_FORMAT=rpm
 
 VER=`cat $LISTFILE.list | grep "%version" | sed s/'%version '//g`
+RELEASE_NUM=`cat $LISTFILE.list | grep %release| sed s/'%release '//g`
 
 OS=redhat
 RELEASE_DIR="linux-4.4-"$arch
