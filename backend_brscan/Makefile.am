@@ -16,8 +16,6 @@ V_REV = 7
 AM_CPPFLAGS += -I$(top_srcdir)/libbrscandec -I$(top_srcdir)/libbrcolm
 AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
 
-AM_CFLAGS += -O0 -W -Wall
-
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 
