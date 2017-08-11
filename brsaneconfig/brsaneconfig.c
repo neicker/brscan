@@ -189,6 +189,11 @@ int get_config_from_commandline(char **arg,  int argc,
   return ret;
 }
 
+int mySystem(const char *command)
+{
+    return system(command);
+}
+
 int check_ipaddress_is_valid(char *ip){
   char c;
   int len;
@@ -318,7 +323,7 @@ int add_network_device(char **arg,int argc){
       fclose(fp);
       copy_file(CONFFILE ,tmpconffile ,"a");
       sprintf(uniq,"uniq %s > %s",tmpconffile,CONFFILE);
-      system(uniq);
+      mySystem(uniq);
     }
   }
   else  if(*ip != 0 || !check_ipaddress_is_valid(ip)){
@@ -351,7 +356,7 @@ int remove_network_device(char *label[], int n){
     copy_file(CONFFILE ,tmpconffile ,"w");
     sprintf(filter,"cat %s | sed s/'DEVICE=%s .*$'// | uniq > %s",
 	  tmpconffile,label[i],CONFFILE);
-    system(filter);
+    mySystem(filter);
     unlink(tmpconffile);
   }
   return 0;
@@ -471,13 +476,13 @@ int scan_and_cat_for_diagnosis(){
     printf("-----------------------------\n%s:\n",CONFFILE);
     fflush(stdout);
     sprintf(command,"cat %s",CONFFILE);
-    system(command);
+    mySystem(command);
 
 
     printf("-----------------------------\n%s:\n",MAININIFILE);
     fflush(stdout);
     sprintf(command,"cat %s",MAININIFILE);
-    system(command);
+    mySystem(command);
 
 
     while((entry = readdir(dir))){
@@ -486,7 +491,7 @@ int scan_and_cat_for_diagnosis(){
 	     MODELINIDIR,  entry->d_name);
       fflush(stdout);
       sprintf(command,"cat %s/%s",MODELINIDIR,entry->d_name);
-      system(command);
+      mySystem(command);
     }
     closedir(dir);
   }
@@ -564,7 +569,7 @@ int loggingon(){
   fclose(fp);
   copy_file(CONFFILE ,tmpconffile ,"a");
   sprintf(uniq,"uniq %s > %s",tmpconffile,CONFFILE);
-  system(uniq);
+  mySystem(uniq);
   unlink(tmpconffile);
   return 0;
 }
@@ -580,7 +585,7 @@ int loggingoff(){
 
   copy_file(CONFFILE ,tmpconffile ,"a");
   sprintf(filter,"cat %s | sed s/'log=.*'// | uniq > %s",tmpconffile,CONFFILE);
-  system(filter);
+  mySystem(filter);
   unlink(tmpconffile);
   return 0;
 }
