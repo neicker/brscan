@@ -42,9 +42,6 @@
 
 #define   DLF_AUTO                (0xffffffff)
 
-#define   INIFILE                 "/usr/local/Brother/scanner/brsane.cfg"
-
-
 #define ADRTYPE_IPADDRESS     0
 #define ADRTYPE_NODENAME      1
 #define ADRTYPE_DEPENDONINI   2

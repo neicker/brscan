@@ -95,7 +95,7 @@ typedef struct _netini {
 } netini;
 
 
-#define CONFDIR       "/usr/local/Brother/sane/"
+#define CONFDIR       "/usr/share/sane/brother/"
 
 
 char *get_net_ini_value(int index ,int key, char *value, int size);
@@ -122,26 +122,26 @@ sane_model_info  *get_p_model_info_by_index(int index);
 
 #if BRSANESUFFIX == 1
 
-#define  MODELINIDIR     "/usr/local/Brother/sane/models"
-#define  CONFFILE        "/usr/local/Brother/sane/brsanenetdevice.cfg"
-#define  MAININIFILE     "/usr/local/Brother/sane/Brsane.ini"
+#define  MODELINIDIR     CONFDIR "models"
+#define  CONFFILE        CONFDIR "brsanenetdevice.cfg"
+#define  MAININIFILE     CONFDIR "Brsane.ini"
 #define  BRSANETMPFILE   "/tmp/brsane_tempfile_XXXXXX"
 #define  SANESAVEFILE    ".brsaneconfig"
 #define  S_BRSANESUFFIX  ""
 
 #elif BRSANESUFFIX == 2
 
-#define  MODELINIDIR     "/usr/local/Brother/sane/models2"
-#define  CONFFILE        "/usr/local/Brother/sane/brsanenetdevice2.cfg"
-#define  MAININIFILE     "/usr/local/Brother/sane/Brsane2.ini"
+#define  MODELINIDIR     CONFDIR "models2"
+#define  CONFFILE        CONFDIR "brsanenetdevice2.cfg"
+#define  MAININIFILE     CONFDIR "Brsane2.ini"
 #define  BRSANETMPFILE   "/tmp/brsane_tempfile2_XXXXXX"
 #define  SANESAVEFILE    ".brsaneconfig2"
 #define  S_BRSANESUFFIX  "2"
 
 #elif BRSANESUFFIX == 3
-#define  MODELINIDIR     "/usr/local/Brother/sane/models3"
-#define  CONFFILE        "/usr/local/Brother/sane/brsanenetdevice3.cfg"
-#define  MAININIFILE     "/usr/local/Brother/sane/Brsane3.ini"
+#define  MODELINIDIR     CONFDIR "models3"
+#define  CONFFILE        CONFDIR "brsanenetdevice3.cfg"
+#define  MAININIFILE     CONFDIR "Brsane3.ini"
 #define  BRSANETMPFILE   "/tmp/brsane_tempfile3_XXXXXX"
 #define  SANESAVEFILE    ".brsaneconfig3"
 #define  S_BRSANESUFFIX  "3"

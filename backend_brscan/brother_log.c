@@ -57,7 +57,7 @@ static HANDLE  hLogFile = 0;
 
 #define MAX_PATH 256
 
-#define BROTHER_SANE_DIR "/usr/local/Brother/sane/"
+#define BROTHER_SANE_DIR "/usr/share/sane/brother/"
 
 
 //-----------------------------------------------------------------------------

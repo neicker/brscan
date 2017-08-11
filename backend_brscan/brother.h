@@ -305,7 +305,7 @@ typedef struct Brother_Scanner {
 #define PSIZE_HMARGIN     20			// 左右マージン(0.1mm単位)
 
 #define MAX_PATH 256
-#define BROTHER_SANE_DIR "/usr/local/Brother/sane/"
+#define BROTHER_SANE_DIR "/usr/share/sane/brother/"
 #define BROTHER_GRAYCMDATA_DIR "GrayCmData/"
 
 #endif
