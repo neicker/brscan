@@ -41,7 +41,7 @@ void *	bugchk_malloc(size_t size, int line, const char *file)
 
 	if (pRet == NULL)
 	{
-		fprintf(stderr, "bugchk_malloc(size=%d), can't allocate@%s(%d)\n", 
+		fprintf(stderr, "bugchk_malloc(size=%zd), can't allocate@%s(%d)\n",
 			size, file, line) ;
 		abort() ;
 	}
@@ -69,13 +69,13 @@ void *	bugchk_malloc(size_t size, int line, const char *file)
 
 
 
-void 	bugchk_free(void *ptr , int line, const char *file)
+void	bugchk_free(void *ptr , int line, const char *file)
 {
 	int		ok = 0 ;
 
 	nFreeCnt++;
 
-	if (ptr == NULL || (unsigned int)ptr < 100UL)
+	if (ptr == NULL || (unsigned long)ptr < 100UL)
 	{
 		fprintf(stderr, "bugchk_free(ptr=%p)@%s(%d)\n", ptr, file, line) ;
 	}
@@ -85,7 +85,7 @@ void 	bugchk_free(void *ptr , int line, const char *file)
 		pMark -= (sizeof (size_t) + sizeof (BUGCHK_SIGN)) ;
 		if ( BUGCHK_SIGN_VALUE != *((BUGCHK_SIGN *)pMark) )
 		{
-			fprintf(stderr, "bugchk_free(ptr=%p), invalid begin-mark=0x%lx@%s(%d)\n", 
+			fprintf(stderr, "bugchk_free(ptr=%p), invalid begin-mark=0x%lx@%s(%d)\n",
 				ptr, *((BUGCHK_SIGN *)pMark), file, line) ;
 		}
 		else {
@@ -99,10 +99,10 @@ void 	bugchk_free(void *ptr , int line, const char *file)
 			pMark += size ;
 			if ( BUGCHK_SIGN_VALUE != *((BUGCHK_SIGN *)pMark) )
 			{
-				fprintf(stderr, "bugchk_free(ptr=%p), invalid end-mark=0x%lx, size=%d@%s(%d)\n", 
+				fprintf(stderr, "bugchk_free(ptr=%p), invalid end-mark=0x%lx, size=%zd@%s(%d)\n",
 					ptr, *((BUGCHK_SIGN *)pMark), size, file, line) ;
 			}
-			else 
+			else
 			{
 				ok = 1 ;
 			}
@@ -122,7 +122,7 @@ void 	bugchk_free(void *ptr , int line, const char *file)
 int main(int argc, char **argv)
 {
 	char  *ptr  ;
-		
+
 //	FREE((void *)0) ;
 //	FREE((void *)99) ;
 
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 	ptr = MALLOC(1023) ;
 	memset(ptr, 0, 1023) ;
 	FREE(ptr) ;
-	
+
 	ptr = MALLOC(1024 * 1024 * 1024 * 1) ;
 	FREE(ptr) ;
 
@@ -138,7 +138,6 @@ int main(int argc, char **argv)
 //	*(ptr - 5) = 0 ;
 	memset(ptr, 0, 1025) ;
 	FREE(ptr) ;
-	
 
 	return 0 ;
 }

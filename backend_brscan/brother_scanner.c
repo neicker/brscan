@@ -55,10 +55,10 @@
 #endif
 
 //$$$$$$$$
-LPBYTE  lpRxBuff = NULL;
+LPSTR   lpRxBuff = NULL;
 LPBYTE  lpRxTempBuff = NULL;
 DWORD   dwRxTempBuffLength = 0;
-LPBYTE  lpFwTempBuff = NULL;
+LPSTR   lpFwTempBuff = NULL;
 DWORD	dwFwTempBuffMaxSize= 0;
 int     FwTempBuffLength = 0;
 BOOL    bTxScanCmd = FALSE;
@@ -81,7 +81,7 @@ int    nWriteLineCount;
 
 
 //
-// the name of ScenDec dinamic link library 
+// the name of ScenDec dinamic link library
 //
 #if       BRSANESUFFIX == 2
 static char  szScanDecDl[] = "libbrscandec2.so";
@@ -95,7 +95,7 @@ Not support (force causing compile error)
 BOOL	bReceiveEndFlg;
 
 
-// Static valiable for debug process 
+// Static valiable for debug process
 int nPageScanCnt;
 int nReadCnt;
 
@@ -110,7 +110,7 @@ int nFwLenTotal;
 //
 //
 //	Abstract:
-//		Load the ScanDec library and get the procedure addresses 
+//		Load the ScanDec library and get the procedure addresses
 //
 //
 //	Parameters:
@@ -142,11 +142,11 @@ LoadScanDecDll( Brother_Scanner *this )
 		this->scanDec.lpfnScanDecPageEnd   = dlsym ( this->scanDec.hScanDec, "ScanDecPageEnd" );
 		this->scanDec.lpfnScanDecClose     = dlsym ( this->scanDec.hScanDec, "ScanDecClose" );
 
-		if(  this->scanDec.lpfnScanDecOpen == NULL || 
-			 this->scanDec.lpfnScanDecSetTbl  == NULL || 
-			 this->scanDec.lpfnScanDecPageStart  == NULL || 
-			 this->scanDec.lpfnScanDecWrite  == NULL || 
-			 this->scanDec.lpfnScanDecPageEnd  == NULL || 
+		if(  this->scanDec.lpfnScanDecOpen == NULL ||
+			 this->scanDec.lpfnScanDecSetTbl  == NULL ||
+			 this->scanDec.lpfnScanDecPageStart  == NULL ||
+			 this->scanDec.lpfnScanDecWrite  == NULL ||
+			 this->scanDec.lpfnScanDecPageEnd  == NULL ||
 			 this->scanDec.lpfnScanDecClose  == NULL )
 		{
 			// ERROR: library exists but cannot get the procedure address 
@@ -177,11 +177,11 @@ LoadScanDecDll( Brother_Scanner *this )
 //
 //
 //	Parameters:
-//	        None
+//		None
 //
 //
 //	Return values:
-//	        None
+//		None
 //
 //-----------------------------------------------------------------------------
 //
@@ -198,23 +198,23 @@ FreeScanDecDll( Brother_Scanner *this )
 }
 
 
-/********************************************************************************
- *										*
- *	FUNCTION	ScanStart						*
- *										*
- *	PURPOSE		Start process of the scan 				*
- *				start the resource manager and open the BI-DI	*
- *										*
- *	IN		Brother_Scanner *this					*
- *	OUT		None							*
- *										*
- ********************************************************************************/
+/******************************************************************************
+ *									      *
+ *	FUNCTION	ScanStart					      *
+ *									      *
+ *	PURPOSE		Start process of the scan			      *
+ *				start the resource manager and open the BI-DI *
+ *									      *
+ *	IN		Brother_Scanner *this				      *
+ *	OUT		None						      *
+ *									      *
+ ******************************************************************************/
 BOOL
 ScanStart( Brother_Scanner *this )
 {
 	BOOL  bResult;
 
-	int   rc,errornum;
+	int   rc;
 
 	WriteLog( "" );
 	WriteLog( ">>>>> Start Scanning >>>>>" );
@@ -229,17 +229,16 @@ ScanStart( Brother_Scanner *this )
 #endif
 	this->scanState.nPageCnt++;
 	this->scanState.bReadbufEnd=FALSE;
-	this->scanState.bEOF=FALSE;	
+	this->scanState.bEOF=FALSE;
 
 	if( this->scanState.nPageCnt == 1){
 		int nResoLine;
 
 		bTxScanCmd = FALSE;
-		lRealY = 0;		
+		lRealY = 0;
 
 		this->devScanInfo.wResoType  = this->uiSetting.wResoType;
 		this->devScanInfo.wColorType = this->uiSetting.wColorType;
-		
 
 #ifndef DEBUG_No39
 
@@ -254,7 +253,7 @@ ScanStart( Brother_Scanner *this )
 		//if (usb_set_configuration(this->hScanner, 1))
 		//	return SANE_STATUS_IO_ERROR;
 
-		errornum = usb_set_configuration(this->hScanner, 1);
+		usb_set_configuration(this->hScanner, 1);
 
 		if (usb_claim_interface(this->hScanner, 1))
 			return SANE_STATUS_IO_ERROR;
@@ -267,9 +266,9 @@ ScanStart( Brother_Scanner *this )
 		  //if(this->hScanner ==NULL){
 		  //  this->hScanner = calloc(sizeof(dev_handle),1);
 		  //}
-		  this ->hScanner->usb_w_ep 
+		  this ->hScanner->usb_w_ep
 		    = get_p_model_info_by_index(this->modelInf.index)->w_endpoint;
-		  this ->hScanner->usb_r_ep 
+		  this ->hScanner->usb_r_ep
 		    = get_p_model_info_by_index(this->modelInf.index)->r_endpoint;
 
 		  if (IFTYPE_USB == this->hScanner->device){
@@ -280,18 +279,17 @@ ScanStart( Brother_Scanner *this )
 		    //05/11/11 Fix to escape I/O error
 		    //if (usb_set_configuration(this->hScanner->usb, 1))
 		    //  return SANE_STATUS_IO_ERROR;
-		    
-		    // degrade :  2006/04/05 M-LNX-23 kado 
-		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0) 
+
+		    // degrade :  2006/04/05 M-LNX-23 kado
+		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0)
 		    //errornum = usb_set_configuration(this->hScanner->usb, 1);
-		    errornum = usb_set_configuration_or_reset_toggle(this, 1); 
+		    usb_set_configuration_or_reset_toggle(this, 1);
 		    if (usb_claim_interface(this->hScanner->usb, 1))
 		      return SANE_STATUS_IO_ERROR;
-		    
+
 		    //(05/11/11 Fix to escape I/O error)   if (usb_set_configuration(this->hScanner->usb, 1))
 		    //(05/11/11 Fix to escape I/O error)     return SANE_STATUS_IO_ERROR;
 		  }
-		  errornum = 0;
 		}
 
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
@@ -312,7 +310,7 @@ ScanStart( Brother_Scanner *this )
 
 
 		// treat as error when the start position of the scan area is out of the MAX scan area 
-		if ( (this->devScanInfo.wScanSource == MFCSCANSRC_FB) && 
+		if ( (this->devScanInfo.wScanSource == MFCSCANSRC_FB) &&
 			(this->scanInfo.ScanAreaMm.top >= (LONG)(this->devScanInfo.dwMaxScanHeight - 80)) )
 			return SANE_STATUS_INVAL;
 
@@ -322,7 +320,7 @@ ScanStart( Brother_Scanner *this )
 			return SANE_STATUS_INVAL;
 
 		//
-		// Initialize the ColorMatch 
+		// Initialize the ColorMatch
 		//
 		InitColorMatchingFunc( this, this->devScanInfo.wColorType, CMATCH_DATALINE_RGB );
 
@@ -347,11 +345,11 @@ ScanStart( Brother_Scanner *this )
 		}else{
 			hGray = NULL;
 		}
-		
+
 		//
-		// Allocate the buffer to store the received data 
+		// Allocate the buffer to store the received data
 		//
-		
+
 		// Allocate the tranmission-preserve buffer , the buffer has enough area to keep more than 3 lines  
 		//
 		if (this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM)
@@ -360,13 +358,13 @@ ScanStart( Brother_Scanner *this )
 			dwRxBuffMaxSize = (this->devScanInfo.ScanAreaByte.lWidth + 3);
 
 		dwRxBuffMaxSize *= (3 + 1); // Allocate the 4 line size (to keep more than 3 line )
-		
+
 		if (dwRxBuffMaxSize < (DWORD)gwInBuffSize)
 			dwRxBuffMaxSize = (DWORD)gwInBuffSize;
-		
-		lpRxBuff = (LPBYTE)AllocReceiveBuffer( dwRxBuffMaxSize  );
+
+		lpRxBuff = AllocReceiveBuffer( dwRxBuffMaxSize  );
 		lpRxTempBuff = (LPBYTE)MALLOC( dwRxBuffMaxSize  );
-	
+
 		if( lpRxBuff == NULL || lpRxTempBuff == NULL ){
 			//
 			//  Because the buffer cannot be allocated ,return with error code
@@ -377,9 +375,9 @@ ScanStart( Brother_Scanner *this )
 		dwRxTempBuffLength = 0;
 		FwTempBuffLength = 0;
 
-		// Allocate the Transmission-preserve buffer 
-			
-		// Allocate the buffer that contains more than 6 lins 
+		// Allocate the Transmission-preserve buffer
+
+		// Allocate the buffer that contains more than 6 lins
 		dwFwTempBuffMaxSize = this->scanInfo.ScanAreaByte.lWidth * 6;
 		dwFwTempBuffMaxSize *=2;
 
@@ -393,7 +391,7 @@ ScanStart( Brother_Scanner *this )
 		if (dwFwTempBuffMaxSize < (DWORD)gwInBuffSize)
 			dwFwTempBuffMaxSize = (DWORD)gwInBuffSize;
 
-		lpFwTempBuff = (LPBYTE)MALLOC( dwFwTempBuffMaxSize );
+		lpFwTempBuff = MALLOC( dwFwTempBuffMaxSize );
 		WriteLog( " dwRxBuffMaxSize = %d, dwFwTempBuffMaxSize = %d, ", dwRxBuffMaxSize, dwFwTempBuffMaxSize );
 		if( lpFwTempBuff == NULL ){
 			//
@@ -415,14 +413,14 @@ ScanStart( Brother_Scanner *this )
 	else {
 		WriteLog( " PageStart scanState.iProcessEnd = %d, ", this->scanState.iProcessEnd );
 
-		lRealY = 0;		
+		lRealY = 0;
 		dwRxTempBuffLength = 0;
 		FwTempBuffLength = 0;
 
 		//06/02/28
 		if ((this->devScanInfo.wScanSource == MFCSCANSRC_ADF || this->devScanInfo.wScanSource == MFCSCANSRC_ADF_DUP) 
-                        && this->scanState.iProcessEnd == SCAN_MPS) {
-			// The case  next page exists 
+			&& this->scanState.iProcessEnd == SCAN_MPS) {
+			// The case  next page exists
 			//    start the scanning
 			this->scanState.iProcessEnd=0;
 			if (!PageScanStart( this )) {
@@ -436,7 +434,7 @@ ScanStart( Brother_Scanner *this )
 			return bResult;
 		}
 		else {
-			// The case  the scan-button is pushed during scanning 
+			// The case  the scan-button is pushed during scanning
 			bResult = SANE_STATUS_DEVICE_BUSY;
 			return bResult;
 		}
@@ -455,9 +453,9 @@ ScanStart( Brother_Scanner *this )
 		return SANE_STATUS_INVAL;
 	}
 
-	nPageScanCnt = 0;	// clear the debug-counter 
+	nPageScanCnt = 0;	// clear the debug-counter
 
-	nReadCnt = 0;	// clear the debug-counter 
+	nReadCnt = 0;	// clear the debug-counter
 
 	return bResult;
 }
@@ -528,28 +526,28 @@ PageScanStart( Brother_Scanner *this )
 }
 
 
-/********************************************************************************
- *										*
- *	FUNCTION	StatusChk(2006/02/28 FIX)						*
- *										*
- *	PURPOSE		Check whether the status code is available or not	*
- *										*
- *	IN		char *lpBuff	buffer to be checked 			*
- *			int nDataSize	size of buffer				*
- *										*
- *	OUT		None							*
- *                                                                              *
- *      Return value	0 	Status code is not availabel			*
- *			1	Status code is available			*
- *                      2       Status code is DUPLEX_NORMAL                    *
- *                      3       Status code is DUPLEX_REVERSE                   *
- *										*
- ********************************************************************************/							  
+/**************************************************************************
+ *									  *
+ *	FUNCTION	StatusChk(2006/02/28 FIX)			  *
+ *									  *
+ *	PURPOSE		Check whether the status code is available or not *
+ *									  *
+ *	IN		char *lpBuff	buffer to be checked		  *
+ *			int nDataSize	size of buffer			  *
+ *									  *
+ *	OUT		None						  *
+ *                                                                        *
+ *      Return value	0	Status code is not availabel		  *
+ *			1	Status code is available		  *
+ *                      2       Status code is DUPLEX_NORMAL              *
+ *                      3       Status code is DUPLEX_REVERSE             *
+ *									  *
+ **************************************************************************/
 BOOL
 StatusChk(char *lpBuff, int nDataSize)
 {
-	BOOL	rc=FALSE;	
-	LPBYTE	pt = lpBuff;	
+	BOOL	rc=FALSE;
+	LPSTR	pt = lpBuff;
 
 	while( 1 ) {
 		BYTE headch;
@@ -560,9 +558,9 @@ StatusChk(char *lpBuff, int nDataSize)
 		headch = (BYTE)*pt;
 
 		if ((char)headch < 0) {
-			// code of STATUS,CTRL family 
+			// code of STATUS,CTRL family
 			// refer the following header information
-			//06/02/28		  
+			//06/02/28
 			rc=1;
 
 			if(headch == 0x84){
@@ -587,7 +585,7 @@ StatusChk(char *lpBuff, int nDataSize)
 				else
 					// Acquire the information of raster data size
 					length = *(WORD *)( pt + 1 );	// format: [HEADER(1B)][LENGTH(intel 2B)][DATA...]
-				
+
 				if( nDataSize < ( length + 3) ){	// length+3 = head(1B)+length(2B)+data(length)
 					break;
 				}
@@ -616,20 +614,20 @@ static struct timezone save_tz;		// Valiable for time-interval information(min)
 
 
 #if       BRSANESUFFIX == 2
-/********************************************************************************
- *										*
- *	FUNCTION	PageScan						*
- *										*
- *	PURPOSE		Scan 1 page     					*
- *										*
- *      ARGUMENT	Brother_Scanner *this	： Brother_Scanner structure	*
- *			char *lpFwBuf		： transmission buffer		*
- *			int nMaxLen		： size of transmission buffer	*
- *			int *lpFwLen		： size of data to sent		*
- *										*
- *										*
- *										*
- ********************************************************************************/
+/******************************************************************************
+ *									      *
+ *	FUNCTION	PageScan					      *
+ *									      *
+ *	PURPOSE		Scan 1 page					      *
+ *									      *
+ *      ARGUMENT	Brother_Scanner *this	： Brother_Scanner structure  *
+ *			char *lpFwBuf		： transmission buffer	      *
+ *			int nMaxLen		： size of transmission buffer*
+ *			int *lpFwLen		： size of data to sent	      *
+ *									      *
+ *									      *
+ *									      *
+ ******************************************************************************/
 int
 PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 {
@@ -639,7 +637,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	int	rc;
 	LPBYTE  lpRxTop;
 	WORD	wProcessSize;
-		
+
 	int	nReadSize;
 	LPBYTE  lpReadBuf;
 	int	nMinReadSize; // minimum read size
@@ -657,7 +655,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 		rc = SANE_STATUS_IO_ERROR;
 		return rc;
 	}
-	if (this->scanState.bCanceled) { //cancel-process 
+	if (this->scanState.bCanceled) { //cancel-process
 		WriteLog( "Page Canceled" );
 
 		rc = SANE_STATUS_CANCELLED;
@@ -673,7 +671,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 
 #ifdef NO39_DEBUG
 	if (gettimeofday(&tv, &tz) == 0) {
-  					
+
 		if (tv.tv_usec < save_tv.tv_usec) {
 			tv.tv_usec += 1000 * 1000 ;
 			tv.tv_sec-- ;
@@ -697,12 +695,12 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	WriteLog( "devScanInfo.ScanAreaByte.lHeight = [%d]", this->devScanInfo.ScanAreaByte.lHeight );
 	WriteLog( "ReadbufEnd is %d",this->scanState.bReadbufEnd); //050428
 
-	
+
 	memset(lpFwBuf, 0x00, nMaxLen);	//  clear the transmission buffer to zero
 	*lpFwLen = 0;
 
 	if ( (!this->scanState.iProcessEnd) && ( FwTempBuffLength < nMaxLen) ) { 
-	// The case that the status code hasn't be received yet and 
+	// The case that the status code hasn't be received yet and
 	//      the size of transmission-buffer is less than the size of data in a transmission-stored data  
 
 	// if the data exists in a data storing buffer , copy the data to the receive-buffer
@@ -710,14 +708,14 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	wData += dwRxTempBuffLength;	// revise the lenght of the stored data
 
 	lpRxTop = lpRxBuff;
-	
+
 	// get the data from the device to expand the more than 3 line data
 	if (this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM)
-		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3) * 3; 
+		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3) * 3;
 	else
 		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3);
 
-	nMinReadSize *= 3; // Get more than 3 line 
+	nMinReadSize *= 3; // Get more than 3 line
 	if ( !this->scanState.bReadbufEnd ) {
 		for (rc=0 ; wData < nMinReadSize;)
 		{
@@ -728,7 +726,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			nReadCnt++;
 			WriteLog( "Read request size is %d, (dwRxTempBuffLength = %d)", gwInBuffSize - dwRxTempBuffLength, dwRxTempBuffLength );
 			WriteLog( "PageScan ReadNonFixedData Cnt = %d", nReadCnt );
-			
+
 			rc = ReadNonFixedData( this->hScanner, lpReadBuf, nReadSize, READ_TIMEOUT, this->modelInf.seriesNo );
 			if (rc < 0) {
 				this->scanState.bReadbufEnd = TRUE;
@@ -766,11 +764,11 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 
 	// the width (dot) of image data to sent
 	if (this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM ) {
- 		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
-		nFwTempBuffMaxLine *= 3; 
+		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
+		nFwTempBuffMaxLine *= 3;
 	}
 	else {
-	 	nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
+		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
 	}
 	nResoLine= this->scanInfo.UserSelect.wResoY / this->devScanInfo.DeviceScan.wResoY;
 	if (nResoLine > 1)
@@ -789,7 +787,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 
 		headch = (BYTE)*pt;
 		if ((char)headch < 0) {
-			// STATUS,CTRL code family 
+			// STATUS,CTRL code family
 			dwRxTempBuffLength --;			// spend 1 byte for CTRL code family
 			pt++;					// refer the next header information
 			wDataLineCnt+=3;
@@ -798,7 +796,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				dwRxTempBuffLength -= 1;
 				pt += 1;
 				wDataLineCnt++;
-				nHeadOnly++;    //05/07/31	
+				nHeadOnly++;    //05/07/31
 			}
 			else {
 				// Image data
@@ -826,27 +824,27 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	wData -= dwRxTempBuffLength;	// take off the odd data (less than 1 line data)
 
 	//transfer the data to the RGB data for the specified models
-	if( (this->modelInf.seriesNo >=  MUST_CONVERT_MODEL && this->devScanInfo.wColorType == COLOR_FUL) || 
-	        (this->modelInf.seriesNo >=  MUST_CONVERT_MODEL && this->devScanInfo.wColorType == COLOR_FUL_NOCM) ) {
-	  	//Analize the buffer data (though the second process)
+	if( (this->modelInf.seriesNo >=  MUST_CONVERT_MODEL && this->devScanInfo.wColorType == COLOR_FUL) ||
+		(this->modelInf.seriesNo >=  MUST_CONVERT_MODEL && this->devScanInfo.wColorType == COLOR_FUL_NOCM) ) {
+		//Analize the buffer data (though the second process)
 		LPBYTE lpOrg;
 		BYTE headch;
 		WORD wDataLineCntTemp;
 
-		//05/07/30 Adjust number of lines to multiple number of three 
+		//05/07/30 Adjust number of lines to multiple number of three
 		while(( (wDataLineCnt - nHeadOnly) % 3) != 0){
 		  WriteLog( "wDataLineCnt - nHeadOnly = %d", wDataLineCnt - nHeadOnly );
 		  wDataLineCnt--;
 		  wData -= nLength;
 		  dwRxTempBuffLength += nLength;
 		}
-	
+
 		wDataLineCntTemp = wDataLineCnt;
-		
+
 		lpOrg = lpRxBuff;
 
 		for (wDataLineCntTemp;  wDataLineCntTemp > 0;){
-	
+
 			headch = (BYTE)*lpOrg;
 
 			//06/02/28 for Duplex
@@ -857,7 +855,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			  break;
 			}else{
 				// Image data
-			        WORD length,i;
+				WORD length,i;
 				unsigned char Y, Cb, Cr;
 				int R, G, B;
 				unsigned char* pData;
@@ -866,7 +864,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				length = *(WORD *)( lpOrg + 1 );	// format: [HEADER(1B)][LENGTH(intel 2B)][DATA...]
 				length += 3;
 				pData = (unsigned char *)lpOrg;
-			
+
 				//rerew the header to RGB header type
 				*pData = (*pData & 0xE3) | 0x04;
 				*(pData + length) = (*(pData + length) & 0xE3) | 0x08;
@@ -874,12 +872,12 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 
 				pData +=3;
 
-				//calculate the RGB data from YCbCr data 
+				//calculate the RGB data from YCbCr data
 				for(i=0;i < length-3; i++){
 				  Cr = *(pData + i);
 				  Y  = *(pData + length + i);
 				  Cb = *(pData + length*2 + i);
-				  
+
 				  R =  Y + 1.402 * (Cr - 128);
 				  G =  Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128);
 				  B =  Y + 1.772 * (Cb -128);
@@ -890,23 +888,22 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				  if(G < 0) G=0;
 				  if(G > 255) B=255;
 				  if(G < 0) B=0;
-				  
+
 				  *(pData + i) = (unsigned char)R;
 				  *(pData + length + i) = (unsigned char)G;
 				  *(pData + length*2 + i) = (unsigned char)B;
-				  
+
 				}
-				
+
 				wDataLineCntTemp -= 3;
-				//renew the pointer 
+				//renew the pointer
 				if(wDataLineCntTemp > 2){
 				  lpOrg += length*3;
 				}
-				
 			}
 		}
 	}//the end of RGB-exchanging process
-	// the end of raster data expanding operation 
+	// the end of raster data expanding operation
 #ifdef NO39_DEBUG
 	if (gettimeofday(&start_tv, &tz) == -1)
 		return FALSE;
@@ -924,19 +921,18 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 		nUsec = tv.tv_usec - start_tv.tv_usec;
 
 		WriteLog( " PageScan ProcessMain Time %d sec %d Us", nSec, nUsec );
-		
+
 	}
 
 #endif
 
-	
 	if ((dwRxTempBuffLength > 0) || (wProcessSize < wData)) {
-		dwRxTempBuffLength += (wData - wProcessSize); 
+		dwRxTempBuffLength += (wData - wProcessSize);
 		memmove( lpRxTempBuff, lpRxBuff+wProcessSize, dwRxTempBuffLength );	// Keep the rest data
 	}
 
 	if ( nAnswer == SCAN_EOF || nAnswer == SCAN_MPS )  {
-		// The case of last page 
+		// The case of last page
 		if( lRealY > 0 ){
 
 			ImgLineProcInfo.pWriteBuff = lpFwTempBuff+FwTempBuffLength;
@@ -960,7 +956,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 		WriteLog( " PageScan scanState.iProcessEnd = %d, ", this->scanState.iProcessEnd );
 	}
 
-	} 
+	}
 	else { // wData == 0
 		if (FwTempBuffLength == 0 && dwRxTempBuffLength == 0) {
 			nAnswer = SCAN_EOF;
@@ -990,16 +986,16 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	memmove( lpFwTempBuff, lpFwTempBuff+*lpFwLen, FwTempBuffLength ); // move the rest data to the buffer top
 
 	rc = SANE_STATUS_GOOD;
-	
+
 #ifdef NO39_DEBUG
 	gettimeofday(&save_tv, &save_tz);
 #endif
 	if ( nAnswer == SCAN_EOF || nAnswer == SCAN_MPS )  {
 
-		if (FwTempBuffLength != 0 ) { 
+		if (FwTempBuffLength != 0 ) {
 			return rc;
 		}
-		else {	
+		else {
 			// clear the rest area to white ,if the size of received data is less than the specified size 
 			if( lRealY < this->scanInfo.ScanAreaSize.lHeight ){
 				// the case that it becomes page-end status before the received data fills  the area of specified size.
@@ -1008,12 +1004,12 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				int nMaxSize = nMaxLen - *lpFwLen;
 				int nMaxLine;
 				int nVal;
-	
+
 				if (this->devScanInfo.wColorType < COLOR_TG)
 					nVal = 0x00;
 				else
 					nVal = 0xFF;
-					
+
 				if ( nSize < nMaxSize ) {
 					memset(lpFwBuf+*lpFwLen, nVal, nSize);
 					*lpFwLen += nSize;
@@ -1041,7 +1037,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			rc = SANE_STATUS_CANCELLED;
 			this->scanState.bScanning=FALSE;
 			this->scanState.bCanceled=FALSE;
-			break; 
+			break;
 
 		case SCAN_EOF:
 			WriteLog( "Page End" );
@@ -1060,26 +1056,26 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				// return the error status code if EOF is received without receiving any data
 				rc = SANE_STATUS_IO_ERROR;
 			}
-			break; 
+			break;
 		case SCAN_MPS:
 			// return the SANE_STATUS_GOOD if  the data exists in transmission-keep buffer
 			if (*lpFwLen == 0) {
 				this->scanState.bEOF=TRUE;
 				rc = SANE_STATUS_EOF;
 			}
-			break; 
+			break;
 		case SCAN_NODOC:
 			rc = SANE_STATUS_NO_DOCS;
-			break; 
+			break;
 		case SCAN_DOCJAM:
 			rc = SANE_STATUS_JAMMED;
-			break; 
+			break;
 		case SCAN_COVER_OPEN:
 			rc = SANE_STATUS_COVER_OPEN;
-			break; 
+			break;
 		case SCAN_SERVICE_ERR:
 			rc = SANE_STATUS_IO_ERROR;
-			break; 
+			break;
 	}
 
 	//2006/03/03 for sane_read
@@ -1089,7 +1085,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	}
 
 	if(nAnswer != SCAN_DUPLEX_NORMAL)
-	  nFwLenTotal += *lpFwLen;	
+	  nFwLenTotal += *lpFwLen;
 
 	WriteLog( "<<<<< PageScan End <<<<< nFwLenTotal = %d lpFwLen = %d ",nFwLenTotal, *lpFwLen);
 
@@ -1118,11 +1114,11 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	WORD	wDataLineCnt=0;	// 受信データのライン数
 	int	nAnswer=0;
 	int	rc;
-	LPBYTE  lpRxTop;
+	LPSTR   lpRxTop;
 	WORD	wProcessSize;
-		
+
 	int	nReadSize;
-	LPBYTE  lpReadBuf;
+	LPSTR   lpReadBuf;
 	int	nMinReadSize; // 最少リードサイズ
 
 #ifdef NO39_DEBUG
@@ -1150,8 +1146,8 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 
 #ifdef NO39_DEBUG
 	if (gettimeofday(&tv, &tz) == 0) {
-  					
-		if (tv.tv_usec < save_tv.tv_usec) {
+
+	    if (tv.tv_usec < save_tv.tv_usec) {
 			tv.tv_usec += 1000 * 1000 ;
 			tv.tv_sec-- ;
 		}
@@ -1173,7 +1169,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	WriteLog( "devScanInfo.ScanAreaByte.lWidth = [%d]", this->devScanInfo.ScanAreaByte.lWidth );
 	WriteLog( "devScanInfo.ScanAreaByte.lHeight = [%d]", this->devScanInfo.ScanAreaByte.lHeight );
 
-	
+
 	memset(lpFwBuf, 0x00, nMaxLen);	//  送信バッファをゼロクリアしておく。
 	*lpFwLen = 0;
 
@@ -1185,10 +1181,10 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	wData += dwRxTempBuffLength;	// 格納データlengthを補正
 
 	lpRxTop = lpRxBuff;
-	
+
 	// 送信保存バッファに最低3ライン分は展開できるようにスキャナからデータ読み込む。
 	if (this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM )
-		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3) * 3; 
+		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3) * 3;
 	else
 		nMinReadSize = (this->devScanInfo.ScanAreaByte.lWidth + 3);
 
@@ -1202,7 +1198,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			nReadCnt++;
 			WriteLog( "Read request size is %d, (dwRxTempBuffLength = %d)", gwInBuffSize - dwRxTempBuffLength, dwRxTempBuffLength );
 			WriteLog( "PageScan ReadNonFixedData Cnt = %d", nReadCnt );
-			
+
 			rc = ReadNonFixedData( this->hScanner, lpReadBuf, nReadSize, READ_TIMEOUT , this->modelInf.seriesNo );
 			if (rc < 0) {
 				this->scanState.bReadbufEnd = TRUE;
@@ -1228,17 +1224,17 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	if (wData != 0)
 	// データをライン単位までに区切る
 	{
-	LPBYTE  pt = lpRxBuff;
+	LPSTR  pt = lpRxBuff;
 	int nFwTempBuffMaxLine;
 	int nResoLine;
 
 	// 送信するイメージデータの幅(ドット)
 	if (this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM ) {
- 		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
-		nFwTempBuffMaxLine *= 3; 
+		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
+		nFwTempBuffMaxLine *= 3;
 	}
 	else {
-	 	nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
+		nFwTempBuffMaxLine = (dwFwTempBuffMaxSize / 2 - FwTempBuffLength) / this->scanInfo.ScanAreaByte.lWidth;
 	}
 	nResoLine= this->scanInfo.UserSelect.wResoY / this->devScanInfo.DeviceScan.wResoY;
 	if (nResoLine > 1)
@@ -1255,7 +1251,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			// STATUS,CTRL系コード
 			dwRxTempBuffLength --;			// CTRL系コードは1byte消費
 			pt++;					// 次のheader情報を参照
-			
+
 			wDataLineCnt+=3;
 		}else{
 			if (headch == 0) {
@@ -1272,7 +1268,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				else
 					// ラスタデータ長の取得
 					length = *(WORD *)( pt + 1 );	// format: [HEADER(1B)][LENGTH(intel 2B)][DATA...]
-				
+
 				if( dwRxTempBuffLength < (DWORD)( length + 3) ){	// length+3 = head(1B)+length(2B)+data(length)
 					break;
 				}
@@ -1305,14 +1301,14 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 		nUsec = tv.tv_usec - start_tv.tv_usec;
 
 		WriteLog( " PageScan ProcessMain Time %d sec %d Us", nSec, nUsec );
-		
+
 	}
 
 #endif
 
-	
+
 	if ((dwRxTempBuffLength > 0) || (wProcessSize < wData)) {
-		dwRxTempBuffLength += (wData - wProcessSize); 
+		dwRxTempBuffLength += (wData - wProcessSize);
 		memmove( lpRxTempBuff, lpRxBuff+wProcessSize, dwRxTempBuffLength );	// 残りデータを保存
 	}
 
@@ -1341,7 +1337,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 		WriteLog( " PageScan scanState.iProcessEnd = %d, ", this->scanState.iProcessEnd );
 	}
 
-	} 
+	}
 	else { // wData == 0
 		if (FwTempBuffLength == 0 && dwRxTempBuffLength == 0) {
 			nAnswer = SCAN_EOF;
@@ -1371,16 +1367,16 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 	memmove( lpFwTempBuff, lpFwTempBuff+*lpFwLen, FwTempBuffLength ); // 残りの保存データを先頭に移動する。	
 
 	rc = SANE_STATUS_GOOD;
-	
+
 #ifdef NO39_DEBUG
 	gettimeofday(&save_tv, &save_tz);
 #endif
 	if ( nAnswer == SCAN_EOF || nAnswer == SCAN_MPS )  {
 
-		if (FwTempBuffLength != 0 ) { 
+		if (FwTempBuffLength != 0 ) {
 			return rc;
 		}
-		else {	
+		else {
 			// 指定したデータ長より受信したデータ長が少ない場合、残りのデータ長を空白としてセットする。		
 			if( lRealY < this->scanInfo.ScanAreaSize.lHeight ){
 				// 指定した長さより少ない値の状態で、ページエンドステータスとなった場合
@@ -1389,12 +1385,12 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				int nMaxSize = nMaxLen - *lpFwLen;
 				int nMaxLine;
 				int nVal;
-	
+
 				if (this->devScanInfo.wColorType < COLOR_TG)
 					nVal = 0x00;
 				else
 					nVal = 0xFF;
-					
+
 				if ( nSize < nMaxSize ) {
 					memset(lpFwBuf+*lpFwLen, nVal, nSize);
 					*lpFwLen += nSize;
@@ -1422,7 +1418,7 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 			rc = SANE_STATUS_CANCELLED;
 			this->scanState.bScanning=FALSE;
 			this->scanState.bCanceled=FALSE;
-			break; 
+			break;
 
 		case SCAN_EOF:
 			WriteLog( "Page End" );
@@ -1440,26 +1436,26 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 				// データ受信無しでEOFの場合、エラーとする。
 				rc = SANE_STATUS_IO_ERROR;
 			}
-			break; 
+			break;
 		case SCAN_MPS:
 			// 送信保存バッファにデータがある間は、SANE_STATUS_GOODを返す。
 			if (*lpFwLen == 0) {
 				this->scanState.bEOF=TRUE;
 				rc = SANE_STATUS_EOF;
 			}
-			break; 
+			break;
 		case SCAN_NODOC:
 			rc = SANE_STATUS_NO_DOCS;
-			break; 
+			break;
 		case SCAN_DOCJAM:
 			rc = SANE_STATUS_JAMMED;
-			break; 
+			break;
 		case SCAN_COVER_OPEN:
 			rc = SANE_STATUS_COVER_OPEN;
-			break; 
+			break;
 		case SCAN_SERVICE_ERR:
 			rc = SANE_STATUS_IO_ERROR;
-			break; 
+			break;
 	}
 
 	nFwLenTotal += *lpFwLen;
@@ -1477,10 +1473,10 @@ PageScan( Brother_Scanner *this, char *lpFwBuf, int nMaxLen, int *lpFwLen )
 void
 ReadTrash( Brother_Scanner *this )
 {
-	// discard the received data 
+	// discard the received data
 	//    regard NO-DATA if ZERO datas are recieved continuously for  more than 1 sec
 
-	BYTE *lpBrBuff;
+	CHAR *lpBrBuff;
 	int nResultSize;
 	int nEndPoint,i;
 
@@ -1493,7 +1489,7 @@ ReadTrash( Brother_Scanner *this )
 	nEndPoint = 0x84;
 
 	for(i=0; i < ANOTHERENDPOINT; i++){
-          if( this->modelInf.seriesNo == ChangeEndpoint[i]){
+	  if( this->modelInf.seriesNo == ChangeEndpoint[i]){
 	    nEndPoint = 0x85;
 	    break;
 	  }
@@ -1507,7 +1503,7 @@ ReadTrash( Brother_Scanner *this )
 	if (gettimeofday(&start_tv, &tz) == -1)
 		return ;
 
-	lpBrBuff = (LPBYTE)MALLOC( 32000 );
+	lpBrBuff = MALLOC( 32000 );
 	if (!lpBrBuff)
 		return;
 
@@ -1534,7 +1530,7 @@ ReadTrash( Brother_Scanner *this )
 
 			if (nSec > nTimeOutSec) { // break if timeout occures
 				break;
-			} 
+			}
 			else if( nSec == nTimeOutSec) { // the case the read time  is the same as the timeout value in second-order
 				if (nUsec >= nTimeOutUsec) { // break if read time is larger than timeout value 
 					break;
@@ -1544,22 +1540,22 @@ ReadTrash( Brother_Scanner *this )
 		else {
 			break;
 		}
-		
+
 		usleep(30 * 1000); // wait for 30ms
 
 		// discard the data
 #ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 		nResultSize = usb_bulk_read(this->hScanner,
-	        nEndPoint,
-	        lpBrBuff, 
-	        32000,
-	        2000
+		nEndPoint,
+		lpBrBuff,
+		32000,
+		2000
 		);
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		if (IFTYPE_NET != this->hScanner->device){
 		  nResultSize = usb_bulk_read(this->hScanner->usb,
 					      nEndPoint,
-					      lpBrBuff, 
+					      lpBrBuff,
 					      32000,
 					      2000
 					      );
@@ -1567,8 +1563,8 @@ ReadTrash( Brother_Scanner *this )
 		else{
 		  struct timeval net_timeout = NETTIMEOUTST;
 		  nResultSize = 0;
-		  read_device_net(this->hScanner->net, 
-				  lpBrBuff, 
+		  read_device_net(this->hScanner->net,
+				  lpBrBuff,
 				  32000,
 				  &nResultSize,
 				  &net_timeout);
@@ -1594,7 +1590,7 @@ ReadTrash( Brother_Scanner *this )
 //
 //
 //	Abstract:
-//		Abort the Page-scan process 
+//		Abort the Page-scan process
 //
 //
 //	Parameters:
@@ -1609,7 +1605,7 @@ AbortPageScan( Brother_Scanner *this )
 	WriteLog( ">>>>> AbortPageScan Start >>>>>" );
 
 	//
-	// Send the cancel command 
+	// Send the cancel command
 	//
 	SendCancelCommand(this->hScanner, this->modelInf.seriesNo);
 	this->scanState.bCanceled=TRUE;
@@ -1620,23 +1616,21 @@ AbortPageScan( Brother_Scanner *this )
 	return;
 }
 
-/********************************************************************************
- *										*
- *	FUNCTION	ScanEnd							*
- *										*
- *	PURPOSE		Process of termination of the scan session		*
- *				request the source-closeing process		*
- *										*
- *	IN		HWND	hdlg	handle to the dialog 			*
- *										*
- *	OUT		None							*
- *										*
- ********************************************************************************/
+/************************************************************************
+ *									*
+ *	FUNCTION	ScanEnd						*
+ *									*
+ *	PURPOSE		Process of termination of the scan session	*
+ *				request the source-closeing process	*
+ *									*
+ *	IN		HWND	hdlg	handle to the dialog		*
+ *									*
+ *	OUT		None						*
+ *									*
+ ************************************************************************/
 void
 ScanEnd( Brother_Scanner *this )
 {
-	BOOL  bResult;
-
 	this->scanState.nPageCnt = 0;
 	bTxScanCmd = FALSE;		// Clear the begining-of-scan flag
 
@@ -1664,7 +1658,7 @@ ScanEnd( Brother_Scanner *this )
 		  }
 		}
 
-		// this->hScanner must be available until sane is closed 
+		// this->hScanner must be available until sane is closed
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 	}
@@ -1687,7 +1681,7 @@ ScanEnd( Brother_Scanner *this )
 	//
 	// end of the decode/stretch process
 	//
-	bResult = this->scanDec.lpfnScanDecClose();
+	this->scanDec.lpfnScanDecClose();
 
 	WriteLog( "<<<<< Terminate Scanning <<<<<" );
 
@@ -1713,7 +1707,7 @@ ScanEnd( Brother_Scanner *this )
 //
 //-----------------------------------------------------------------------------
 //	GetScanAreaParam(GetScanDot of the windows version）
-void 
+void
 GetScanAreaParam( Brother_Scanner *this )
 {
 	LPAREARECT  lpScanAreaDot;
@@ -1832,13 +1826,13 @@ StartDecodeStretchProc( Brother_Scanner *this )
 
 	ImageProcInfo.nOutDataKind = SCODK_PIXEL_RGB;
 
-#if 1 // modify for the bug that scanning is failed  at Black^White mode 
-	ImageProcInfo.bLongBoundary = FALSE;	// never do 4 byte alignment 
+#if 1 // modify for the bug that scanning is failed  at Black^White mode
+	ImageProcInfo.bLongBoundary = FALSE;	// never do 4 byte alignment
 #else
 	ImageProcInfo.bLongBoundary = TRUE;
 #endif
 	//
-	// set color type 
+	// set color type
 	//
 	switch( this->devScanInfo.wColorType ){
 		case COLOR_BW:			// Black & White
@@ -1877,7 +1871,7 @@ StartDecodeStretchProc( Brother_Scanner *this )
 		bResult = this->scanDec.lpfnScanDecOpen( &ImageProcInfo );
 		WriteLog( "Result from ScanDecOpen is %d", bResult );
 	}
-	
+
 	dwImageBuffSize = ImageProcInfo.dwOutWriteMaxSize;
 	WriteLog( "ScanDec Func needs maximum size is %d", dwImageBuffSize );
 
@@ -1891,7 +1885,7 @@ StartDecodeStretchProc( Brother_Scanner *this )
 
 	if( this->devScanInfo.DeviceScan.wResoY != this->scanInfo.UserSelect.wResoY ){
 		//
-		// revise the scaled/magnified scan-length 
+		// revise the scaled/magnified scan-length
 		//
 		this->scanInfo.ScanAreaSize.lHeight *= this->scanInfo.UserSelect.wResoY;
 		this->scanInfo.ScanAreaSize.lHeight /= this->devScanInfo.DeviceScan.wResoY;
@@ -1972,7 +1966,7 @@ GetDeviceScanArea( Brother_Scanner *this, LPAREARECT lpScanAreaDot )
 	}
 
 	//
-	// if the normal-scan is selected round on the 16dot unit 
+	// if the normal-scan is selected round on the 16dot unit
 	//   0-7 -> 0, 8-15 -> 16
 	//
 	lpScanAreaDot->left  = ( lpScanAreaDot->left  + 0x8 ) & 0xFFF0;
@@ -1981,32 +1975,31 @@ GetDeviceScanArea( Brother_Scanner *this, LPAREARECT lpScanAreaDot )
 }
 
 
-/********************************************************************************
- *										*
- *	FUNCTION	ProcessMain						*
- *										*
- *	IN		pointer to the Brother_Scanner	structure       	*
- *			WORD		number of data				*
- *			char *		output buffer 				*
- *			int *		pointer to the output data number	*
- *										*
- *	OUT		None							*
- *										* 
- *	COMMENT		process the data acquired from the scanner		*
- *			Regard the stored data as the line unit data		*
- *										*
- ********************************************************************************/
+/*************************************************************************
+ *									 *
+ *	FUNCTION	ProcessMain					 *
+ *									 *
+ *	IN		pointer to the Brother_Scanner	structure	 *
+ *			WORD		number of data			 *
+ *			char *		output buffer			 *
+ *			int *		pointer to the output data number*
+ *									 *
+ *	OUT		None						 *
+ *									 *
+ *	COMMENT		process the data acquired from the scanner	 *
+ *			Regard the stored data as the line unit data	 *
+ *									 *
+ *************************************************************************/
 int
 ProcessMain(Brother_Scanner *this, WORD wByte, WORD wDataLineCnt, char * lpFwBuf, int *lpFwBufcnt, WORD *lpProcessSize)
 {
-	LPBYTE	lpScn = lpRxBuff;
-	LPBYTE	lpScnEnd;
+	LPSTR	lpScn = lpRxBuff;
+	LPSTR	lpScnEnd;
 	int	answer = SCAN_GOOD;
 	char	Header;
 	DWORD	Dcount;
 	LONG	count;
-	LPBYTE	lpSrc;
-	LPBYTE	lpHosei;
+	LPSTR	lpSrc;
 	WORD	wLineCnt;
 #ifdef NO39_DEBUG
 	struct timeval start_tv, tv;
@@ -2040,7 +2033,7 @@ ProcessMain(Brother_Scanner *this, WORD wByte, WORD wDataLineCnt, char * lpFwBuf
 		  WriteLog( "Header = 85" );
 		  wLineCnt += 2;
 		  answer = SCAN_DUPLEX_REVERSE;
-		} 
+		}
 		else if( Header < 0 ){
 			//
 			//	Status code
@@ -2072,7 +2065,6 @@ ProcessMain(Brother_Scanner *this, WORD wByte, WORD wDataLineCnt, char * lpFwBuf
 				count  = (WORD)Dcount;		// data length
 				lpScn += 2;
 				lpSrc = lpScn;
-				lpHosei = 0;	// What is "Hosei" ???
 
 				WriteLog( "Header=%2x  Count=%4d", (BYTE)Header, count );
 				WriteLog( "\tlpFwBuf = %X, lpScn = %X", lpFwBuf, lpScn );
@@ -2106,7 +2098,7 @@ ProcessMain(Brother_Scanner *this, WORD wByte, WORD wDataLineCnt, char * lpFwBuf
 		nUsec = tv.tv_usec - start_tv.tv_usec;
 
 		WriteLog( " ProcessMain ScanDecWrite Time %d sec %d Us", nSec, nUsec );
-		
+
 	}
 #endif
 
@@ -2121,7 +2113,7 @@ ProcessMain(Brother_Scanner *this, WORD wByte, WORD wDataLineCnt, char * lpFwBuf
 						if( this->mfcModelInfo.bColorModel && ! this->modelConfig.bNoUseColorMatch && this->devScanInfo.wColorType == COLOR_FUL ){
 							int  i;
 							for( i = 0; i < nWriteLineCount; i++ ){
-								ExecColorMatchingFunc( this, lpFwBuf, this->scanInfo.ScanAreaByte.lWidth, 1 );
+							    ExecColorMatchingFunc( this, (LPBYTE) lpFwBuf, this->scanInfo.ScanAreaByte.lWidth, 1 );
 								lpFwBuf += dwWriteImageSize / nWriteLineCount;
 							}
 						}else{
@@ -2215,7 +2207,7 @@ SetupImgLineProc( BYTE chLineHeader )
 	}
 
 	//
-	// set other parameters 
+	// set other parameters
 	//
 #if 1
 	ImgLineProcInfo.bReverWrite     = FALSE;
@@ -2268,14 +2260,14 @@ GetStatusCode( BYTE nLineHeader )
 			answer = SCAN_CANCEL;
 			break;
 		//06/02/28
-	        case 0x84:
-		        WriteLog( "\tDuplex Normal" );
-		        answer = SCAN_MPS;
-		        break;
-	        case 0x85:
-		        WriteLog( "\tDuplex Reverse" );
-		        answer = SCAN_MPS;
-	                break;
+		case 0x84:
+			WriteLog( "\tDuplex Normal" );
+			answer = SCAN_MPS;
+			break;
+		case 0x85:
+			WriteLog( "\tDuplex Reverse" );
+			answer = SCAN_MPS;
+			break;
 		case 0xC2:	//no document
 			WriteLog( "\tNo document" );
 			answer = SCAN_NODOC;	// if no document, don't send picture

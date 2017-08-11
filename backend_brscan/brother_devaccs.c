@@ -54,9 +54,9 @@
 WORD  gwInBuffSize;
 
 //
-// time out value of device accsess 
+// time out value of device accsess
 //
-UINT  gnQueryTimeout;	// time out value of query command 
+UINT  gnQueryTimeout;	// time out value of query command
 UINT  gnScanTimeout;	// time out of scan start / timeout of scan
 
 //
@@ -87,7 +87,7 @@ int release_usb_criticalsection();
 //
 //
 //	Abstract:
-//		Set the parameters to access the device 
+//		Set the parameters to access the device
 //
 //
 //	Parameters:
@@ -108,7 +108,7 @@ GetDeviceAccessParam( Brother_Scanner *this )
 	gwInBuffSize  = this->modelConfig.wInBuffSize;
 
 	//
-	// Get the timeout value if "Query" commands 
+	// Get the timeout value if "Query" commands
 	//
 	gnQueryTimeout = TIMEOUT_QUERYRES;
 
@@ -124,15 +124,15 @@ GetDeviceAccessParam( Brother_Scanner *this )
 //
 //
 //	Abstract:
-//		Open the device 
+//		Open the device
 //
 //
 //	Parameters:
-//	        None
+//              None
 //
 //	Return values:
 //		TRUE  success (normal end)
-//		FALSE error  
+//		FALSE error
 //
 //-----------------------------------------------------------------------------
 //
@@ -152,7 +152,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	nEndPoint = 0x84;
 
 	for(i=0; i < ANOTHERENDPOINT; i++){
-          if(seriesNo == ChangeEndpoint[i]){
+	  if(seriesNo == ChangeEndpoint[i]){
 	    nEndPoint = 0x85;
 	    break;
 	  }
@@ -171,13 +171,13 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 #else   //M-LNX-38  cannot scan with scanimage/scanadf
 	    WriteLog("OpenDevice  ERROR at open_device_net (%x) retry 1",
 		     hScanner->net);
-	    usleep(300 * 1000); // wait for  300ms 
+	    usleep(300 * 1000); // wait for  300ms
 	    if ((hScanner->net = open_device_net(hScanner->net_device_index,
 					       NULL,ADRTYPE_DEPENDONINI)) == NULL ){
 	      int retry;
 	      WriteLog("OpenDevice  ERROR at open_device_net (%x) retry 2",
 		       hScanner->net);
-	      usleep(700 * 1000); // wait for  700ms 
+	      usleep(700 * 1000); // wait for  700ms
 	      retry = 0;
 	      while((hScanner->net = open_device_net(hScanner->net_device_index,
 					       NULL,ADRTYPE_DEPENDONINI)) == NULL ){
@@ -191,13 +191,13 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 #endif   //M-LNX-38  cannot scan with scanimage/scanadf
 	  }
 	  nEndPoint = 0;    //not be used
-      	  goto OPEN_POST_PROC;
+	  goto OPEN_POST_PROC;
 	  //return TRUE;
 	}
 	//2005/11/11 Add SeriesNnumber information for L4CFB and later
 	nEndPoint = hScanner->usb_r_ep;
 	//printf("OpenDevice : endpoint %x\n",nEndPoint);
-	if(nEndPoint <  0x80 || nEndPoint > 0xff){ 
+	if(nEndPoint <  0x80 || nEndPoint > 0xff){
 	  nEndPoint = 0x84;
 	  for(i=0; i < ANOTHERENDPOINT; i++){
 	    if(seriesNo == ChangeEndpoint[i]){
@@ -210,7 +210,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
-        WriteLog( "Set EndPoint = %d", nEndPoint) ;
+	WriteLog( "Set EndPoint = %d", nEndPoint) ;
 	  //if(seriesNo == L4CFB ||seriesNo == AL_FB_DCP )
 	  //nEndPoint = 0x85;
 	  //else
@@ -229,12 +229,12 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 		rc = usb_control_msg(hScanner->usb,       /* handle */
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
-                    BREQ_TYPE,           /* request type */
-                    BREQ_GET_OPEN,  /* request */    /* GET_OPEN */
-                    BCOMMAND_SCANNER,/* value */      /* scanner  */
-                    0,              /* index */
-                    data, BREQ_GET_LENGTH,        /* bytes, size */
-                    2000            /* Timeout */
+		    BREQ_TYPE,           /* request type */
+		    BREQ_GET_OPEN,  /* request */    /* GET_OPEN */
+		    BCOMMAND_SCANNER,/* value */      /* scanner  */
+		    0,              /* index */
+		    data, BREQ_GET_LENGTH,        /* bytes, size */
+		    2000            /* Timeout */
 		);
 		if (rc >= 0) {
 				break;
@@ -272,7 +272,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 
 	// recovery
 	{
-	BYTE *lpBrBuff;
+	CHAR *lpBrBuff;
 	int nResultSize;
 	int iFirstData;
 
@@ -284,7 +284,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	if (gettimeofday(&start_tv, &tz) == -1)
 		return FALSE;
 
-	lpBrBuff = (LPBYTE)MALLOC( 32000 );
+	lpBrBuff = MALLOC( 32000 );
 	if (!lpBrBuff)
 		return FALSE;
 
@@ -293,7 +293,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 		return FALSE;
 	}
 
-	// calculate the second-order of timeout value 
+	// calculate the second-order of timeout value
 	nTimeOutSec = 1;
 	// calculate the micro-second-order of timeout value
 	nTimeOutUsec = 0;
@@ -313,7 +313,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 
 			if (nSec > nTimeOutSec) { // break if nSec is larger than timeout value 
 				break;
-			} 
+			}
 			else if( nSec == nTimeOutSec) {      // break if nSec is same with the timeout value 
 				if (nUsec >= nTimeOutUsec) { //     and nUsec is larger than timeout value 
 					break;
@@ -324,25 +324,25 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 			FREE(lpBrBuff);
 			return FALSE;
 		}
-		
-		usleep(30 * 1000); // wait for  30ms 
+
+		usleep(30 * 1000); // wait for  30ms
 		WriteLog( "OpenDevice Recovery Read start" );
 
 		// discard the read data
 #ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 		nResultSize = usb_bulk_read(hScanner,
-	        nEndPoint,
-	        lpBrBuff, 
-	        32000,
-	        2000
+		nEndPoint,
+		lpBrBuff,
+		32000,
+		2000
 		);
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-	        if (IFTYPE_NET == hScanner->device){
+		if (IFTYPE_NET == hScanner->device){
 		  struct timeval net_timeout = NETTIMEOUTST;
-		                // (sec, micro sec)
+		  // (sec, micro sec)
 		  nResultSize = 0;
-		  read_device_net(hScanner->net, 
-				  lpBrBuff, 
+		  read_device_net(hScanner->net,
+				  lpBrBuff,
 				  32000,
 				  &nResultSize,
 				  &net_timeout);
@@ -351,7 +351,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 		else{
 		  nResultSize = usb_bulk_read(hScanner->usb,
 						  nEndPoint,
-						  lpBrBuff, 
+						  lpBrBuff,
 						  32000,
 						  2000
 						  );
@@ -365,7 +365,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 		// reset the timer if the data exists
 		if (nResultSize > 0) { // the case the data exists
 
-			// send the Q command at the first time 
+			// send the Q command at the first time
 			if (iFirstData){
 				WriteLog( "OpenDevice Recovery Q Command" );
 				// send the Q command
@@ -381,7 +381,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	FREE(lpBrBuff);
 
 	} //  end of recovery proccess
-	
+
 	return TRUE;
 }
 
@@ -392,7 +392,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 //
 //
 //	Abstract:
-//		Close the device 
+//		Close the device
 //
 //
 //	Parameters:
@@ -425,12 +425,12 @@ CloseDevice( usb_dev_handle *hScanner )
 
 
 
-                    BREQ_TYPE,           /* request type */
-                    BREQ_GET_CLOSE,  /* request */    /* GET_OPEN */
-                    BCOMMAND_SCANNER,/* value */      /* scanner  */
-                    0,              /* index */
-                    data, BREQ_GET_LENGTH,        /* bytes, size */
-                    2000            /* Timeout */
+		    BREQ_TYPE,           /* request type */
+		    BREQ_GET_CLOSE,  /* request */    /* GET_OPEN */
+		    BCOMMAND_SCANNER,/* value */      /* scanner  */
+		    0,              /* index */
+		    data, BREQ_GET_LENGTH,        /* bytes, size */
+		    2000            /* Timeout */
 		);
 		if (rc >= 0)
 			break;
@@ -449,7 +449,7 @@ CloseDevice( usb_dev_handle *hScanner )
 //
 //
 //	Abstract:
-//		Read from device 
+//		Read from device
 //
 //
 //	Parameters:
@@ -467,7 +467,7 @@ CloseDevice( usb_dev_handle *hScanner )
 //-----------------------------------------------------------------------------
 //
 int
-ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int seriesNo )
+ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
 {
 	int  nResultSize = 0;
 	int  nTimeOut = 20000;
@@ -484,7 +484,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 	    break;
 	  }
 	}
-	/*  
+	/*
 	if(seriesNo == L4CFB || seriesNo == AL_FB_DCP )
 	  nEndPoint = 0x85;
 	else
@@ -495,7 +495,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 	if (IFTYPE_NET != hScanner->device){
 	  nEndPoint = hScanner->usb_r_ep;
 	  //printf("ReadDeviceData : endpoint %x\n",nEndPoint);
-	  if(nEndPoint <  0x80 || nEndPoint > 0xff){ 
+	  if(nEndPoint <  0x80 || nEndPoint > 0xff){
 	    nEndPoint = 0x84;
 	    for(i=0; i < ANOTHERENDPOINT; i++){
 	      if(seriesNo == ChangeEndpoint[i]){
@@ -504,7 +504,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 	      }
 	    }
 	  }
-	  /*  
+	  /*
 	      if(seriesNo == L4CFB || seriesNo == AL_FB_DCP )
 	      nEndPoint = 0x85;
 	      else
@@ -514,7 +514,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 	else{
 	  nEndPoint = 0;    //not be used
 	}
-	
+
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 
@@ -525,7 +525,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 
 
 		if (gettimeofday(&tv, &tz) == 0) {
-	  					
+
 			if (tv.tv_usec < save_tv.tv_usec) {
 				tv.tv_usec += 1000 * 1000 ;
 				tv.tv_sec-- ;
@@ -546,16 +546,16 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 					if (nUsec < 200 * 1000) // check whether the wait time is less then 200ms or not 
 						usleep( 200 * 1000 - nUsec );
 				}
-				
+
 			}
 		}
 	}
 
 #ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 	nResultSize = usb_bulk_read(hScanner,
-        nEndPoint,
-        lpRxBuffer,
-        nReadSize,
+	nEndPoint,
+	lpRxBuffer,
+	nReadSize,
 	nTimeOut
 	);
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
@@ -569,9 +569,9 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 	}
 	else{
 	  struct timeval net_timeout = {nTimeOut/1000,(nTimeOut%1000)*1000};    // (sec, micro sec)
-	  read_device_net(hScanner->net, 
-			  lpRxBuffer, 
-			  nReadSize, 
+	  read_device_net(hScanner->net,
+			  lpRxBuffer,
+			  nReadSize,
 			  &nResultSize,
 			  &net_timeout);
 	}
@@ -580,7 +580,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 
 
 	WriteLog( " ReadDeviceData ReadEnd nResultSize = %d\n", nResultSize ) ;
-	
+
 	if (nResultSize == 0) {
 		if (iReadStatus == 0) {
 			iReadStatus = 1;
@@ -589,10 +589,10 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 		else {
 			iReadStatus = 2;
 		}
-	
+
 	} else {
 		iReadStatus = 0;
-		return nResultSize; 
+		return nResultSize;
 	}
 
 	return nResultSize;
@@ -628,7 +628,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int 
 //-----------------------------------------------------------------------------
 //
 int
-ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec ,int seriesNo)
+ReadNonFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec ,int seriesNo)
 {
 	int   nReadDataSize = 0;
 
@@ -643,7 +643,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWO
 		return FALSE;
 
 	// calculate the scond-order of time out value
-	nTimeOutSec = dwTimeOutMsec / 1000; 
+	nTimeOutSec = dwTimeOutMsec / 1000;
 	// calculate the micro-seconds-order of time out value
 	nTimeOutUsec = (dwTimeOutMsec - (1000 * nTimeOutSec)) * 1000;
 
@@ -659,7 +659,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWO
 
 			if (nSec > nTimeOutSec) { // break if nSec is larger than timeout value
 				break;
-			} 
+			}
 			else if( nSec == nTimeOutSec) {      // if the second-order is same 
 				if (nUsec >= nTimeOutUsec) { //   check the micro-sec-order
 					break;
@@ -681,7 +681,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWO
 			break;
 		}
 
-		usleep(20 * 1000); // wait for 20mS 
+		usleep(20 * 1000); // wait for 20mS
 	}
 
 	return nReadDataSize;
@@ -701,7 +701,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWO
 //			the pointer to the buffer the read data stored
 //
 //		wReadSize
-//			read data size 
+//			read data size
 //
 //		dwTimeOut
 //			timeout value (mS)
@@ -717,7 +717,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWO
 //-----------------------------------------------------------------------------
 //	ReadBidiFixedData¡ÊµìReadBidiComm32_q¡Ë
 BOOL
-ReadFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec, int seriesNo )
+ReadFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec, int seriesNo )
 {
 	BOOL  bResult = TRUE;
 	WORD  wReadCount = 0;
@@ -732,7 +732,7 @@ ReadFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD 
 		return FALSE;
 
 	// calculate the second-order of the timeout value
-	nTimeOutSec = dwTimeOutMsec / 1000; 
+	nTimeOutSec = dwTimeOutMsec / 1000;
 	// calculate the micro-second-order of the timeout value
 	nTimeOutUsec = (dwTimeOutMsec - (1000 * nTimeOutSec)) * 1000;
 
@@ -748,7 +748,7 @@ ReadFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD 
 
 			if (nSec > nTimeOutSec) { // break if nSec is larger than timeout value
 				break;
-			} 
+			}
 			else if( nSec == nTimeOutSec) {      // if the econd-order is same
 				if (nUsec >= nTimeOutUsec) { //     check the micro-sec-order
 					break;
@@ -799,7 +799,7 @@ ReadFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD 
 //-----------------------------------------------------------------------------
 //
 int
-ReadDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int seriesNo )
+ReadDeviceCommand( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
 {
 	int  nResultSize;
 
@@ -821,7 +821,7 @@ ReadDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, i
 //
 //	Parameters:
 //		lpTxBuffer
-//			the pointer to the data to write to the device 
+//			the pointer to the data to write to the device
 //
 //		nWriteSize
 //			size of data
@@ -834,7 +834,7 @@ ReadDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, i
 //-----------------------------------------------------------------------------
 //
 int
-WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, int seriesNo)
+WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
 {
 	int i;
 	int  nResultSize = 0;
@@ -854,9 +854,9 @@ WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, in
 	  int iWritten,rc;
 	  for (i = 0; i < RETRY_CNT;i++) {
 	    struct timeval net_timeout = NETTIMEOUTST;
-	    rc = write_device_net(hScanner->net, 
-			   lpTxBuffer, 
-			   nWriteSize , 
+	    rc = write_device_net(hScanner->net,
+			   lpTxBuffer,
+			   nWriteSize ,
 			   &iWritten,
 			   &net_timeout);
 	    if ( rc >= 0)
@@ -867,7 +867,7 @@ WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, in
 	//2005/11/11 Add SeriesNnumber information for L4CFB and later
 	nEndPoint = hScanner->usb_w_ep;
 	//printf("WriteDeviceData : endpoint %x\n",nEndPoint);
-	if(nEndPoint <  0x1 || nEndPoint > 0x7f){ 
+	if(nEndPoint <  0x1 || nEndPoint > 0x7f){
 	  //2005/11/11 Add SeriesNnumber information for L4CFB and later
 	  nEndPoint = 0x03;
 	  for(i=0; i < ANOTHERENDPOINT; i++){
@@ -892,10 +892,10 @@ WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, in
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		nResultSize = usb_bulk_write(hScanner->usb,
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-	        nEndPoint,
-	        lpTxBuffer,
-	        nWriteSize,
-	        2000
+		nEndPoint,
+		lpTxBuffer,
+		nWriteSize,
+		2000
 		);
 		if ( nResultSize >= 0)
 			break;
@@ -911,12 +911,12 @@ WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, in
 //
 //
 //	Abstract:
-//		write the commands to the device 
+//		write the commands to the device
 //
 //
 //	Parameters:
 //		lpTxBuffer
-//			the pointer to the command 
+//			the pointer to the command
 //
 //		nWriteSize
 //			the size of command (byte)
@@ -929,16 +929,16 @@ WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, in
 //-----------------------------------------------------------------------------
 //
 int
-WriteDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, int seriesNo)
+WriteDeviceCommand( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
 {
 	int  nResultSize;
 #ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 	if (IFTYPE_NET == hScanner->device){
 	  int iWritten;
 	  struct timeval net_timeout = NETTIMEOUTST;
-	  write_device_net(hScanner->net, 
-			   lpTxBuffer, 
-			   nWriteSize , 
+	  write_device_net(hScanner->net,
+			   lpTxBuffer,
+			   nWriteSize ,
 			   &iWritten,
 			   &net_timeout);
 	  return iWritten;
@@ -976,7 +976,7 @@ AllocReceiveBuffer( DWORD  dwBuffSize )
 {
 	if( hReceiveBuffer == NULL ){
 		//
-		// Allocate the buffer the data is stored in 
+		// Allocate the buffer the data is stored in
 		//
 		hReceiveBuffer = MALLOC( dwBuffSize );
 
@@ -996,7 +996,7 @@ AllocReceiveBuffer( DWORD  dwBuffSize )
 //
 //
 //	Parameters:
-//	        None
+//              None
 //
 //
 //	Return values:
@@ -1026,14 +1026,14 @@ FreeReceiveBuffer( void )
 //    M-LNX-24   2006/04/12 kado
 
 int  usb_set_configuration_or_reset_toggle(
-		   Brother_Scanner *this,		     
+		   Brother_Scanner *this,
 		   int configuration){
   int errornum,nEndPoint,i;
 
   errornum = usb_set_configuration(this->hScanner->usb, configuration);
   if(errornum){
     nEndPoint = this->hScanner->usb_w_ep;
-    if(nEndPoint <  0x1 || nEndPoint > 0x7f){ 
+    if(nEndPoint <  0x1 || nEndPoint > 0x7f){
       nEndPoint = 0x03;
       for(i=0; i < ANOTHERENDPOINT; i++){
 	if(this->modelInf.seriesNo  == ChangeEndpoint[i]){
@@ -1057,7 +1057,6 @@ int  usb_set_configuration_or_reset_toggle(
 #include <stdio.h>
 #include <string.h>
 
- 
 
 #if 0
 #define ERRPRINT printf
@@ -1077,7 +1076,7 @@ int   semaphore_owner = 0;
 key_t get_semkey(){
   FILE *fp_skey;
   int    semid;
-  int    n_read;
+  size_t n_read;
   char buffer[64] = {0};
 
   fp_skey = fopen(SKEYC,"r");
@@ -1098,7 +1097,7 @@ key_t get_semkey(){
       semid = atoi(buffer);
     }
     else{
-      ERRPRINT("get_semkey n_read = %d\n",n_read);
+      ERRPRINT("get_semkey n_read = %zd\n",n_read);
     }
     pclose(fp_skey);
   }
@@ -1125,7 +1124,7 @@ int  init_usb_criticalsection(){
   int ret;
   DBGPRINT("init_usb_criticalsection()\n");
   key = get_semkey();
-  
+
   sem_id = semget(key,1,IPC_CREAT | IPC_EXCL | 0666);
   if (sem_id != -1){
     semuni.val = 1;
@@ -1143,7 +1142,7 @@ int  init_usb_criticalsection(){
       ERRPRINT("ERROR : Semaphore error 12 (%s)\n",strerror(errno));
       return -1;
     }
-  }  
+  }
   return 0;
 }
 
@@ -1209,7 +1208,7 @@ int release_usb_criticalsection(){
     return -1;
   }
   return 0;
-  
+
 }
 
 #endif

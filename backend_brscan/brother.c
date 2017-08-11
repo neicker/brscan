@@ -76,8 +76,8 @@ Not support (force causing compile error)
 
 TDevice *g_pdev;
 
-static int                num_devices;	// USB上に検出されたBrotherデバイス数
-static TDevice           *pdevFirst;	// USB上に検出されたBrotherデバイスリスト
+static int      num_devices;	// USB上に検出されたBrotherデバイス数
+static TDevice  *pdevFirst;	// USB上に検出されたBrotherデバイスリスト
 static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
 
 /* =====================================================================*/
@@ -168,14 +168,14 @@ InitOptions (Brother_Scanner *this)
 	SANE_DESC_SCAN_BR_X,	SANE_DESC_SCAN_BR_Y };
 #if 0  //M-LNX-58
   static SANE_Word rangXY_DEF[4]= { SANE_FIX(0.0),
-                                    SANE_FIX(0.0),
-                                    SANE_FIX(210.0),
-                                    SANE_FIX(297.0) };
+				    SANE_FIX(0.0),
+				    SANE_FIX(210.0),
+				    SANE_FIX(297.0) };
 #else  //M-LNX-58
   static SANE_Word rangXY_DEF[4]= { SANE_FIX(0.0),
-                                    SANE_FIX(0.0),
-                                    SANE_FIX(215.9),
-                                    SANE_FIX(355.6) };
+				    SANE_FIX(0.0),
+				    SANE_FIX(215.9),
+				    SANE_FIX(355.6) };
 #endif //M-LNX-58
 
   static const SANE_Range *aRangesXY[] = { &rangeXmm,&rangeYmm,&rangeXmm,&rangeYmm };
@@ -184,7 +184,7 @@ InitOptions (Brother_Scanner *this)
   memset(this->aoptVal,0,sizeof(this->aoptVal));
 
   // スキャンモードの設定項目リストを取得する。
-  nSize = NUM_SCANMODE * sizeof (scanModeList[0]); 
+  nSize = NUM_SCANMODE * sizeof (scanModeList[0]);
   scanModeList = MALLOC (nSize);
   if (!scanModeList)
     return SANE_STATUS_NO_MEM;
@@ -200,7 +200,7 @@ InitOptions (Brother_Scanner *this)
   if (!rc)
       return SANE_STATUS_INVAL;
   // スキャンソースの設定項目リストを取得する。
-  nSize = NUM_SCANSRC * sizeof (scanSrcList[0]); 
+  nSize = NUM_SCANSRC * sizeof (scanSrcList[0]);
   scanSrcList = MALLOC (nSize);
   if (!scanSrcList)
     return SANE_STATUS_NO_MEM;
@@ -239,7 +239,7 @@ InitOptions (Brother_Scanner *this)
 	Some hints:
 	*every* field needs a constraint, elseway there will be a warning.
 	*/
-    
+
       switch (iOpt)
 	{
 	case optCount:
@@ -263,9 +263,9 @@ InitOptions (Brother_Scanner *this)
 	  pdesc->constraint_type = SANE_CONSTRAINT_STRING_LIST;
 	  pdesc->constraint.string_list = scanModeList;
 	  if (this->modelConfig.SupportScanMode.bit.b24BitColor)
-            listcnt = get_scanmode_listcnt(scanModeList, COLOR_FUL);
-          else
-            listcnt = get_scanmode_listcnt(scanModeList, COLOR_BW);
+	    listcnt = get_scanmode_listcnt(scanModeList, COLOR_FUL);
+	  else
+	    listcnt = get_scanmode_listcnt(scanModeList, COLOR_BW);
 	  pval->s       = strdup(scanModeList[listcnt]);
 	  break;
 	case optScanSrc:
@@ -379,8 +379,8 @@ RegisterSaneDev (struct usb_device *pdevUSB, char *szName, PMODELINF pModelInf){
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 static SANE_Status
-RegisterSaneDev (struct usb_device *pdevUSB, 
-		 char *szName, PMODELINF pModelInf, 
+RegisterSaneDev (struct usb_device *pdevUSB,
+		 char *szName, PMODELINF pModelInf,
 		 int index){
   TDevice * q;
   errno = 0;
@@ -408,8 +408,8 @@ RegisterSaneDev (struct usb_device *pdevUSB,
     else{
       q->sane.type   = q->modelInf.modelTypeName = strdup (pModelInf->modelTypeName);
     }
-  } 
-  q->sane.model  = q->modelInf.modelName = strdup (pModelInf->modelName); 
+  }
+  q->sane.model  = q->modelInf.modelName = strdup (pModelInf->modelName);
   q->modelInf.expcaps  = pModelInf->expcaps;     //M-LNX-20
   q->modelInf.vendorID = pModelInf->vendorID;
   q->modelInf.index = pModelInf->index;
@@ -454,7 +454,7 @@ Not support (force causing compile error)
    {
     *version_code = SANE_VERSION_CODE (V_MAJOR, V_MINOR, BUILD);
     DBG(DEBUG_VERBOSE,"brother version: %lx\n",
-    	SANE_VERSION_CODE(V_MAJOR, V_MINOR, BUILD));
+	SANE_VERSION_CODE(V_MAJOR, V_MINOR, BUILD));
    }
 
   pdevFirst=NULL;
@@ -470,7 +470,7 @@ Not support (force causing compile error)
   rc=init_model_info();
   if (!rc)
     return SANE_STATUS_IO_ERROR;
-    
+
   rc=get_model_info(&modelInfList);
   if (!rc)
     return SANE_STATUS_IO_ERROR;
@@ -499,7 +499,7 @@ Not support (force causing compile error)
 		  pdev->descriptor.idVendor,
 		  pdev->descriptor.idProduct);
 	  /* the loop is not SO effective, but straight! */
-	
+
 	  for (pModelInf=&modelInfList; pModelInf; pModelInf = pModelInf->next)
 	  {
 #ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
@@ -531,7 +531,7 @@ Not support (force causing compile error)
     for(i = 0 ; i < nnetdev ; i ++){
 	  PMODELINF       pModelInf;
 	  char ach[100];
-          int inf_id_vendor,inf_id_Product;
+	  int inf_id_vendor,inf_id_Product;
 	  pModelInf = &modelInfList;
 	  get_device_id(i,&inf_id_vendor,&inf_id_Product);
 	  for (pModelInf=&modelInfList; pModelInf; pModelInf = pModelInf->next){
@@ -540,7 +540,7 @@ Not support (force causing compile error)
 		sprintf(ach,"net1;dev%d",i);
 		WriteLog( "<<< sane_init RegisterSaneDev (%s) >>> ",ach );
 		RegisterSaneDev(NULL,ach,pModelInf,i);
-                break;
+		break;
 	      }
 	  }
     }
@@ -596,8 +596,6 @@ sane_get_devices (const SANE_Device *** device_list,
 
   WriteLog( "<<< sane_get_devices start >>> " );
 
-  local_only = TRUE; /* Avoid compile warning */
-
   if (devlist) FREE (devlist);
 
   devlist = MALLOC ((num_devices + 1) * sizeof (devlist[0]));
@@ -621,7 +619,6 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
   TDevice    *pdev;
   Brother_Scanner  *this;
   SANE_Status rc;
-  int errornum;
 
   WriteLog( "<<< sane_open start dev_name=%s>>> ", devicename );
   if (devicename[0]) /* selected */
@@ -659,21 +656,21 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
   //if (usb_set_configuration(this->hScanner, 1))
   //   return SANE_STATUS_IO_ERROR;
 
-  errornum = usb_set_configuration(this->hScanner, 1);
+  usb_set_configuration(this->hScanner, 1);
 
   if (usb_claim_interface(this->hScanner, 1))
     return SANE_STATUS_IO_ERROR;
-  
+
 #else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
  {
-                  this->hScanner = calloc(sizeof(dev_handle),1);
+		  this->hScanner = calloc(sizeof(dev_handle),1);
 		  if(strncmp(devicename,"net1;dev",strlen("net1;dev")) == 0){
 		    this->hScanner->device = IFTYPE_NET;
 		  }
 		  else{
 		    this->hScanner->device = IFTYPE_USB;
 		  }
-		  this ->hScanner->usb_w_ep 
+		  this ->hScanner->usb_w_ep
 		    = get_p_model_info_by_index(pdev->modelInf.index)->w_endpoint;
 		  this ->hScanner->usb_r_ep
 		    = get_p_model_info_by_index(pdev->modelInf.index)->r_endpoint;
@@ -689,10 +686,10 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 
 		    //2005/11/10 not check returned value from usb_set_configuration()
 		    //if (usb_set_configuration(this->hScanner, 1))
-		    //   return SANE_STATUS_IO_ERROR;		    
-		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0) 
+		    //   return SANE_STATUS_IO_ERROR;
+		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0)
 		    //errornum = usb_set_configuration(this->hScanner->usb, 1);
-		    errornum = usb_set_configuration_or_reset_toggle(this, 1);
+		    usb_set_configuration_or_reset_toggle(this, 1);
 
 		    if (usb_claim_interface(this->hScanner->usb, 1))
 		      return SANE_STATUS_IO_ERROR;
@@ -783,9 +780,9 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
    /// ColorMatch DLLのロード
    ///
    this->modelInf.index = pdev->modelInf.index;     // cp index
-   LoadColorMatchDll( this ,this->modelInf.index);  // load dll 
+   LoadColorMatchDll( this ,this->modelInf.index);  // load dll
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-  
+
   //
   // Scan Decode DLLのロード
   //
@@ -811,7 +808,7 @@ sane_close (SANE_Handle handle)
   if (this->hScanner)
     {
       if (this->scanState.bScanning)
-        ScanEnd( this );
+	ScanEnd( this );
 
       FreeGrayTable( this );
       FreeColorMatchDll( this );
@@ -860,7 +857,7 @@ sane_close (SANE_Handle handle)
       if (p==this) break;
       pParent=p;
     }
-  
+
   if (!p)
     {
       DBG(1,"invalid handle in close()\n");
@@ -891,7 +888,7 @@ sane_get_option_descriptor (SANE_Handle handle, SANE_Int iOpt)
 
 SANE_Status
 sane_control_option (SANE_Handle handle, SANE_Int iOpt,
-		     SANE_Action action, void *pVal, 
+		     SANE_Action action, void *pVal,
 		     SANE_Int *pnInfo)
 {
   SANE_Word   cap;
@@ -910,7 +907,7 @@ sane_control_option (SANE_Handle handle, SANE_Int iOpt,
     return SANE_STATUS_INVAL;
 
   cap=this->aoptDesc[iOpt].cap;
-  
+
   switch (action)
     {
 
@@ -956,19 +953,19 @@ sane_control_option (SANE_Handle handle, SANE_Int iOpt,
 	  if (pnInfo)
 	    (*pnInfo) |= SANE_INFO_RELOAD_PARAMS | SANE_INFO_RELOAD_OPTIONS;
 
-          // スキャンモードによって影響を受ける機能をチェックする。
+	  // スキャンモードによって影響を受ける機能をチェックする。
 	  id = get_scanmode_id(pVal);
 	  if (id == -1)
 	    return SANE_STATUS_INVAL;
 
-          if ((rc = SetupScanMode( this, id )) != SANE_STATUS_GOOD)
-            return rc;
+	  if ((rc = SetupScanMode( this, id )) != SANE_STATUS_GOOD)
+	    return rc;
 
 	case optScanSrc:
 
-        if (this->aoptVal[iOpt].s)
-          free (this->aoptVal[iOpt].s); // strdup関数でメモリを確保しているため、直接free()を使用。
-        this->aoptVal[iOpt].s = strdup (pVal);
+	if (this->aoptVal[iOpt].s)
+	 free (this->aoptVal[iOpt].s); // strdup関数でメモリを確保しているため、直接free()を使用。
+	this->aoptVal[iOpt].s = strdup (pVal);
 
 	  break;
 	default:
@@ -988,7 +985,7 @@ static SANE_Status
 SetupInternalParameters(Brother_Scanner *this)
 {
   int nWidthMm, nHeightMm;
- 
+
   this->uiSetting.wColorType = get_scanmode_id(this->aoptVal[optMode].s);
   this->uiSetting.wResoType = get_reso_id(this->aoptVal[optResolution].w);
   this->uiSetting.nBrightness=(int)(this->aoptVal[optBrightness].w>>SANE_FIXED_SCALE_SHIFT);
@@ -998,7 +995,7 @@ SetupInternalParameters(Brother_Scanner *this)
   // X軸が同じ値の場合はエラー
   if (this->aoptVal[optTLX].w == this->aoptVal[optBRX].w )
     return SANE_STATUS_INVAL;
-    
+
   if (this->aoptVal[optTLX].w < this->aoptVal[optBRX].w )
   {
     this->uiSetting.ScanAreaMm.left = (int)(SANE_UNFIX(this->aoptVal[optTLX].w) * 10);
@@ -1009,11 +1006,11 @@ SetupInternalParameters(Brother_Scanner *this)
     this->uiSetting.ScanAreaMm.left = (int)(SANE_UNFIX(this->aoptVal[optBRX].w) * 10);
     this->uiSetting.ScanAreaMm.right = (int)(SANE_UNFIX(this->aoptVal[optTLX].w) * 10);
   }
-  
+
   // Y軸が同じ値の場合はエラー
   if (this->aoptVal[optTLY].w == this->aoptVal[optBRY].w )
     return SANE_STATUS_INVAL;
-    
+
   if (this->aoptVal[optTLY].w < this->aoptVal[optBRY].w )
   {
     this->uiSetting.ScanAreaMm.top = (int)(SANE_UNFIX(this->aoptVal[optTLY].w) * 10);
@@ -1043,7 +1040,7 @@ sane_get_parameters (SANE_Handle handle, SANE_Parameters *p)
   Brother_Scanner *this;
   LPAREARECT  lpScanAreaDot;
   LONG    lUserResoX,   lUserResoY;
- 
+
   WriteLog( "<<< sane_get_parameters start >>> " );
 
   this=(Brother_Scanner *)handle;
@@ -1089,7 +1086,7 @@ sane_get_parameters (SANE_Handle handle, SANE_Parameters *p)
       p->depth=1;
       p->bytes_per_line=(p->pixels_per_line+7)/8;
       break;
-    }      
+    }
   WriteLog( "<<< sane_get_parameters end (bytes_per_line=%d, lines=%d) >>> ",p->bytes_per_line, p->lines);
 
   return SANE_STATUS_GOOD;
@@ -1128,10 +1125,10 @@ sane_read (SANE_Handle handle, SANE_Byte *buf,
   *len=0;
 
   if (!this->scanState.bEOF) {
-    rc=PageScan(this,buf,maxlen,len);
+    rc=PageScan(this,(char*)buf,maxlen,len);
     if(rc == SANE_STATUS_DUPLEX_ADVERSE  && *len == 1) //06/02/27 if 0x84 is only returned, retry PageScan.
       //while(rc == SANE_STATUS_DUPLEX_ADVERSE  && *len == 1)
-      rc =PageScan(this,buf,maxlen,len);
+	rc =PageScan(this,(char*)buf,maxlen,len);
   }
   else {
     rc = SANE_STATUS_EOF;

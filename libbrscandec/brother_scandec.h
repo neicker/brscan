@@ -46,9 +46,9 @@ typedef	struct {
 #define	SCIDK_BGR		6	/* BGR画素順 */
 #define	SCIDK_256		7	/* 256色カラー */
 #endif
-	BYTE	*pLineData ;	/* 入力１ラインデータ格納先 */
+	CHAR	*pLineData ;	/* 入力１ラインデータ格納先 */
 	DWORD	dwLineDataSize ;	/* 入力１ラインデータサイズ */
-	BYTE	*pWriteBuff ;	/* 出力データ格納先 */
+	CHAR	*pWriteBuff ;	/* 出力データ格納先 */
 	DWORD	dwWriteBuffSize ;	/* 出力データバッファサイズ */
 	BOOL	bReverWrite ;	/* 出力データ格納方法 */
 

@@ -76,12 +76,12 @@ extern UINT  gnScanTimeout;		// スキャン開始／スキャン中のタイムアウト時間
 void    GetDeviceAccessParam( Brother_Scanner *this );
 int     OpenDevice( usb_dev_handle *hScanner, int seriesNo );
 void    CloseDevice( usb_dev_handle *hScanner );
-int     ReadDeviceData( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int seriesNo );
-int     ReadNonFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
-BOOL    ReadFixedData( usb_dev_handle *hScanner, LPBYTE lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
-int     ReadDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpRxBuffer, int nReadSize, int seriesNo );
-int     WriteDeviceData( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, int seriesNo );
-int     WriteDeviceCommand( usb_dev_handle *hScanner, LPBYTE lpTxBuffer, int nWriteSize, int seriesNo );
+int     ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
+int     ReadNonFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
+BOOL    ReadFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
+int     ReadDeviceCommand( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
+int     WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
+int     WriteDeviceCommand( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
 HANDLE  AllocReceiveBuffer( DWORD  dwBuffSize );
 void    FreeReceiveBuffer( void );
 
@@ -95,7 +95,7 @@ void    FreeReceiveBuffer( void );
 //    M-LNX-24   2006/04/12 kado
 
 int  usb_set_configuration_or_reset_toggle(
-		   Brother_Scanner *this,		     
+		   Brother_Scanner *this,
 		   int configuration);
 
 

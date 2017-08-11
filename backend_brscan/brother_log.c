@@ -55,8 +55,6 @@ static int  nNewLog  = 1;
 
 static HANDLE  hLogFile = 0;
 
-#define MAX_PATH 256
-
 #define BROTHER_SANE_DIR "/usr/share/sane/brother/"
 
 
@@ -118,7 +116,7 @@ WriteLogFileString( LPSTR lpszLogStr )
 		// ログファイルはオープンされている
 		//
 		char   szStrBuff[ LOGSTRMAXLEN ];
-		DWORD  dwStrLen;
+		DWORD  dwStrLen = 0;
 
 		time_t ltime;
 		struct tm *sysTime;
@@ -134,16 +132,16 @@ WriteLogFileString( LPSTR lpszLogStr )
 				//
 				// 現在のローカル日時を取得
 				//
-	
+
 				time(&ltime);
 				sysTime = localtime(&ltime);
 
 				//
 				// ログ文字列に現在の時刻を追加
 				//
-	
+
 				dwStrLen = sprintf(szStrBuff,
-								"%02d:%02d:%02d.%03d  %s\n",
+								"%02d:%02d:%02d.%03ld  %s\n",
 								sysTime->tm_hour,
 								sysTime->tm_min,
 								sysTime->tm_sec,
@@ -151,7 +149,7 @@ WriteLogFileString( LPSTR lpszLogStr )
 								lpszLogStr
 							);
 			}else{
-	
+
 				strcpy( szStrBuff, "\n" );
 				dwStrLen = 2;
 			}
@@ -203,14 +201,13 @@ void WriteLog( LPSTR first, ... )
 		va_start( marker, first );		// 可変引数リストへのポインタ設定
 
 
-		vsprintf( 						// 書式にしたがってログ文字列を生成
-			(LPSTR)szStrBuff, 			// ログ文字列格納バッファ
-			first, 						// 書式制御文字列へのポインタ
-			marker 						// 可変引数リスト
+		vsprintf(			// 書式にしたがってログ文字列を生成
+			(LPSTR)szStrBuff,	// ログ文字列格納バッファ
+			first,			// 書式制御文字列へのポインタ
+			marker			// 可変引数リスト
 		);
 
-		va_end( marker );				// 可変引数リスト処理の終了
-
+		va_end( marker );		// 可変引数リスト処理の終了
 
 		WriteLogFileString( (LPSTR)szStrBuff );
 	}
@@ -284,7 +281,8 @@ WriteLogScanCmd( LPSTR lpszId, LPSTR lpszCmd )
 				// Scanner Command Terminatorならループ終了
 				//
 				break;
-			}else if( ' ' <= *lpszCmd && *lpszCmd < 0x80 ){
+			}else if( ' ' <= *lpszCmd
+				  && *(unsigned char *)lpszCmd < 0x80 ){
 				//
 				// Printableコード
 				//
@@ -372,4 +370,3 @@ GetLogSwitch( Brother_Scanner *this )
 
 
 //////// end of brother_log.c ////////
-

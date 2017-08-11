@@ -118,9 +118,9 @@ sanei_config_read (char *str, int n, FILE *stream)
    while( isspace( *start))
       start++;
 
-   if (start != str) 
+   if (start != str)
       do {
-         *str++ = *start++;
+	  *str++ = *start++;
       } while( *str);
 
    return rc;

@@ -69,7 +69,7 @@ typedef SANE_Status TState;
 
 typedef struct TScanState {
   BOOL           bEOF;         /* EOF marker for sane_read */
-  BOOL           bCanceled;    /* Cancel flag */ 
+  BOOL           bCanceled;    /* Cancel flag */
   BOOL           bScanning;    /* block is active? */
   int		 iProcessEnd;  /* End marker for ProcessMain */
   BOOL           bReadbufEnd;  /* Read buffer Receive End */
@@ -80,7 +80,7 @@ typedef struct TScanState {
 #ifndef INSANE_VERSION
 
 typedef enum { optCount,		// 0
-	       optGroupMode, 		// 1
+	       optGroupMode,		// 1
 	       optMode, optResolution,  // 2, 3
 	       optScanSrc,              // 4
 	       optBrightness, optContrast,  // 5, 6
@@ -90,7 +90,7 @@ typedef enum { optCount,		// 0
 #define NUM_OPTIONS optLast
 
 typedef union
-  {  
+  {
     SANE_Word w;
     SANE_Word *wa;              /* word array */
     SANE_String s;
@@ -123,7 +123,7 @@ typedef struct tagUISETTING {
 	AREARECT      ScanAreaDot;		// スキャン範囲指定（dot単位）
 	RESOLIST      ResoList;			// UI上の解像度設定項目リスト
 	SCANMODELIST  ScanModeList;		// UI上のスキャンモード設定項目リスト
-	SCANSRCLIST   ScanSrcList;   		// UI上のスキャンソース設定項目リスト
+	SCANSRCLIST   ScanSrcList;		// UI上のスキャンソース設定項目リスト
 	int           nSrcType;			// 06/02/28  選択されたスキャンソース
 } UISETTING, *LPUISETTING;
 
@@ -194,14 +194,14 @@ typedef struct Brother_Scanner {
   dev_handle                 *hScanner;		// USBスキャナのハンドル
 #endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
-  UISETTING                  uiSetting;         // 
+  UISETTING                  uiSetting;         //
   TCorlorMATCH               cmatch;            // カラーマッチング用構造体
   TScanDec                   scanDec;           // 圧縮データ展開用構造体
   SCANINFO                   scanInfo;          // スキャン時の情報
   DEVSCANINFO                devScanInfo;       // デバイスのスキャン情報
-  MFCMODELINFO               mfcModelInfo;      // 
-  MFCDEVICEHEAD              mfcDevInfoHeader;  // 
-  MFCDEVICEINFO              mfcDeviceInfo;     // 
+  MFCMODELINFO               mfcModelInfo;      //
+  MFCDEVICEHEAD              mfcDevInfoHeader;  //
+  MFCDEVICEINFO              mfcDeviceInfo;     //
   TScanState                 scanState;         // スキャン時のステータス情報
 } Brother_Scanner;
 
@@ -304,7 +304,6 @@ typedef struct Brother_Scanner {
 #define PSIZE_VMARGIN     60			// 上下マージン(0.1mm単位)
 #define PSIZE_HMARGIN     20			// 左右マージン(0.1mm単位)
 
-#define MAX_PATH 256
 #define BROTHER_SANE_DIR "/usr/share/sane/brother/"
 #define BROTHER_GRAYCMDATA_DIR "GrayCmData/"
 

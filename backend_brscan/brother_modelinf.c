@@ -20,16 +20,16 @@
 /*
 ;==============================================================================
 ;	Filename		: brother_modelinf.c
-;	Summary of capability  	: Get model information
+;	Summary of capability	: Get model information
 ;	Created			: 2003.08.06
-;	Notes    		:
+;	Notes			:
 ;==============================================================================
 ;	Histry
 ;	Date		Fixer	comments
 ;==============================================================================
 */
 /*==========================================*/
-/*		include 					*/
+/*		include			    */
 /*==========================================*/
 
 #include	<stdio.h>
@@ -43,34 +43,34 @@
 #include	"brother_advini.h"                             // L-LNX-20
 
 /*==========================================*/
-/* 		prototype		*/
+/*		prototype		    */
 /*==========================================*/
 
 static int GetHexInfo(char *,int *);
 static int GetDecInfo(char *,int *);
 static int GetModelNo(char *,char *);
 static int NextPoint(char *);
-static int GetSeriesNo(PMODELINF,int *);			/* Get series Number */
-static void GetSupportReso(int,PMODELCONFIG);			/* Get information of supported resolution */
-static void GetSupportScanMode(int,PMODELCONFIG);		/* Get information of supported scan mode */
+static int GetSeriesNo(PMODELINF,int *);		/* Get series Number */
+static void GetSupportReso(int,PMODELCONFIG);		/* Get information of supported resolution */
+static void GetSupportScanMode(int,PMODELCONFIG);	/* Get information of supported scan mode */
 #if 0  //M-LNX-20
-static void GetSupportScanSrc(int,PMODELCONFIG);		/* Get information of supported scan source */
-static void GetSupportScanAreaHeight(int,PMODELCONFIG);	        /* Get information of supported scan height */
-static void GetSupportScanAreaWidth(int,PMODELCONFIG);	        /* Get information of supported scan width */
-static void GetGrayLebelName(int,PMODELCONFIG);			/* Get filename for adjustting gray level */
-static void GetColorMatchName(int,PMODELCONFIG);		/* Get filename for color mutching */
+static void GetSupportScanSrc(int,PMODELCONFIG);	/* Get information of supported scan source */
+static void GetSupportScanAreaHeight(int,PMODELCONFIG);	/* Get information of supported scan height */
+static void GetSupportScanAreaWidth(int,PMODELCONFIG);	/* Get information of supported scan width */
+static void GetGrayLebelName(int,PMODELCONFIG);		/* Get filename for adjustting gray level */
+static void GetColorMatchName(int,PMODELCONFIG);	/* Get filename for color mutching */
 #else  //M-LNX-20
-static void GetSupportScanSrc(int,PMODELINF,PMODELCONFIG);	/* Get information of supported scan source */
-static void GetSupportScanAreaHeight(int,PMODELCONFIG);	        /* Get information of supported scan height */
-static void GetSupportScanAreaWidth(int,PMODELCONFIG);	        /* Get information of supported scan width */
-static void GetGrayLebelName(int,PMODELINF,PMODELCONFIG);	/* Get filename for adjustting gray level */
-static void GetColorMatchName(int,PMODELINF,PMODELCONFIG);	/* Get filename for color mutching */
+static void GetSupportScanSrc(int,PMODELINF,PMODELCONFIG); /* Get information of supported scan source */
+static void GetSupportScanAreaHeight(int,PMODELCONFIG);	/* Get information of supported scan height */
+static void GetSupportScanAreaWidth(int,PMODELCONFIG);	/* Get information of supported scan width */
+static void GetGrayLebelName(int,PMODELINF,PMODELCONFIG); /* Get filename for adjustting gray level */
+static void GetColorMatchName(int,PMODELINF,PMODELCONFIG); /* Get filename for color mutching */
 #endif  //M-LNX-20
-static int GetFaxResoEnable(PMODELCONFIG);			/* Get resolution information for FAX */
-static int GetNoUseColorMatch(PMODELCONFIG);			/* Get flag about color matching isn't used */
-static int GetCompressEnbale(PMODELCONFIG);			/* Get flag about compression is enable	*/
-static int GetLogFile(PMODELCONFIG);			        /* Get flag of log file */
-static int GetInBuffSize(PMODELCONFIG);				/* Get information of input buffer size */
+static int GetFaxResoEnable(PMODELCONFIG);	/* Get resolution information for FAX */
+static int GetNoUseColorMatch(PMODELCONFIG);	/* Get flag about color matching isn't used */
+static int GetCompressEnbale(PMODELCONFIG);	/* Get flag about compression is enable	*/
+static int GetLogFile(PMODELCONFIG);		/* Get flag of log file */
+static int GetInBuffSize(PMODELCONFIG);		/* Get information of input buffer size */
 
 static int SectionNameCheck(LPCTSTR,char *);
 static int  KeyNameCheckInt(LPCTSTR,char *,int *);
@@ -87,7 +87,7 @@ static int ResoIDInt(int, int *);
 static int ScanSrcIDString(int, char *);
 
 /*==========================================*/
-/* 		parameter		    */
+/*		parameter		    */
 /*==========================================*/
 
 static PMODELINF modelListStart;
@@ -103,8 +103,6 @@ static const char ColorFastString[]   = "24bit Color[Fast]";
 static const char fbString[] = "FlatBed";
 static const char adfString[] = "Automatic Document Feeder";
 static const char adfdupString[] = "Automatic Document Feeder(Duplex)";  //06/02/27
-
-#define MAX_PATH 256
 
 /*
 ;------------------------------------------------------------------------------
@@ -151,9 +149,12 @@ int init_model_info(void)
 
 
 
-	if(modelListGetEnable != TRUE)								    /* Fail to get size */
-		return modelListGetEnable;							    /* error return */
-	if(NULL == (readModelInfo = MALLOC( size + record + 1)))			            /* Allocate memory to strage model information */
+	if(modelListGetEnable != TRUE)
+	    /* Fail to get size */
+	    return modelListGetEnable;
+	/* error return */
+	if(NULL == (readModelInfo = MALLOC( size + record + 1)))
+	    /* Allocate memory to strage model information */
 	{
 		/* fail to memory allocate */
 		modelListGetEnable = FALSE;

@@ -36,8 +36,8 @@
 #define   DLF_ERROR               (1<<6)
 
 #define   DLF_MAX                 (0xffff)
-#define   DLF_READ                (DLF_READ_FUNC+DLF_READ_DETAIL)  
-#define   DLF_WRITE               (DLF_WRITE_FUNC+DLF_WRITE_DETAIL)  
+#define   DLF_READ                (DLF_READ_FUNC+DLF_READ_DETAIL)
+#define   DLF_WRITE               (DLF_WRITE_FUNC+DLF_WRITE_DETAIL)
 #define   DLF_EXCEPTRW            (DLF_MAX-DLF_READ-DLF_WRITE)
 
 #define   DLF_AUTO                (0xffffffff)
@@ -62,11 +62,11 @@ typedef struct {
 
 
 br_net_dev_handle open_device_net(int dev_index,
-		    const char *address, 
+		    const char *address,
 		    int  type);
 int open_device_net_sub(br_net_dev_handle h_dev,
-		    const unsigned short nport ,
-		    const char *address, 
+		    const unsigned short nport,
+		    const char *address,
 		    const char *nodename);
 
 
@@ -75,15 +75,15 @@ int close_device_net(br_net_dev_handle h_dev);
 
 
 int read_device_net(br_net_dev_handle h_dev,
-		    char *buffer, 
-		    int size , 
+		    char *buffer,
+		    int size,
 		    int *preadsize,
 		    struct timeval *ptimeout);
 
 
 int write_device_net(br_net_dev_handle h_dev,
-		     char *buffer, 
-		     int size , 
+		     char *buffer,
+		     int size,
 		     int *pwritesize,
 		     struct timeval *ptimeout);
 

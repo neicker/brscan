@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_cmatch.c
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -44,7 +44,7 @@
 //
 // ColorMatch DLL名
 //
-#if       BRSANESUFFIX == 2
+#if BRSANESUFFIX == 2
 static char  szColorMatchDl[] = "libbrcolm2.so";
 #elif  BRSANESUFFIX == 1
 static char  szColorMatchDl[] = "libbrcolm.so.1";
@@ -93,8 +93,8 @@ LoadColorMatchDll( Brother_Scanner *this )
 		this->cmatch.lpfnColorMatchingFnc     = dlsym ( this->cmatch.hColorMatch, "ColorMatching" );
 		this->cmatch.nColorMatchStatus = COLORMATCH_NONE;
 
-		if(  this->cmatch.lpfnColorMatchingInit == NULL || 
-			 this->cmatch.lpfnColorMatchingEnd  == NULL || 
+		if(  this->cmatch.lpfnColorMatchingInit == NULL ||
+			 this->cmatch.lpfnColorMatchingEnd  == NULL ||
 			 this->cmatch.lpfnColorMatchingFnc  == NULL )
 		{
 			// DLLはあるが、アドレスが取れないのは異常
@@ -116,25 +116,25 @@ BOOL
 LoadColorMatchDll( Brother_Scanner *this ,int index){
 	BOOL  bResult = TRUE;
 	char *rp;
-	int   extended_dll = 0;  
+	int   extended_dll = 0;
 	this->cmatch.hColorMatch = NULL;
 	rp = get_p_model_info_by_index(index)->colmatchDL;
-	  
+
 	if(rp && *rp){
 	  this->cmatch.hColorMatch = dlopen ( rp , RTLD_LAZY );
 	  if(this->cmatch.hColorMatch){
-	    extended_dll = 1;  
+	    extended_dll = 1;
 	    WriteLog( "ColorMatch initialize  Load color matching dll [%s]\n",rp );
 	  }
 	  else{
-	    extended_dll = 0;  
+	    extended_dll = 0;
 	    WriteLog( "ColorMatch initialize  Load color matching dll [%s] but FAILED\n",rp );
 	  }
 	}
 	if( this->cmatch.hColorMatch == NULL ){
 	  this->cmatch.hColorMatch = dlopen ( szColorMatchDl, RTLD_LAZY );
 	  WriteLog( "ColorMatch initialize  Load color matching dll [%s]\n",szColorMatchDl );
-	  extended_dll = 0;  
+	  extended_dll = 0;
 	}
 	if( this->cmatch.hColorMatch != NULL ){
 		//
@@ -145,8 +145,8 @@ LoadColorMatchDll( Brother_Scanner *this ,int index){
 		this->cmatch.lpfnColorMatchingFnc     = dlsym ( this->cmatch.hColorMatch, "ColorMatching" );
 		this->cmatch.nColorMatchStatus = COLORMATCH_NONE;
 
-		if(  this->cmatch.lpfnColorMatchingInit == NULL || 
-			 this->cmatch.lpfnColorMatchingEnd  == NULL || 
+		if(  this->cmatch.lpfnColorMatchingInit == NULL ||
+			 this->cmatch.lpfnColorMatchingEnd  == NULL ||
 			 this->cmatch.lpfnColorMatchingFnc  == NULL )
 		{
 		  if(extended_dll ==1){
@@ -160,8 +160,8 @@ LoadColorMatchDll( Brother_Scanner *this ,int index){
 		      WriteLog( "ColorMatch initialize  Load color matching dll [%s]\n",szColorMatchDl );
 		    }
 		  }
-		  if(  this->cmatch.lpfnColorMatchingInit == NULL || 
-		       this->cmatch.lpfnColorMatchingEnd  == NULL || 
+		  if(  this->cmatch.lpfnColorMatchingInit == NULL ||
+		       this->cmatch.lpfnColorMatchingEnd  == NULL ||
 		       this->cmatch.lpfnColorMatchingFnc  == NULL ){
 		    // DLLはあるが、アドレスが取れないのは異常
 		    WriteLog( "ColorMatch initialize  Fail to get the procedure address from [%s]\n",szColorMatchDl );
@@ -259,7 +259,7 @@ InitColorMatchingFunc( Brother_Scanner *this, WORD nColorType, int nRgbDataType 
 			CMatchInit.nPaperType    = MEDIA_PLAIN;
 			CMatchInit.nMachineId    = 0;
 			strcpy(szLutFilePathName, BROTHER_SANE_DIR);
-			strcat(szLutFilePathName, BROTHER_GRAYCMDATA_DIR); 
+			strcat(szLutFilePathName, BROTHER_GRAYCMDATA_DIR);
 			strcat(szLutFilePathName, this->modelConfig.szColorMatchName);
 			CMatchInit.lpLutName     = szLutFilePathName;
 
@@ -374,14 +374,13 @@ LoadGrayTable( Brother_Scanner *this, BYTE GrayTableNo )
 {
 	char      szGrayBinPathName[ MAX_PATH ];
 	FILE      *hGrayBinFile;
-	LONG      lFilePtr;
 	size_t       nReadSize = 0;
 	LPBYTE    lpGrayTable;
 	BOOL      bResult = FALSE;
 
 
 	strcpy( szGrayBinPathName, BROTHER_SANE_DIR );
-	strcat( szGrayBinPathName, BROTHER_GRAYCMDATA_DIR); 
+	strcat( szGrayBinPathName, BROTHER_GRAYCMDATA_DIR);
 	strcat( szGrayBinPathName, this->modelConfig.szGrayLebelName);
 
 	if( GrayTableNo > 0 ){
@@ -392,7 +391,6 @@ LoadGrayTable( Brother_Scanner *this, BYTE GrayTableNo )
 			if( this->cmatch.hGrayTbl != NULL ){
 
 				lpGrayTable = (LPBYTE)this->cmatch.hGrayTbl;
-				lFilePtr = ( GrayTableNo - 1 ) * 512;
 
 				nReadSize = fread( lpGrayTable, 1, 256, hGrayBinFile );
 				if( nReadSize == 256 ){
@@ -475,7 +473,7 @@ SetupGrayAdjust( Brother_Scanner *this )
 	LONG     lGrayVal;
 	LONG     lIndex;
 
-	hGrayAdj = MALLOC(256); 
+	hGrayAdj = MALLOC(256);
 	if( hGrayAdj ){
 		lpGray = (LPBYTE)hGrayAdj;
 

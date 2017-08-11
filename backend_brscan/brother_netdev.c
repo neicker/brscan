@@ -77,13 +77,13 @@ char *get_address_from_inifile(int dev_index,int *ptype){
 
 //   GLOBAL FUNCTION
 //  int open_device_net(int *pscan_socket_fd,
-//		    const char *target, 
+//		    const char *target,
 //		    int   type)
-//                  
+//
 //
 //
 br_net_dev_handle  open_device_net(int dev_index,
-		    const char *target, 
+		    const char *target,
 		    int   type){
   int rc = -1;
   br_net_dev_handle  h_dev;
@@ -137,7 +137,7 @@ br_net_dev_handle  open_device_net(int dev_index,
 //
 int open_device_net_sub(br_net_dev_handle h_dev,
 		    const unsigned short nport ,
-		    const char *address, 
+		    const char *address,
 		    const char *nodename){
   struct protoent *protocol_ent;
   int result;
@@ -151,7 +151,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
   int readsize=0;
 
   logprintf(DLF_OPENCLOSE_FUNC,"   open_device_net_sub: %x %x %x %x:",
-                    &(h_dev->scan_socket_fd),   nport ,    address,     nodename);
+	    &(h_dev->scan_socket_fd),   nport ,    address,     nodename);
 
   if(address)logprintf(DLF_OPENCLOSE_FUNC,"address = %s",address);
   if(nodename)logprintf(DLF_OPENCLOSE_FUNC,"nodename = %s",nodename);
@@ -164,7 +164,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
     logprintf_error("oops:proto error\n");
   }
   else{
-    logprintf (DLF_OPENCLOSE_DETAIL, 
+    logprintf (DLF_OPENCLOSE_DETAIL,
 	       "protocol = %s %d\n",protocol_ent->p_name,protocol_ent->p_proto);
   }
   h_dev->scan_socket_fd = socket(AF_INET, SOCKET_TYPE, protocol_ent->p_proto);
@@ -180,7 +180,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
   if (nodename != NULL && nodename[0] != 0){
     host = gethostbyname(nodename);
     if (host == NULL){
-      logprintf_error("open_device_net:IP error (gethostbyname) [%s]\n",nodename);      
+      logprintf_error("open_device_net:IP error (gethostbyname) [%s]\n",nodename);
     }
     else{
       sprintf(ip_address,"%d.%d.%d.%d",
@@ -234,7 +234,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
   scan_socket_address.sin_port = htons(nport);
   //  scan_socket_address.sin_addr.s_addr = htonl(inet_addr(ip_address));
   scan_socket_address.sin_addr.s_addr = inet_addr(ip_address);
-  
+
   //scan_socket_address.sin_addr.s_addr = inet_addr(ip_address);
 
 
@@ -266,13 +266,13 @@ int open_device_net_sub(br_net_dev_handle h_dev,
   if(rc < 0 || (strcmp(ack_buf,"+OK 200\015\012") != 0)){
     logprintf(DLF_OPENCLOSE_DETAIL,"open_device_net: ACK error [%s]\n",ack_buf);
     logprintf_error("open_device_net: ack error\n");
-    
+
     return -1;
   }
 
   logprintf(DLF_OPENCLOSE_DETAIL,"open_device_net: ACK [%s]\n",ack_buf);
 
-  return result; 
+  return result;
 
 }
 
@@ -282,7 +282,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
 //
 //
 int close_device_net(br_net_dev_handle h_dev){
-  
+
   logprintf(DLF_OPENCLOSE_FUNC,"close_device_net\n");
   if(h_dev->scan_socket_fd != -1){
     close(h_dev->scan_socket_fd);
@@ -299,11 +299,11 @@ int close_device_net(br_net_dev_handle h_dev){
 //		    char *buffer,                buffer to store the data in it
 //		    int size ,                   buffer size
 //		    int *preadsize,              read data size
-//		    struct timeval *ptimeout)    timeout 
+//		    struct timeval *ptimeout)    timeout
 //
 int read_device_net(br_net_dev_handle h_dev,
-		    char *buffer, 
-		    int size , 
+		    char *buffer,
+		    int size ,
 		    int *preadsize,
 		    struct timeval *ptimeout){
 
@@ -341,13 +341,13 @@ int read_device_net(br_net_dev_handle h_dev,
 //int write_device_net(int scan_socket_fd,          port handle
 //		     char *buffer,                  buffer write data are stored in
 //		     int size ,                     data size
-//		     int *pwritesize,               written data size 
+//		     int *pwritesize,               written data size
 //		     struct timeval *ptimeout){     timeout
 //
 
 int write_device_net(br_net_dev_handle h_dev,
-		     char *buffer, 
-		     int size , 
+		     char *buffer,
+		     int size ,
 		     int *pwritesize,
 		     struct timeval *ptimeout){
 
@@ -385,20 +385,14 @@ int write_device_net(br_net_dev_handle h_dev,
 int get_device_id(int index ,  int *idvendor,int *idproduct){
   static char idstring[500],*pid;
   int gidvendor=0,gidproduct=0;
-  int find = 0;
 
   if(gidvendor!=0){
     *idvendor  = gidvendor;
     *idproduct = gidproduct;
   }
 
-  if     ( NULL != (pid=get_net_ini_value(index,
-					  KEY_ID,idstring,sizeof(idstring)))){
-    find = 1;
-  }
-  else{
-    pid = NULL;
-    return -1;
+  if (!(pid=get_net_ini_value(index, KEY_ID,idstring,sizeof(idstring)))){
+      return -1;
   }
 
   *idvendor=0; *idproduct=0;
@@ -407,7 +401,7 @@ int get_device_id(int index ,  int *idvendor,int *idproduct){
 
   gidvendor  = *idvendor;
   gidproduct = *idproduct;
-  
+
   if(*idvendor==0 && *idproduct ==0){
     logprintf_error("get_device_id: ERROR");
   }
@@ -540,5 +534,3 @@ void set_log_flags(int   flags){
     use_std_fp = USE_STDOUT_FP;
   }
 }
-
-
