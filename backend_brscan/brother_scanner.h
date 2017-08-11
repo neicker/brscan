@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_scanner.h
 //
-//		Copyright(c) 1995-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1995-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -34,6 +34,7 @@
 #ifndef _BROTHER_SCANNER_H_
 #define _BROTHER_SCANNER_H_
 
+#include "brother.h"
 //
 // 関数のプロトタイプ宣言
 //
@@ -52,7 +53,6 @@ void   SetupImgLineProc( BYTE chLineHeader );
 int    GetStatusCode(BYTE Header);
 void   CnvResoNoToUserResoValue( LPRESOLUTION pUserSelect, WORD nResoNo );
 
-
 #define SCAN_GOOD		0
 #define SCAN_EOF		1
 #define SCAN_MPS		2
@@ -67,8 +67,6 @@ void   CnvResoNoToUserResoValue( LPRESOLUTION pUserSelect, WORD nResoNo );
 
 #define SANE_STATUS_DUPLEX_ADVERSE  128
 
-
 #endif //_BROTHER_SCANNER_H_
-
 
 //////// end of brother_scanner.h ////////

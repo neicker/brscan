@@ -38,19 +38,18 @@
 
 #include <sane/sane.h>
 
-#include "brother_dtype.h"
-
-#include "brother.h"
 #include "brother_cmatch.h"
 #include "brother_mfccmd.h"
 #include "brother_devaccs.h"
+#include "brother_devinfo.h"
 #include "brother_log.h"
 #include "brother_modelinf.h"
 #include "brother_scandec.h"
 #include "brother_deccom.h"
+#include "brother_advini.h"
+#include "brother_bugchk.h"
 
 #include "brother_scanner.h"
-
 
 #ifdef NO39_DEBUG
 #include <sys/time.h>
@@ -2345,6 +2344,5 @@ CnvResoNoToUserResoValue( LPRESOLUTION pUserSelect, WORD nResoNo )
 			break;
 	}
 }
-
 
 //////// end of brother_scanner.c ////////

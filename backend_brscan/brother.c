@@ -77,7 +77,6 @@ static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
 
 /* =====================================================================*/
 
-#include "brother_scanner.c"
 #include "brother_bugchk.c"
 #include "brother_log.c"
 #include "brother_netdev.c"
@@ -540,148 +539,138 @@ sane_get_devices (const SANE_Device *** device_list,
 SANE_Status
 sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 {
-  TDevice    *pdev;
-  Brother_Scanner  *this;
-  SANE_Status rc;
+    TDevice *pdev;
+    Brother_Scanner  *this;
+    SANE_Status rc;
 
-  WriteLog( "<<< sane_open start dev_name=%s>>> ", devicename );
-  if (devicename[0]) /* selected */
-    {
-      for (pdev=pdevFirst; pdev; pdev=pdev->pNext)
-	if (!strcmp(devicename,pdev->sane.name))
-	  break;
-      /* no dynamic post-registration */
+    WriteLog( "<<< sane_open start dev_name=%s>>> ", devicename );
+    if (devicename[0]) { /* selected */
+	for (pdev=pdevFirst; pdev; pdev=pdev->pNext)
+	    if (!strcmp(devicename,pdev->sane.name)) break;
+	/* no dynamic post-registration */
+    } else {
+	pdev=pdevFirst;
     }
-  else
-    pdev=pdevFirst;
 
-  if (!pdev)
-      return SANE_STATUS_INVAL;
-  this = (Brother_Scanner*) MALLOC(sizeof(Brother_Scanner));
-  if (!this) return SANE_STATUS_NO_MEM;
-  memset(this, 0, sizeof(Brother_Scanner));
+    if (!pdev) return SANE_STATUS_INVAL;
+    this = (Brother_Scanner*) MALLOC(sizeof(Brother_Scanner));
+    if (!this) return SANE_STATUS_NO_MEM;
+    memset(this, 0, sizeof(Brother_Scanner));
 
-  *handle = (SANE_Handle)this;
+    *handle = (SANE_Handle)this;
 
-  this->pNext=pinstFirst; /* register open handle */
-  pinstFirst=this;
-  /* open and prepare USB scanner handle */
+    this->pNext=pinstFirst; /* register open handle */
+    pinstFirst=this;
+    /* open and prepare USB scanner handle */
 
- {
-		  this->hScanner = calloc(sizeof(dev_handle),1);
-		  if(strncmp(devicename,"net1;dev",strlen("net1;dev")) == 0){
-		    this->hScanner->device = IFTYPE_NET;
-		  }
-		  else{
-		    this->hScanner->device = IFTYPE_USB;
-		  }
-		  this ->hScanner->usb_w_ep
-		    = get_p_model_info_by_index(pdev->modelInf.index)->w_endpoint;
-		  this ->hScanner->usb_r_ep
-		    = get_p_model_info_by_index(pdev->modelInf.index)->r_endpoint;
+    this->hScanner = calloc(sizeof(dev_handle),1);
+    if(strncmp(devicename,"net1;dev",strlen("net1;dev")) == 0) {
+	this->hScanner->device = IFTYPE_NET;
+    } else {
+	this->hScanner->device = IFTYPE_USB;
+    }
+    this ->hScanner->usb_w_ep =
+	get_p_model_info_by_index(pdev->modelInf.index)->w_endpoint;
+    this ->hScanner->usb_r_ep =
+	get_p_model_info_by_index(pdev->modelInf.index)->r_endpoint;
 
-		  if (IFTYPE_USB == this->hScanner->device){
-		    this->hScanner->net_device_index = -1;
-		    this->hScanner->usb = usb_open(pdev->pdev);
+    if (IFTYPE_USB == this->hScanner->device){
+	this->hScanner->net_device_index = -1;
+	this->hScanner->usb = usb_open(pdev->pdev);
 #ifndef DEBUG_No39
-		    g_pdev = pdev;
+	g_pdev = pdev;
 #endif
-		    if (!this->hScanner->usb)
-		      return SANE_STATUS_IO_ERROR;
+	if (!this->hScanner->usb) return SANE_STATUS_IO_ERROR;
 
-		    //2005/11/10 not check returned value from usb_set_configuration()
-		    //if (usb_set_configuration(this->hScanner, 1))
-		    //   return SANE_STATUS_IO_ERROR;
-		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0)
-		    //errornum = usb_set_configuration(this->hScanner->usb, 1);
-		    usb_set_configuration_or_reset_toggle(this, 1);
+	//2005/11/10 not check returned value from usb_set_configuration()
+	//if (usb_set_configuration(this->hScanner, 1))
+	//   return SANE_STATUS_IO_ERROR;
+	//(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0)
+	//errornum = usb_set_configuration(this->hScanner->usb, 1);
+	usb_set_configuration_or_reset_toggle(this, 1);
 
-		    if (usb_claim_interface(this->hScanner->usb, 1))
-		      return SANE_STATUS_IO_ERROR;
-		  }
-		  else{
-		    sscanf(devicename,"net1;dev%d",&this->hScanner->net_device_index);
-		  }
- }
+	if (usb_claim_interface(this->hScanner->usb, 1))
+	    return SANE_STATUS_IO_ERROR;
+    } else {
+	sscanf(devicename,"net1;dev%d",&this->hScanner->net_device_index);
+    }
 
-  // デバイスオープン
-  rc= OpenDevice(this->hScanner, pdev->modelInf.seriesNo);
-  if (!rc)
-      return SANE_STATUS_INVAL;
+    // デバイスオープン
+    rc= OpenDevice(this->hScanner, pdev->modelInf.seriesNo);
+    if (!rc) return SANE_STATUS_INVAL;
 
-  // 各種情報の初期化
-  this->scanState.bEOF = FALSE;
-  this->scanState.bCanceled = FALSE;
-  this->scanState.bScanning = FALSE;
-  this->scanState.nPageCnt = 0;
+    // 各種情報の初期化
+    this->scanState.bEOF = FALSE;
+    this->scanState.bCanceled = FALSE;
+    this->scanState.bScanning = FALSE;
+    this->scanState.nPageCnt = 0;
 
-  // 各種設定情報を取得
-  this->modelInf.productID = pdev->modelInf.productID;
-  this->modelInf.expcaps = pdev->modelInf.expcaps;     //M-LNX-20
-  this->modelInf.vendorID = pdev->modelInf.vendorID;
-  this->modelInf.index = pdev->modelInf.index;
+    // 各種設定情報を取得
+    this->modelInf.productID = pdev->modelInf.productID;
+    this->modelInf.expcaps = pdev->modelInf.expcaps;     //M-LNX-20
+    this->modelInf.vendorID = pdev->modelInf.vendorID;
+    this->modelInf.index = pdev->modelInf.index;
 
-  this->modelInf.seriesNo = pdev->modelInf.seriesNo;
-  this->modelInf.modelName = pdev->modelInf.modelName;
-  this->modelInf.modelTypeName = pdev->modelInf.modelTypeName;
+    this->modelInf.seriesNo = pdev->modelInf.seriesNo;
+    this->modelInf.modelName = pdev->modelInf.modelName;
+    this->modelInf.modelTypeName = pdev->modelInf.modelTypeName;
 
-  get_model_config(&this->modelInf, &this->modelConfig);
+    get_model_config(&this->modelInf, &this->modelConfig);
 
-  GetLogSwitch( this );
+    GetLogSwitch( this );
 
-  // Frontend上の設定値をセット
-  this->uiSetting.ResoList.val = this->modelConfig.SupportReso.val;
-  this->uiSetting.ScanModeList.val = this->modelConfig.SupportScanMode.val;
-  this->uiSetting.ScanSrcList.val = this->modelConfig.SupportScanSrc.val;
+    // Frontend上の設定値をセット
+    this->uiSetting.ResoList.val = this->modelConfig.SupportReso.val;
+    this->uiSetting.ScanModeList.val = this->modelConfig.SupportScanMode.val;
+    this->uiSetting.ScanSrcList.val = this->modelConfig.SupportScanSrc.val;
 
-  this->mfcModelInfo.wModelType  = MODEL_YL4;
-  this->mfcModelInfo.wDialogType = TWDSUI_NOVC;
-  this->mfcModelInfo.bColorModel = TRUE;
-  this->mfcModelInfo.bDither     = FALSE;
-  this->mfcModelInfo.b3in1Type   = FALSE;
-  this->mfcModelInfo.bVideoCap   = FALSE;
-  this->mfcModelInfo.bQcmdEnable = TRUE;
+    this->mfcModelInfo.wModelType  = MODEL_YL4;
+    this->mfcModelInfo.wDialogType = TWDSUI_NOVC;
+    this->mfcModelInfo.bColorModel = TRUE;
+    this->mfcModelInfo.bDither     = FALSE;
+    this->mfcModelInfo.b3in1Type   = FALSE;
+    this->mfcModelInfo.bVideoCap   = FALSE;
+    this->mfcModelInfo.bQcmdEnable = TRUE;
 
-  GetDeviceAccessParam( this );
+    GetDeviceAccessParam( this );
 
-  if (!QueryDeviceInfo(this)) // Qコマンドを発行して、デバイス情報を取得
-      return SANE_STATUS_INVAL;
+    if (!QueryDeviceInfo(this)) // Qコマンドを発行して、デバイス情報を取得
+	return SANE_STATUS_INVAL;
 
 #ifndef DEBUG_No39
-   if (IFTYPE_USB == this->hScanner->device){       //check i/f
-     if(this->hScanner->usb){
-       CloseDevice(this->hScanner);
-       usb_release_interface(this->hScanner->usb, 1); //   USB
-       usb_close(this->hScanner->usb);                //   USB
-       this->hScanner->usb = NULL;
-     }
-   }
-   else{
-     if(this->hScanner->net){
-       CloseDevice(this->hScanner);
-       this->hScanner->net = NULL;
-     }
-   }
+    if (IFTYPE_USB == this->hScanner->device){       //check i/f
+	if(this->hScanner->usb){
+	    CloseDevice(this->hScanner);
+	    usb_release_interface(this->hScanner->usb, 1); //   USB
+	    usb_close(this->hScanner->usb);                //   USB
+	    this->hScanner->usb = NULL;
+	}
+    } else {
+	if (this->hScanner->net) {
+	    CloseDevice(this->hScanner);
+	    this->hScanner->net = NULL;
+	}
+    }
 #endif
-   ///
-   /// ColorMatch DLLのロード
-   ///
-   this->modelInf.index = pdev->modelInf.index;     // cp index
-   LoadColorMatchDll( this ,this->modelInf.index);  // load dll
+    ///
+    /// ColorMatch DLLのロード
+    ///
+    this->modelInf.index = pdev->modelInf.index;     // cp index
+    LoadColorMatchDll( this ,this->modelInf.index);  // load dll
 
-  //
-  // Scan Decode DLLのロード
-  //
-  rc = LoadScanDecDll( this );
-  if ( !rc )  // Scan Decode DLLのロード失敗
-      return SANE_STATUS_INVAL;
+    //
+    // Scan Decode DLLのロード
+    //
+    rc = LoadScanDecDll( this );
+    if ( !rc )  // Scan Decode DLLのロード失敗
+	return SANE_STATUS_INVAL;
 
-  // GrayTableのロード
-  LoadGrayTable( this, GRAY_TABLE_NO );
+    // GrayTableのロード
+    LoadGrayTable( this, GRAY_TABLE_NO );
 
-  rc = InitOptions(this);
-  WriteLog( "<<< sane_open end >>> " );
-  return rc;
+    rc = InitOptions(this);
+    WriteLog( "<<< sane_open end >>> " );
+    return rc;
 }
 
 void

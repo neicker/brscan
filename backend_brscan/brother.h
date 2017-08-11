@@ -108,6 +108,8 @@ typedef struct TDevice {
   MODELINF               modelInf;
 } TDevice;
 
+extern TDevice *g_pdev;
+
 #endif
 
 

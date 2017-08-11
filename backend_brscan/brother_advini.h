@@ -18,8 +18,6 @@
 
 */
 
-
-
 #ifndef  _ADVANCED_INIFILE_
 #define _ADVANCED_INIFILE_
 
@@ -28,8 +26,6 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <dirent.h>
-
-
 
 #define pintf_error printf
 
