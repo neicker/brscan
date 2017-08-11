@@ -69,7 +69,6 @@ Not support (force causing compile error)
 #include "brother_bugchk.h"
 #include "brother_log.h"
 
-
 TDevice *g_pdev;
 
 static int      num_devices;	// USB上に検出されたBrotherデバイス数
@@ -78,7 +77,6 @@ static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
 
 /* =====================================================================*/
 
-#include "brother_misc.c"
 #include "brother_modelinf.c"
 #include "brother_scanner.c"
 #include "brother_bugchk.c"

@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_misc.c
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -32,8 +32,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "brother_misc.h"
+#include <string.h>
 
+#include "brother_misc.h"
 
 //-----------------------------------------------------------------------------
 //
@@ -60,7 +61,6 @@ GetPathFromFileName( LPSTR lpszFileName )
 {
 	int  nFileNameSize;
 	LPSTR  lpszNameTop;
-
 
 	lpszNameTop = lpszFileName;
 	nFileNameSize = strlen( lpszFileName );
@@ -135,7 +135,6 @@ GetToken( LPSTR *lppszData )
 	LPSTR  lpszToken;
 	LPSTR  lpszNextTop;
 
-
 	lpszToken = lpszNextTop = *lppszData;
 
 	if( lpszNextTop != NULL && *lpszNextTop ){
@@ -179,7 +178,6 @@ StrToWord( LPSTR lpszText )
 {
 	WORD   wResult = 0;
 	char   chData = *lpszText;
-
 
 	if( lpszText != NULL ){
 		while( chData ){
@@ -227,7 +225,6 @@ WordToStr( WORD wValue, LPSTR lpszTextTop )
 	LPSTR  lpszTemp;
 	int    nTextLen;
 
- 
 	lpszTemp = szTemp;
 	do{
 		*lpszTemp++ = '0' + ( wValue % 10 );
@@ -271,7 +268,6 @@ StrToShort( LPSTR lpszText )
 	short  nSign = 1;
 	short  nResult = 0;
 	char   chData = *lpszText;
-
 
 	if( lpszText != NULL ){
 		if( *lpszText == '-' ){
@@ -325,7 +321,6 @@ ShortToStr( short nValue, LPSTR lpszTextTop )
 	int    nTextLen;
 	BOOL   bSign = FALSE;
 
-
 	if( nValue < 0 ){
 		nValue *= -1;
 		bSign = TRUE;
@@ -376,7 +371,6 @@ StrToDword( LPSTR lpszText )
 	DWORD  dwResult = 0;
 	char  chData = *lpszText;
 
-
 	if( lpszText != NULL ){
 		while( chData ){
 			if( '0' <= chData && chData <= '9' ){
@@ -422,7 +416,6 @@ DwordToStr( DWORD dwValue, LPSTR lpszTextTop )
 	LPSTR  lpszTemp;
 	int    nTextLen;
 
-
 	lpszTemp = szTemp;
 	do{
 		*lpszTemp++ = '0' + (BYTE)( dwValue % 10 );
@@ -439,6 +432,5 @@ DwordToStr( DWORD dwValue, LPSTR lpszTextTop )
 
 	return lpszTextTop;
 }
-
 
 //////// end of brother_misc.c ////////
