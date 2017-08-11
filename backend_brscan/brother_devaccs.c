@@ -39,15 +39,18 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <signal.h>
+#include <errno.h>
 
 #include <usb.h>
 
+#include "brother.h"
+
+#include "brother_mfccmd.h"
 #include "brother_misc.h"
 #include "brother_log.h"
+#include "brother_bugchk.h"
 
-#include "brother_modelinf.h"
 #include "brother_devaccs.h"
-#include "brother_mfccmd.h"
 //
 // buffer size to transfer
 //
@@ -72,12 +75,12 @@ static struct timezone save_tz;		// the valiables of the information of time (mi
 
 #define   TIMEOUTREADWRITE   2
 
-int  init_usb_criticalsection();
-int discard_usb_criticalsection();
-int enter_usb_criticalsection();
-int release_usb_criticalsection();
+int init_usb_criticalsection(void);
+int discard_usb_criticalsection(void);
+int enter_usb_criticalsection(void);
+int release_usb_criticalsection(void);
 
-#define   SKEY_USBSEM
+#define SKEY_USBSEM
 
 //-----------------------------------------------------------------------------
 //
@@ -389,10 +392,10 @@ CloseDevice( usb_dev_handle *hScanner )
 	if (rc >= 0) break;
     }
 #ifdef SKEY_USBSEM
-				     release_usb_criticalsection();
-				     discard_usb_criticalsection();
+    release_usb_criticalsection();
+    discard_usb_criticalsection();
 #endif
-	return;
+    return;
 }
 
 
@@ -960,7 +963,6 @@ int  usb_set_configuration_or_reset_toggle(
 #include <stdio.h>
 #include <string.h>
 
-
 #if 0
 #define ERRPRINT printf
 #define DBGPRINT printf
@@ -1010,8 +1012,6 @@ key_t get_semkey(){
   return semid;
 }
 
-
-
 union semun {
   int val;
   struct semid_ds *buf;
@@ -1019,9 +1019,7 @@ union semun {
   struct seminfo *__buf;
 };
 
-
-
-int  init_usb_criticalsection(){
+int init_usb_criticalsection(void){
   union semun semuni;
   key_t key;
   int ret;
@@ -1049,9 +1047,7 @@ int  init_usb_criticalsection(){
   return 0;
 }
 
-
-
-int discard_usb_criticalsection(){
+int discard_usb_criticalsection(void){
   union semun semuni;
 
   DBGPRINT("discard_usb_criticalsection()\n");
@@ -1065,12 +1061,7 @@ int discard_usb_criticalsection(){
   return 0;
 }
 
-
-
-
-
-
-int enter_usb_criticalsection(){
+int enter_usb_criticalsection(void){
   struct sembuf st_sem_op;
 
   DBGPRINT("enter_usb_criticalsection()\n");
@@ -1090,10 +1081,7 @@ int enter_usb_criticalsection(){
   return 0;
 }
 
-
-
-
-int release_usb_criticalsection(){
+int release_usb_criticalsection(void){
   struct sembuf st_sem_op;
 
   DBGPRINT("release_usb_criticalsection()\n");
@@ -1111,7 +1099,6 @@ int release_usb_criticalsection(){
     return -1;
   }
   return 0;
-
 }
 
 #endif

@@ -78,7 +78,6 @@ static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
 
 /* =====================================================================*/
 
-#include "brother_devaccs.c"
 #include "brother_devinfo.c"
 #include "brother_mfccmd.c"
 #include "brother_misc.c"

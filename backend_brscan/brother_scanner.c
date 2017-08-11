@@ -34,6 +34,7 @@
 
 #include <dlfcn.h>
 #include <usb.h>
+#include <sys/time.h>
 
 #include <sane/sane.h>
 
