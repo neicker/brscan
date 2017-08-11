@@ -408,7 +408,7 @@ do_subst = sed \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = include/sane backend_brscan brsaneconfig libbrcolm libbrscandec
+SUBDIRS = include/sane libsane-brother brsaneconfig libbrcolm libbrscandec
 
 # EXTRA_DIST = Copying copying.brother README tests/psid
 dist_noinst_DATA = Copying copying.brother brscan.spec

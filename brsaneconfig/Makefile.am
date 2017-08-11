@@ -13,9 +13,9 @@ bin_PROGRAMS = brsaneconfig
 
 noinst_HEADERS = resource.h
 
-brsaneconfig_SOURCES = brsaneconfig.c ../backend_brscan/brother_advini.c
+brsaneconfig_SOURCES = brsaneconfig.c ../libsane-brother/brother_advini.c
 
 brsaneconfig_CPPFLAGS = $(AM_CPPFLAGS) -DBRSANESUFFIX=1	\
-	-I$(top_srcdir)/backend_brscan
+	-I$(top_srcdir)/libsane-brother
 
 noinst_HEADER = resource.h

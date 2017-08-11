@@ -51,11 +51,11 @@ AC_SUBST([AM_LDFLAGS])
 PKG_PROG_PKG_CONFIG
 
 AC_CONFIG_FILES(Makefile)
-AC_CONFIG_FILES(backend_brscan/Makefile)
 AC_CONFIG_FILES(brsaneconfig/Makefile)
 AC_CONFIG_FILES(include/sane/Makefile)
 AC_CONFIG_FILES(libbrcolm/Makefile)
 AC_CONFIG_FILES(libbrcolm/GrayCmData/Makefile)
 AC_CONFIG_FILES(libbrscandec/Makefile)
+AC_CONFIG_FILES(libsane-brother/Makefile)
 
 AC_OUTPUT

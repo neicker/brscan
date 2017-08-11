@@ -126,7 +126,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_brsaneconfig_OBJECTS = brsaneconfig-brsaneconfig.$(OBJEXT) \
-	../backend_brscan/brsaneconfig-brother_advini.$(OBJEXT)
+	../libsane-brother/brsaneconfig-brother_advini.$(OBJEXT)
 brsaneconfig_OBJECTS = $(am_brsaneconfig_OBJECTS)
 brsaneconfig_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -343,9 +343,9 @@ do_subst = sed \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
 noinst_HEADERS = resource.h
-brsaneconfig_SOURCES = brsaneconfig.c ../backend_brscan/brother_advini.c
+brsaneconfig_SOURCES = brsaneconfig.c ../libsane-brother/brother_advini.c
 brsaneconfig_CPPFLAGS = $(AM_CPPFLAGS) -DBRSANESUFFIX=1	\
-	-I$(top_srcdir)/backend_brscan
+	-I$(top_srcdir)/libsane-brother
 
 noinst_HEADER = resource.h
 all: all-am
@@ -431,15 +431,15 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-../backend_brscan/$(am__dirstamp):
-	@$(MKDIR_P) ../backend_brscan
-	@: > ../backend_brscan/$(am__dirstamp)
-../backend_brscan/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) ../backend_brscan/$(DEPDIR)
-	@: > ../backend_brscan/$(DEPDIR)/$(am__dirstamp)
-../backend_brscan/brsaneconfig-brother_advini.$(OBJEXT):  \
-	../backend_brscan/$(am__dirstamp) \
-	../backend_brscan/$(DEPDIR)/$(am__dirstamp)
+../libsane-brother/$(am__dirstamp):
+	@$(MKDIR_P) ../libsane-brother
+	@: > ../libsane-brother/$(am__dirstamp)
+../libsane-brother/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../libsane-brother/$(DEPDIR)
+	@: > ../libsane-brother/$(DEPDIR)/$(am__dirstamp)
+../libsane-brother/brsaneconfig-brother_advini.$(OBJEXT):  \
+	../libsane-brother/$(am__dirstamp) \
+	../libsane-brother/$(DEPDIR)/$(am__dirstamp)
 
 brsaneconfig$(EXEEXT): $(brsaneconfig_OBJECTS) $(brsaneconfig_DEPENDENCIES) $(EXTRA_brsaneconfig_DEPENDENCIES) 
 	@rm -f brsaneconfig$(EXEEXT)
@@ -447,12 +447,12 @@ brsaneconfig$(EXEEXT): $(brsaneconfig_OBJECTS) $(brsaneconfig_DEPENDENCIES) $(EX
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f ../backend_brscan/*.$(OBJEXT)
+	-rm -f ../libsane-brother/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brsaneconfig-brsaneconfig.Po@am__quote@
 
 .c.o:
@@ -493,19 +493,19 @@ brsaneconfig-brsaneconfig.obj: brsaneconfig.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o brsaneconfig-brsaneconfig.obj `if test -f 'brsaneconfig.c'; then $(CYGPATH_W) 'brsaneconfig.c'; else $(CYGPATH_W) '$(srcdir)/brsaneconfig.c'; fi`
 
-../backend_brscan/brsaneconfig-brother_advini.o: ../backend_brscan/brother_advini.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ../backend_brscan/brsaneconfig-brother_advini.o -MD -MP -MF ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Tpo -c -o ../backend_brscan/brsaneconfig-brother_advini.o `test -f '../backend_brscan/brother_advini.c' || echo '$(srcdir)/'`../backend_brscan/brother_advini.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Tpo ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../backend_brscan/brother_advini.c' object='../backend_brscan/brsaneconfig-brother_advini.o' libtool=no @AMDEPBACKSLASH@
+../libsane-brother/brsaneconfig-brother_advini.o: ../libsane-brother/brother_advini.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ../libsane-brother/brsaneconfig-brother_advini.o -MD -MP -MF ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Tpo -c -o ../libsane-brother/brsaneconfig-brother_advini.o `test -f '../libsane-brother/brother_advini.c' || echo '$(srcdir)/'`../libsane-brother/brother_advini.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Tpo ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../libsane-brother/brother_advini.c' object='../libsane-brother/brsaneconfig-brother_advini.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ../backend_brscan/brsaneconfig-brother_advini.o `test -f '../backend_brscan/brother_advini.c' || echo '$(srcdir)/'`../backend_brscan/brother_advini.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ../libsane-brother/brsaneconfig-brother_advini.o `test -f '../libsane-brother/brother_advini.c' || echo '$(srcdir)/'`../libsane-brother/brother_advini.c
 
-../backend_brscan/brsaneconfig-brother_advini.obj: ../backend_brscan/brother_advini.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ../backend_brscan/brsaneconfig-brother_advini.obj -MD -MP -MF ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Tpo -c -o ../backend_brscan/brsaneconfig-brother_advini.obj `if test -f '../backend_brscan/brother_advini.c'; then $(CYGPATH_W) '../backend_brscan/brother_advini.c'; else $(CYGPATH_W) '$(srcdir)/../backend_brscan/brother_advini.c'; fi`
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Tpo ../backend_brscan/$(DEPDIR)/brsaneconfig-brother_advini.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../backend_brscan/brother_advini.c' object='../backend_brscan/brsaneconfig-brother_advini.obj' libtool=no @AMDEPBACKSLASH@
+../libsane-brother/brsaneconfig-brother_advini.obj: ../libsane-brother/brother_advini.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT ../libsane-brother/brsaneconfig-brother_advini.obj -MD -MP -MF ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Tpo -c -o ../libsane-brother/brsaneconfig-brother_advini.obj `if test -f '../libsane-brother/brother_advini.c'; then $(CYGPATH_W) '../libsane-brother/brother_advini.c'; else $(CYGPATH_W) '$(srcdir)/../libsane-brother/brother_advini.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Tpo ../libsane-brother/$(DEPDIR)/brsaneconfig-brother_advini.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../libsane-brother/brother_advini.c' object='../libsane-brother/brsaneconfig-brother_advini.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ../backend_brscan/brsaneconfig-brother_advini.obj `if test -f '../backend_brscan/brother_advini.c'; then $(CYGPATH_W) '../backend_brscan/brother_advini.c'; else $(CYGPATH_W) '$(srcdir)/../backend_brscan/brother_advini.c'; fi`
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(brsaneconfig_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o ../libsane-brother/brsaneconfig-brother_advini.obj `if test -f '../libsane-brother/brother_advini.c'; then $(CYGPATH_W) '../libsane-brother/brother_advini.c'; else $(CYGPATH_W) '$(srcdir)/../libsane-brother/brother_advini.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -628,8 +628,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
-	-rm -f ../backend_brscan/$(DEPDIR)/$(am__dirstamp)
-	-rm -f ../backend_brscan/$(am__dirstamp)
+	-rm -f ../libsane-brother/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../libsane-brother/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -639,7 +639,7 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf ../backend_brscan/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ../libsane-brother/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -685,7 +685,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf ../backend_brscan/$(DEPDIR) ./$(DEPDIR)
+	-rm -rf ../libsane-brother/$(DEPDIR) ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
