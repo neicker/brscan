@@ -23,10 +23,10 @@ libsane_brother_la_SOURCES = brother.c brother_cmatch.c			\
 	brother_devaccs.c brother_devinfo.c brother_mfccmd.c		\
 	brother_misc.c brother_modelinf.c brother_scanner.c		\
 	brother_netdev.c brother_advini.c brother_log.c			\
-	sane_strstatus.c ../sanei/sanei_config.c			\
+	brother_bugchk.c sane_strstatus.c ../sanei/sanei_config.c	\
 	../sanei/sanei_constrain_value.c ../sanei/sanei_init_debug.c
 
-noinst_HEADERS = brother.h brother_bugchk.c brother_bugchk.h		\
+noinst_HEADERS = brother.h brother_bugchk.h		\
 	brother_cmatch.h brother_devaccs.h brother_devinfo.h		\
 	brother_dtype.h brother_log.h brother_mfccmd.h	\
 	brother_mfcinfo.h brother_misc.h brother_modelinf.h		\

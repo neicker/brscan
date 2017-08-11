@@ -57,27 +57,22 @@ Not support (force causing compile error)
 #include "sane/sanei_config.h"
 #include "sane/saneopts.h"
 
-#include "brother_netdev.h"
-#include "brother_advini.h"
-
 #include "brother.h"
 #include "brother_mfcinfo.h"
 #include "brother_devaccs.h"
 #include "brother_devinfo.h"
 #include "brother_cmatch.h"
 #include "brother_scanner.h"
-#include "brother_bugchk.h"
+#include "brother_netdev.h"
+#include "brother_advini.h"
 #include "brother_log.h"
+#include "brother_bugchk.h"
 
 TDevice *g_pdev;
 
 static int      num_devices;	// USB上に検出されたBrotherデバイス数
 static TDevice  *pdevFirst;	// USB上に検出されたBrotherデバイスリスト
 static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
-
-/* =====================================================================*/
-
-#include "brother_bugchk.c"
 
 /* ======================================================================
 
