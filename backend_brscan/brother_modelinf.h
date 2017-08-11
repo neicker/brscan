@@ -181,7 +181,7 @@ extern int ChangeEndpoint[];
 ///////  constant for get_Suport_inf function     ///////
 /////////////////////////////////////////////////////////
 
-#define	MAX_STRING 30		/* max charactor number of LABEL */
+#define	MAX_STRING 34		/* max charactor number of LABEL */
 
 #define	COLOR_TYPE_COUNT 5	/* the number of color types  */
 #define	RESO_COUNT 10		/* the number of resolution type  */

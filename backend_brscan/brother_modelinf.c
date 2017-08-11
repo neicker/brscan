@@ -414,7 +414,7 @@ int get_model_info(PMODELINF modelInfList)
 		modelInfList->next = modelListStart->next;		        /* Pass pointer of next model information structure */
 		modelInfList->expcaps = modelListStart->expcaps;		/* M-LNX-20 */
 		modelInfList->vendorID = modelListStart->vendorID;		/* Pass product ID */
-		modelInfList->index = modelListStart->index;	      
+		modelInfList->index = modelListStart->index;
 		modelInfList->productID = modelListStart->productID;		/* Pass product ID */
 		modelInfList->seriesNo = modelListStart->seriesNo;		/* Pass serial ID */
 		res = TRUE;
@@ -489,14 +489,14 @@ int get_model_config(PMODELINF modelInf,PMODELCONFIG modelConfig)
 	GetSupportScanMode(series,modelConfig);			/* get supported scan mode	 */
 #if 0  //M-LNX-20
 	GetSupportScanSrc(series,modelConfig);			/* get supported scan source	 */
-	GetSupportScanAreaHeight(series,modelConfig);	        /* get supported scan length	 */
-	GetSupportScanAreaWidth(series,modelConfig);	        /* get supported scan width	 */
+	GetSupportScanAreaHeight(series,modelConfig);		/* get supported scan length	 */
+	GetSupportScanAreaWidth(series,modelConfig);		/* get supported scan width	 */
 	GetGrayLebelName(series,modelConfig);			/* get filename for adjusting gray level */
 	GetColorMatchName(series,modelConfig);			/* get filename forr color matching */
 #else  //M-LNX-20
 	GetSupportScanSrc(series,modelInf,modelConfig);		/* get supported scan source	 */
-	GetSupportScanAreaHeight(series,modelConfig);	        /* get supported scan length	 */
-	GetSupportScanAreaWidth(series,modelConfig);	        /* get supported scan width	 */
+	GetSupportScanAreaHeight(series,modelConfig);		/* get supported scan length	 */
+	GetSupportScanAreaWidth(series,modelConfig);		/* get supported scan width	 */
 	GetGrayLebelName(series,modelInf,modelConfig);		/* get filename for adjusting gray level */
 	GetColorMatchName(series,modelInf,modelConfig);		/* get filename forr color matching */
 #endif  //M-LNX-20
@@ -527,7 +527,7 @@ int GetSeriesNo(PMODELINF modelInf,int *series)
 {
 	int res;
 
-  	*series = modelInf->seriesNo;
+	*series = modelInf->seriesNo;
 	if(*series <= 0 || MAX_SERIES_NO < *series)	      /* check series number */
 		res = FALSE;				      /* error */
 	else
@@ -556,7 +556,7 @@ void GetSupportReso(int series,PMODELCONFIG modelConfig)
 	switch(series)
 	{
 		case	ALL_SF_TYPE:
-		  	modelConfig->SupportReso.bit.bDpi100x100   = TRUE;		/*  100 x  100 dpi */
+			modelConfig->SupportReso.bit.bDpi100x100   = TRUE;		/*  100 x  100 dpi */
 			modelConfig->SupportReso.bit.bDpi150x150   = TRUE;		/*  150 x  150 dpi */
 			modelConfig->SupportReso.bit.bDpi200x200   = TRUE;		/*  200 x  200 dpi */
 			modelConfig->SupportReso.bit.bDpi300x300   = TRUE;		/*  300 x  300 dpi */
@@ -628,8 +628,8 @@ void GetSupportScanMode(int series,PMODELCONFIG modelConfig)
 
 		case	ALL_FB_DCP:
 		case	ALL_FB_ONLY:
-	        case    AL_FB_DCP:
-	        case    AL_DUPLEX:  
+		case    AL_FB_DCP:
+		case    AL_DUPLEX:
 			modelConfig->SupportScanMode.bit.bBlackWhite     = TRUE;		/* B/W		*/
 			modelConfig->SupportScanMode.bit.bErrorDiffusion = TRUE;		/* error diffusion	*/
 			modelConfig->SupportScanMode.bit.bTrueGray       = TRUE;		/*  gray scale	*/
@@ -671,7 +671,7 @@ void GetSupportScanSrc(int series,PMODELCONFIG modelConfig)
 #else   //M-LNX-20
 void GetSupportScanSrc(int series,PMODELINF modelInf ,PMODELCONFIG modelConfig){
 	modelConfig->SupportScanSrc.val = 0x0000;					/* Initialize */
-        if( (modelInf->expcaps & EXP_CAPDUPLEX) != 0){
+	if( (modelInf->expcaps & EXP_CAPDUPLEX) != 0){
 	  modelConfig->SupportScanSrc.bit.ADF_DUP    = TRUE;		/* Duplex capability TRUE */
 	}
 	else{
@@ -691,8 +691,8 @@ void GetSupportScanSrc(int series,PMODELINF modelInf ,PMODELCONFIG modelConfig){
 
 		case	ALL_FB_DCP:
 		case	BH3_FB_DCP:
-	        case    AL_FB_DCP:
-	        case    L4CFB:
+		case    AL_FB_DCP:
+		case    L4CFB:
 			modelConfig->SupportScanSrc.bit.FB     = TRUE;		/* FlatBed				*/
 			modelConfig->SupportScanSrc.bit.ADF    = TRUE;		/* AutoDocumentFeeder	*/
 			break;
@@ -707,7 +707,7 @@ void GetSupportScanSrc(int series,PMODELINF modelInf ,PMODELCONFIG modelConfig){
 			break;
 
 		default:
-		  	modelConfig->SupportScanSrc.bit.FB     = TRUE;		/* FlatBed				*/
+			modelConfig->SupportScanSrc.bit.FB     = TRUE;		/* FlatBed				*/
 			modelConfig->SupportScanSrc.bit.ADF    = TRUE;		/* AutoDocumentFeeder	*/
 			break;
 	}
@@ -732,7 +732,7 @@ void GetSupportScanAreaHeight(int series,PMODELCONFIG modelConfig)
 {
 	switch(series)
 	{
-	  //scan area of BH3,ALL and L4CFB are same.  
+	  //scan area of BH3,ALL and L4CFB are same.
 		default:
 #if 0  //M-LNX-58
 			modelConfig->SupportScanAreaHeight = 297.0;
@@ -762,7 +762,7 @@ void GetSupportScanAreaWidth(int series,PMODELCONFIG modelConfig)
 {
 	switch(series)
 	{
-	  //scan area of BH3,ALL and L4CFB are same.  
+	  //scan area of BH3,ALL and L4CFB are same.
 		default:
 #if 0  //M-LNX-58
 			modelConfig->SupportScanAreaWidth = 210.0;
@@ -998,7 +998,7 @@ void GetSupportScanSrc(int series,PMODELCONFIG modelConfig)
 #else   //M-LNX-20
 void GetSupportScanSrc(int series,PMODELINF modelInf ,PMODELCONFIG modelConfig){
 	modelConfig->SupportScanSrc.val = 0x0000;					/* ½é´ü²½ */
-        if( (modelInf->expcaps & EXP_CAPDUPLEX) != 0){
+	if( (modelInf->expcaps & EXP_CAPDUPLEX) != 0){
 	  modelConfig->SupportScanSrc.bit.ADF_DUP    = TRUE;		/* Duplex capability TRUE */
 	}
 	else{
@@ -1465,7 +1465,7 @@ int SectionNameCheck(LPCTSTR lpAppName, char *buf)
 	if(*buf == '[' )
 	{
 		SectionNameEnd = strchr(buf,']');
-		if(SectionNameEnd != NULL)                            	/* SectionName? */
+		if(SectionNameEnd != NULL)	/* SectionName? */
 		{
 			*SectionNameEnd = NULL_C;				/* convert  ']' to NULL */
 
@@ -1473,8 +1473,8 @@ int SectionNameCheck(LPCTSTR lpAppName, char *buf)
 			{
 				f_char  = tolower(*(buf+i));		/* convert to lower case */
 				lp_char = tolower(*(lpAppName+count));	/* convert to lower case */
-				if(f_char != lp_char)		break;	  
-				else if(*(buf+i)== NULL_C)	res = FIND; 
+				if(f_char != lp_char)		break;
+				else if(*(buf+i)== NULL_C)	res = FIND;
 			}
 		}
 	}
@@ -1487,7 +1487,7 @@ int SectionNameCheck(LPCTSTR lpAppName, char *buf)
 ;	Module Name	: KeyNameCheckInt
 ;	Summary of Capability	:search keyName,and return Key as integer
 ;	Iinput			:searcing KeyName,searcing string,pinter of storaging interger
-;	Return		        : key value(if not find,return default value)
+;	Return			: key value(if not find,return default value)
 ;	Created			: 2003.07.31
 ;	Notes		:
 ;------------------------------------------------------------------------------
@@ -1562,7 +1562,7 @@ int ReadInitFileString( LPCTSTR lpAppName,			/*  points to section name */
 	state = 0;
 	count = 0;						/* If lpAppName and lpKeyName are NULL,use this */
 	strcpy(lpReturnedString,lpDefault);			/* set default value to buffer */
-	result = strlen(lpDefault);			        /* set default length to return value */
+	result = strlen(lpDefault);				/* set default length to return value */
 	if(NULL != (rfile = fopen(lpFileName, "r")))		/* read file open */
 	{
 		while(1)
@@ -1737,7 +1737,7 @@ int AllSectionName(LPTSTR lpReturnedString, int nSize,char *buf,int *count)
 			}
 			movePoint =(lpReturnedString+*count);		/* Start point of straging */
 			strcpy(movePoint,buf+1);			/* straging data */
-			*count += strlen(buf+1)+1;		        /* update input characters */
+			*count += strlen(buf+1)+1;			/* update input characters */
 		}
 	}
 	return res;
@@ -1792,7 +1792,7 @@ int AllKeyName(LPTSTR lpReturnedString, int nSize,char *buf,int *count)
 
 /*
 ;------------------------------------------------------------------------------
-;	Module Name	        : ReadModelInfoSize
+;	Module Name		: ReadModelInfoSize
 ;	Summary of Capability	: get size of model information from file of setting information
 ;				: If SectionName and KeyName are exist,get size of key value
 ;	Iinput			: name of searching section,size of buffer,number of record,searching file name
@@ -1849,9 +1849,9 @@ int ReadModelInfoSize(LPCTSTR lpAppName, LPCTSTR lpKeyName, int *size, int *reco
 		}
 	}
 
-//	fclose(rfile);							  
+//	fclose(rfile);
 
-	if(*size != 0)		result = TRUE;				
+	if(*size != 0)		result = TRUE;
 	return result;
 }
 
@@ -1877,18 +1877,18 @@ int GetModelInfoSize(int *size,int *record,char *buf)
 	int		length;
 
 	res = NOEND;
-	if(*buf == '[' )							/* check first character*/
+	if(*buf == '[' )			/* check first character*/
 	{
 		res = END;
 	}
 	else
 	{
-		if((length = strlen(buf)) != 0)			                 /* length is not 0 */
+		if((length = strlen(buf)) != 0)	/* length is not 0 */
 		{
-			if(*buf != LF)						/* not only LF */
+			if(*buf != LF)		/* not only LF */
 			{
-				*size += length;				/* Add length */
-				(*record)++;					/* increase number of record */
+				*size += length;/* Add length */
+				(*record)++;	/* increase number of record */
 			}
 		}
 	}
@@ -2008,9 +2008,9 @@ int ReadModelInfo(LPCTSTR lpAppName, LPTSTR lpReturnedString,int nSize, LPCTSTR 
 				}
 			}
 		}
-//		fclose(rfile);				
+//		fclose(rfile);
 	}
-	if(count != 0)	result = TRUE;	
+	if(count != 0)	result = TRUE;
 	return result;
 }
 
@@ -2113,7 +2113,7 @@ int get_scanmode_string(SCANMODELIST scanMode, const char **scanModeList)
 		scanModeList[count] = ColorString;
 		count++;
 	}
-	if(scanMode.bit.b24BitNoCMatch == TRUE)		    	/* support 24bitColorFast? */
+	if(scanMode.bit.b24BitNoCMatch == TRUE)			/* support 24bitColorFast? */
 	{
 		scanModeList[count] = ColorFastString;
 		count++;
@@ -2198,7 +2198,7 @@ int get_reso_int(RESOLIST reso, int *resoList)
 		count++;
 	}
 	resoList[0] = count-1;	/* set item number to top */
-	
+
 	return count;
 }
 
@@ -2285,7 +2285,7 @@ int get_scanmode_id(const char *scanmode)
 ;	Module Name	: get_reso_id
 ;	Summary of Capability	: get resolution id number from string
 ;	Iinput			: string of resolution
-;	Return		        : resolution ID
+;	Return			: resolution ID
 ;	Created			: 2003.08.19
 ;	Notes		:
 ;------------------------------------------------------------------------------
