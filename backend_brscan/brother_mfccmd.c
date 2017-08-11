@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_mfccmd.c
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -31,9 +31,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#include <usb.h>
-
-#include "brother.h"
 
 #include "brother_devinfo.h"
 #include "brcolor.h"
@@ -43,9 +40,7 @@
 
 #include "brother_mfccmd.h"
 
-
 extern BOOL  bTxScanCmd;
-
 
 //
 // Cancelコマンド送信済みフラグ
@@ -74,24 +69,25 @@ BOOL  bTxCancelCmd = FALSE;
 void
 SendCancelCommand( usb_dev_handle *hScanner, int seriesNo )
 {
-	if( bTxScanCmd ){
-		//
-		// Device がOpenされていて、Scanコマンド送信済み
-		//
-		if( !bTxCancelCmd ){
-			WriteDeviceCommand( hScanner, MFCMD_CANCELSCAN, strlen( MFCMD_CANCELSCAN ), seriesNo );
-			bTxCancelCmd = TRUE;
+    if (bTxScanCmd) {
+	//
+	// Device がOpenされていて、Scanコマンド送信済み
+	//
+	if (!bTxCancelCmd) {
+	    WriteDeviceCommand(hScanner, MFCMD_CANCELSCAN,
+			       strlen(MFCMD_CANCELSCAN), seriesNo);
+	    bTxCancelCmd = TRUE;
 
-			WriteLogScanCmd( "Send CANCEL command", MFCMD_CANCELSCAN );
-		}else{
-			WriteLog( "Already sending CANCEL command" );
-		}
-	}else{
-		//
-		// Device がOpenされていないか、Scanコマンド送信されていない
-		//
-		WriteLog( "Not need to send CANCEL command" );
+	    WriteLogScanCmd( "Send CANCEL command", MFCMD_CANCELSCAN );
+	} else {
+	    WriteLog( "Already sending CANCEL command" );
 	}
+    } else {
+	//
+	// Device がOpenされていないか、Scanコマンド送信されていない
+	//
+	WriteLog("Not need to send CANCEL command");
+    }
 }
 
 
@@ -417,6 +413,5 @@ MakeDotStr( int nPosition, LPSTR lpszStr, BOOL bSeparator )
 	}
 	*lpszStr   = '\0';
 }
-
 
 //////// end of brother_mfccmd.c ////////

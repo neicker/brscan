@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_mfccmd.h
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -34,6 +34,7 @@
 #ifndef _BROTHER_MFCCMD_H_
 #define _BROTHER_MFCCMD_H_
 
+#include "brother.h"
 
 //
 // スキャナコマンド文字列
@@ -100,8 +101,6 @@ int   MakeupScanStartCmd( Brother_Scanner *this, LPSTR lpszCmdStr );
 void  MakePercentStr( int nPercent, LPSTR lpszStr );
 void  MakeDotStr(int nPosition, LPSTR lpszStr, BOOL bSeparator );
 
-
 #endif //_BROTHER_MFCCMD_H_
-
 
 //////// end of brother_mfccmd.h ////////
