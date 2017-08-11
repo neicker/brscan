@@ -38,6 +38,7 @@
 #include "brother.h"
 #include "brother_misc.h"
 #include "brother_log.h"
+#include "brother_bugchk.h"
 
 #include "brother_cmatch.h"
 

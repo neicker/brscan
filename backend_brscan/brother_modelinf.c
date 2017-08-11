@@ -852,7 +852,7 @@ void GetColorMatchName(int series,PMODELINF modelInf,PMODELCONFIG modelConfig){
 			break;
 		case    AL_FB_DCP:
 		case    AL_DUPLEX:
-		        name = AL_FB_DCP_CM_NAME;
+			name = AL_FB_DCP_CM_NAME;
 			break;
 		default:
 			name = NULL_S;	/* if not exist,set NULL */
@@ -861,6 +861,10 @@ void GetColorMatchName(int series,PMODELINF modelInf,PMODELCONFIG modelConfig){
 	strcpy(modelConfig->szColorMatchName,name);
 	return;
 }
+
+int ChangeEndpoint[] = {AL_FB_DCP,AL_DUPLEX,L4CFB,GENERIC_YCBCR_MODEL_2,
+			GENERIC_YCBCR_NOADF_2,GENERIC_YCBCR_NOFB_2};
+
 #elif  BRSANESUFFIX == 1
 
 /*
@@ -1215,6 +1219,8 @@ void GetColorMatchName(int series,PMODELINF modelInf,PMODELCONFIG modelConfig){
 	strcpy(modelConfig->szColorMatchName,name);
 	return;
 }
+
+int ChangeEndpoint[] = {};
 
 #else    //BRSANESUFFIX
   force causing compile error

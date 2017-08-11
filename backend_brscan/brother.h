@@ -55,6 +55,7 @@ Start: 2.4.2001
 /* ====================================================================== */
 
 #include <sane/sane.h>
+#include <usb.h>
 
 #include "brother_dtype.h"
 
@@ -63,6 +64,8 @@ Start: 2.4.2001
 
 #include "brother_modelinf.h"
 #include "brother_mfcinfo.h"
+
+#include "brother_netdev.h"
 
 typedef SANE_Status TState;
 

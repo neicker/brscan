@@ -89,12 +89,10 @@
 #define		GENERIC_YCBCR_NOFB_2	19
 
 /* define the breakpoint of modelname that must be converted color mode */
-#define         MUST_CONVERT_MODEL      10  
+#define         MUST_CONVERT_MODEL      10
 
 /* define models that must be chenaged endpoint */
 #define         ANOTHERENDPOINT         6
-int ChangeEndpoint[] = {AL_FB_DCP,AL_DUPLEX,L4CFB,GENERIC_YCBCR_MODEL_2,
-                        GENERIC_YCBCR_NOADF_2,GENERIC_YCBCR_NOFB_2};
 
 /* define the GRAY-LEVEL data file name */
 /*
@@ -150,16 +148,13 @@ int ChangeEndpoint[] = {AL_FB_DCP,AL_DUPLEX,L4CFB,GENERIC_YCBCR_MODEL_2,
 #define		ZLE_FB_DCP_CM_NAME	"ZLeFB/brlutcm.dat"
 #define		ZL2_FB_DCP_CM_NAME	"ZL2FB/brmsl07f.cm"
 
-
-int ChangeEndpoint[] = {};
 #define         ANOTHERENDPOINT         (0)
-
 
 #else    //BRSANESUFFIX
   force causing compile error
 #endif   //BRSANESUFFIX
 
-
+extern int ChangeEndpoint[];
 
 /* define the resolution label */
 #define DPI100x100  100
@@ -186,17 +181,17 @@ int ChangeEndpoint[] = {};
 ///////  constant for get_Suport_inf function     ///////
 /////////////////////////////////////////////////////////
 
-#define		MAX_STRING				30				/* max charactor number of LABEL */
+#define	MAX_STRING 30		/* max charactor number of LABEL */
 
-#define		COLOR_TYPE_COUNT		5				/* the number of color types  */
-#define		RESO_COUNT				10				/* the number of resolution type  */
-#define		SCAN_SRC_COUNT			3				/* the number of ScanSrc */
+#define	COLOR_TYPE_COUNT 5	/* the number of color types  */
+#define	RESO_COUNT 10		/* the number of resolution type  */
+#define	SCAN_SRC_COUNT 3	/* the number of ScanSrc */
 
 /////////////////////////////////////
 ///////  other constants      ///////
 /////////////////////////////////////
 
-#define		WORD_MAX			65535
+#define	WORD_MAX 65535
 /*
 #define		NOFIND		0
 #define		FIND		1
@@ -214,8 +209,6 @@ int ChangeEndpoint[] = {};
 #define		FALSE		0
 #define		TRUE		1
 */
-
-
 
 /*==========================================*/
 /*	 definition of structures           */
@@ -256,50 +249,50 @@ typedef union tagRESOLIST {
 
 /*** supported ScanMode ***/
 typedef union tagSCANMODELIST {
-	struct {
-		WORD  bBlackWhite:1;		/* Mono						 */
-		WORD  bErrorDiffusion:1;	/* error-diffusion				 */
-		WORD  bTrueGray:1;		/* gray scale					 */
-		WORD  b24BitColor:1;		/* 24 bit color			       		 */
-	  WORD  b24BitNoCMatch:1;		/* fast 24 bit color （without ColorMatch） 	 */
-	} bit;
-	WORD val;
+    struct {
+	WORD  bBlackWhite:1;	 /* Mono */
+	WORD  bErrorDiffusion:1; /* error-diffusion */
+	WORD  bTrueGray:1;	 /* gray scale */
+	WORD  b24BitColor:1;	 /* 24 bit color */
+	WORD  b24BitNoCMatch:1;	 /* fast 24 bit color （without ColorMatch） */
+    } bit;
+    WORD val;
 } SCANMODELIST, *PSCANMODELIST;
 
 /*** ScanSrc ***/
 typedef union tagSCANSRCLIST {
-	struct {
-		WORD  FB	:1;				/* FlatBed			  */
-		WORD  ADF	:1;				/* AutoDocumentFeeder */
-		WORD  ADF_DUP	:1;				/* Duplex capability */
-	} bit;
-	WORD val;
+    struct {
+	WORD  FB:1;		/* FlatBed */
+	WORD  ADF:1;		/* AutoDocumentFeeder */
+	WORD  ADF_DUP:1;	/* Duplex capability */
+    } bit;
+    WORD val;
 } SCANSRCLIST, *PSCANSRCLIST;
 
 /*** structure of MODEL_CONFIG ***/
 typedef struct tagModelConfig {
-	RESOLIST	 SupportReso;				/* supported resolution				 */
-	SCANMODELIST     SupportScanMode;			/* supported ScanMode				 */
-	SCANSRCLIST	 SupportScanSrc;			/* supported ScanSrc				 */
-	double		 SupportScanAreaHeight;			/* supported length of scan area (x0.1mm) */
-	double		 SupportScanAreaWidth;			/* supported width of scan area  (x0.1mm) */
-	char		 szGrayLebelName[30];			/* data name of gray level	 */
-	char		 szColorMatchName[30];			/* data name of color matching	 */
-	BOOL		 bFaxResoEnable;			/* flag for FAX resolution			 */
-	BOOL		 bNoUseColorMatch;			/* flag for disabling the ColorMatching			 */
-	BOOL		 bCompressEnbale;			/* flag of enabling the compression				 */
-	BOOL		 bLogFile;				/* flag of log file	 */
-	WORD		 wInBuffSize;				/* size of input buffer			 */
+    RESOLIST SupportReso;	/* supported resolution */
+    SCANMODELIST SupportScanMode; /* supported ScanMode */
+    SCANSRCLIST SupportScanSrc;	/* supported ScanSrc */
+    double SupportScanAreaHeight; /* supported length of scan area (x0.1mm) */
+    double SupportScanAreaWidth; /* supported width of scan area  (x0.1mm) */
+    char szGrayLebelName[30];	/* data name of gray level	 */
+    char szColorMatchName[30];	/* data name of color matching */
+    BOOL bFaxResoEnable;	/* flag for FAX resolution */
+    BOOL bNoUseColorMatch;	/* flag for disabling the ColorMatching */
+    BOOL bCompressEnbale;	/* flag of enabling the compression */
+    BOOL bLogFile;		/* flag of log file */
+    WORD wInBuffSize;		/* size of input buffer	 */
 } MODELCONFIG, *PMODELCONFIG;
 
 
 /*==========================================*/
 /*	 prototype difinision of exported function		*/
 /*==========================================*/
-int init_model_info(void);						/* Initialize the model information 		 */
-int get_model_info(PMODELINF);					/* acquire the model information	 */
-int exit_model_info(void);						/* terminate the process for model information	 */
-int get_model_config(PMODELINF,PMODELCONFIG);	/* acquire the various information		 */
+int init_model_info(void);	/* Initialize the model information */
+int get_model_info(PMODELINF);	/* acquire the model information */
+int exit_model_info(void);	/* terminate the process for model information */
+int get_model_config(PMODELINF,PMODELCONFIG);	/* acquire the various information */
 
 int ReadInitFileInt( LPCTSTR, LPCTSTR, int, LPCTSTR);
 int ReadInitFileString( LPCTSTR, LPCTSTR, LPCTSTR, char *, int, LPCTSTR);

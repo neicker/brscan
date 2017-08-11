@@ -19,12 +19,12 @@ AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 
-libsane_brother_la_SOURCES = brother.c sane_strstatus.c			\
-	../sanei/sanei_config.c ../sanei/sanei_constrain_value.c	\
-	../sanei/sanei_init_debug.c
+libsane_brother_la_SOURCES = brother.c brother_cmatch.c			\
+	sane_strstatus.c ../sanei/sanei_config.c			\
+	../sanei/sanei_constrain_value.c ../sanei/sanei_init_debug.c
 
 noinst_HEADERS = brother.h brother_bugchk.c brother_bugchk.h		\
-	brother_cmatch.c brother_cmatch.h brother_devaccs.c		\
+	brother_cmatch.h brother_devaccs.c		\
 	brother_devaccs.h brother_devinfo.c brother_devinfo.h		\
 	brother_dtype.h brother_log.c brother_log.h brother_mfccmd.c	\
 	brother_mfccmd.h brother_mfcinfo.h brother_misc.c		\
