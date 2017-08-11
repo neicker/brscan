@@ -18,7 +18,6 @@
 
 */
 
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -31,23 +30,17 @@
 
 #ifdef DEBUGMAIN
 #define  WriteLog printf
-#else 
+#else
 #define  WriteLog if(0)printf
 #endif  //DEBUGMAIN
 
-
-
 sane_model_info ERRORINFO={"","",-1,-1,-1,-1,-1,-1,-1,"","","",NULL};
-
-
 
 sane_model_info *root_adv_model = NULL;
 
 char g_logfile[260];
 int  g_loglevel;
 char  g_logmode;
-
-
 
 //++++++++++++++++++
 // Local functions
@@ -65,17 +58,15 @@ void reform_line(char *line){
   *s = 0;
 }
 
-
-
 //------------------------------------------
 // get model informations from lines of inifile
 // and register the gotten information to the
 // model information list chain
-//     void *def  must be static pointer 
+//     void *def  must be static pointer
 //------------------------------------------
 char *get_1_element(char *line,void *element,char *format,void *def){
   //
-  //  void *def  must be static pointer 
+  //  void *def  must be static pointer
   //
   char *p;
 
@@ -117,7 +108,6 @@ int parse_and_add_model_info(char *line){
   current_t->r_endpoint = -1;
   current_t->w_endpoint = -1;
 
-
   //  sscanf(line,"0x%x,0x%x,%d,%d,%s,%d,%d",
   //	 &current_t->vid,
   //	 &current_t->pid,
@@ -126,8 +116,6 @@ int parse_and_add_model_info(char *line){
   //	 &current_t->model_name[0],
   //	 &current_t->r_endpoint,
   //     &current_t->w_endpoint);
-
-  
 
   line = get_1_element(line,tmp,                      "%s",&def_str);
   current_t->pid = def_int;
@@ -154,9 +142,6 @@ int parse_and_add_model_info(char *line){
   return 0;
 }
 
-
-
-
 //----------------------------------------
 // get model information structure
 //  and registerd to the model information
@@ -181,8 +166,6 @@ int get_model_structure(char *file){
     //    printf("file = %s\n",file);
     //    printf("line = %s\n\n-----------------------\n\n",line);
 
-
-
     if(line[0] == '\n')continue;
     if(line[0] == '#')continue;
     if(line[0] == '[')break;
@@ -193,7 +176,6 @@ int get_model_structure(char *file){
   fclose(fp);
   return result;
 }
-
 
 //------------------------------------------
 // check file name has ".ini" extension or not
@@ -210,12 +192,9 @@ int check_inifile_name(char *file){
   return 0;
 }
 
-
-
-
 //------------------------------------
 //  scan all ini-file in the model directory
-//   and registers the model informations 
+//   and registers the model informations
 //------------------------------------
 int scan_model_directory(){
   DIR *dir;
@@ -242,8 +221,6 @@ int scan_model_directory(){
   return 0;
 }
 
-
-
 //------------------------------------
 //
 //
@@ -268,6 +245,7 @@ sane_model_info  get_model_info_from_ini_by_product_id(int id){
   current = &ERRORINFO;
   return ERRORINFO;
 }
+
 sane_model_info  *get_p_model_info_from_ini_by_product_id(int id){
   static sane_model_info *current = NULL;
   static int pre_id=-1;
@@ -290,7 +268,6 @@ sane_model_info  *get_p_model_info_from_ini_by_product_id(int id){
   return &ERRORINFO;
 }
 
-
 sane_model_info  *get_p_model_info_by_index(int index){
   static sane_model_info *current = NULL;
   static int pre_index;
@@ -312,9 +289,6 @@ sane_model_info  *get_p_model_info_by_index(int index){
   return current;
 }
 
-
-
-
 int free_inifile_tree(){
   sane_model_info *current,*current_t = root_adv_model;
 
@@ -326,10 +300,6 @@ int free_inifile_tree(){
   root_adv_model = NULL;
   return 0;
 }
-
-
-
-
 
 //---------------------------------------------
 
@@ -400,8 +370,6 @@ int init_netini(){
       current_netini->id[0] = 0;
     }
 
-
-
     if(root_netini == NULL){
       root_netini = current_netini;
       num = 1;
@@ -417,7 +385,6 @@ int init_netini(){
   fclose(fp_ini);
   return num;
 }
-
 
 int get_net_device_num(){
   int i;
@@ -484,9 +451,6 @@ char *get_net_ini_value(int dev_index ,int key, char *value, int size){
   return value;
 }
 
-
-
-
 int free_net_inifile_tree(){
   netini *current,*current_t = root_netini;
 
@@ -499,8 +463,6 @@ int free_net_inifile_tree(){
   return 0;
 }
 
-
-
 int ReadModelInfoSub(char *buff,int bufsize,int *psize){
   char line[512];
 
@@ -510,7 +472,6 @@ int ReadModelInfoSub(char *buff,int bufsize,int *psize){
   if(root_adv_model == NULL){
     scan_model_directory();
   }
-
 
   current = root_adv_model;
   while(current){
@@ -556,8 +517,6 @@ int ReadModelInfoSub(char *buff,int bufsize,int *psize){
   return record;
 }
 
-
-
 int ReadModelInfoSize2(int *size, int *record){
 
   *record = ReadModelInfoSub(NULL,0,size);
@@ -576,14 +535,12 @@ int ReadModelInfo2(char *lpReturnedString,int nSize){
   return 1;
 }
 
-
-
 int debug_disp_model_info(){
   sane_model_info *current = root_adv_model;
 
   while(current){
     printf(
-        "MODEL:%s,ID:0x%x:0x%x,TYPE:%d,%d,RE:0x%x,WE:0x%x CM:%s,%s,%s\n",
+	"MODEL:%s,ID:0x%x:0x%x,TYPE:%d,%d,RE:0x%x,WE:0x%x CM:%s,%s,%s\n",
 	current->model_name,
 	current->vid,
 	current->pid,
@@ -600,13 +557,12 @@ int debug_disp_model_info(){
   return 0;
 }
 
-
 char *get_net_ini_value_by_name(char *name ,int key, char *value, int size){
   netini *current_netini;
   char *src = NULL;
   if(root_netini == NULL)init_netini();
   current_netini = root_netini;
-  if(current_netini->friendlyname == NULL || 
+  if(current_netini->friendlyname == NULL ||
      current_netini->friendlyname[0] == 0){
     return NULL;
   }
@@ -649,13 +605,8 @@ char *get_net_ini_value_by_name(char *name ,int key, char *value, int size){
   return value;
 }
 
-
-
-
-
 //------------------ for debug---------------------------
 #ifdef DEBUGMAIN
-
 
 char *debug_disp_netini(){
   netini *current_netini;
@@ -700,7 +651,6 @@ int main(){
 	   target.model_name,
 	   target.func_type);
 
-  
   debug_disp_model_info();
 
   debug_disp_netini();
@@ -714,7 +664,4 @@ int main(){
   return 0;
 }
 
-
 #endif
-
-

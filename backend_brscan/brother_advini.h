@@ -21,12 +21,6 @@
 #ifndef  _ADVANCED_INIFILE_
 #define _ADVANCED_INIFILE_
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <dirent.h>
-
 #define pintf_error printf
 
 #define NAMELEN  64
@@ -53,17 +47,11 @@ typedef struct _sane_model_info  {
 //
 #define  EXP_CAPDUPLEX   (1<<0)
 
-
-
 #define MODELSECTION "[Support Model]"
-
-
-
 
 sane_model_info  get_model_info_from_ini_by_product_id(int id);
 sane_model_info  *get_p_model_info_from_ini_by_product_id(int id);
 int free_inifile_tree();
-
 
 #define IPDEVICEFORMAT      "DEVICE=%s , %s , %s , IP-ADDRESS=%s "
 #define NODEDEVICEFORMAT    "DEVICE=%s , %s , %s , NODENAME=%s "
@@ -90,12 +78,9 @@ typedef struct _netini {
   struct _netini *next;
 } netini;
 
-
 #define CONFDIR       "/usr/share/sane/brother/"
 
-
 char *get_net_ini_value(int index ,int key, char *value, int size);
-
 
 int free_net_inifile_tree();
 
@@ -107,10 +92,7 @@ int ReadModelInfoSize2(int *size, int *record);
 
 sane_model_info  *get_p_model_info_by_index(int index);
 
-#define  FOR_OEM
-
-//files depend on besane revisions
-
+//files depend on brsane revisions
 
 #ifndef BRSANESUFFIX
 #include "brother_sanesufix.h"
@@ -144,13 +126,11 @@ sane_model_info  *get_p_model_info_by_index(int index);
 
 #endif
 
-
 // for brsaneconfig
 int check_inifile_name(char *file);
 int scan_model_directory();
 void reform_line(char *line);
 int debug_disp_model_info();
 char *get_net_ini_value_by_name(char *name ,int key, char *value, int size);
-
 
 #endif

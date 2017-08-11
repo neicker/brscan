@@ -155,7 +155,8 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_libsane_brother_la_OBJECTS = brother.lo brother_cmatch.lo \
 	brother_devaccs.lo brother_devinfo.lo brother_mfccmd.lo \
 	brother_misc.lo brother_modelinf.lo brother_scanner.lo \
-	brother_netdev.lo sane_strstatus.lo ../sanei/sanei_config.lo \
+	brother_netdev.lo brother_advini.lo brother_log.lo \
+	sane_strstatus.lo ../sanei/sanei_config.lo \
 	../sanei/sanei_constrain_value.lo ../sanei/sanei_init_debug.lo
 libsane_brother_la_OBJECTS = $(am_libsane_brother_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -388,15 +389,15 @@ sanelib_LTLIBRARIES = libsane-brother.la
 libsane_brother_la_SOURCES = brother.c brother_cmatch.c			\
 	brother_devaccs.c brother_devinfo.c brother_mfccmd.c		\
 	brother_misc.c brother_modelinf.c brother_scanner.c		\
-	brother_netdev.c sane_strstatus.c ../sanei/sanei_config.c	\
+	brother_netdev.c brother_advini.c brother_log.c			\
+	sane_strstatus.c ../sanei/sanei_config.c			\
 	../sanei/sanei_constrain_value.c ../sanei/sanei_init_debug.c
 
 noinst_HEADERS = brother.h brother_bugchk.c brother_bugchk.h		\
 	brother_cmatch.h brother_devaccs.h brother_devinfo.h		\
-	brother_dtype.h brother_log.c brother_log.h brother_mfccmd.h	\
+	brother_dtype.h brother_log.h brother_mfccmd.h	\
 	brother_mfcinfo.h brother_misc.h brother_modelinf.h		\
-	brother_scanner.h brother_netdev.h brother_advini.c		\
-	brother_advini.h
+	brother_scanner.h brother_netdev.h brother_advini.h
 
 noinst_LTLIBRARIES = libstubs.la
 libstubs_la_SOURCES = stubs.c
@@ -516,9 +517,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../sanei/$(DEPDIR)/sanei_constrain_value.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@../sanei/$(DEPDIR)/sanei_init_debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_advini.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_cmatch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_devaccs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_devinfo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_mfccmd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_modelinf.Plo@am__quote@

@@ -34,6 +34,8 @@
 #ifndef _BROTHER_DEVACCS_H_
 #define _BROTHER_DEVACCS_H_
 
+#include "brother.h"
+
 //
 // 送受信バッファサイズ
 //
