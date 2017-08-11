@@ -19,18 +19,18 @@ AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 
-libsane_brother_la_SOURCES = brother.c brother_cmatch.c			\
-	brother_devaccs.c brother_devinfo.c brother_mfccmd.c		\
-	brother_misc.c brother_modelinf.c brother_scanner.c		\
-	brother_netdev.c brother_advini.c brother_log.c			\
-	brother_bugchk.c sane_strstatus.c ../sanei/sanei_config.c	\
-	../sanei/sanei_constrain_value.c ../sanei/sanei_init_debug.c
+libsane_brother_la_SOURCES = brother.c brother_cmatch.c		\
+	brother_devaccs.c brother_devinfo.c brother_mfccmd.c	\
+	brother_misc.c brother_modelinf.c brother_scanner.c	\
+	brother_netdev.c brother_advini.c brother_log.c		\
+	brother_bugchk.c sane_strstatus.c sanei_config.c	\
+	sanei_constrain_value.c sanei_init_debug.c
 
-noinst_HEADERS = brother.h brother_bugchk.h		\
-	brother_cmatch.h brother_devaccs.h brother_devinfo.h		\
-	brother_dtype.h brother_log.h brother_mfccmd.h	\
-	brother_mfcinfo.h brother_misc.h brother_modelinf.h		\
-	brother_scanner.h brother_netdev.h brother_advini.h
+noinst_HEADERS = brother.h brother_bugchk.h brother_cmatch.h	\
+	brother_devaccs.h brother_devinfo.h brother_dtype.h	\
+	brother_log.h brother_mfccmd.h brother_mfcinfo.h	\
+	brother_misc.h brother_modelinf.h brother_scanner.h	\
+	brother_netdev.h brother_advini.h
 
 noinst_LTLIBRARIES = libstubs.la
 
