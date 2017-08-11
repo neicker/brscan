@@ -20,7 +20,8 @@ dist_noinst_DATA = Copying copying.brother brscan.spec
 pkgexecdir = $(libexecdir)/brscan
 dist_pkgexec_SCRIPTS = mk_package/setupSaneScan
 
-dist_pkgdata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
+brscandatadir = $(datadir)/sane/brother
+dist_brscandata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
 
 .PHONY: rpm
 rpm: dist

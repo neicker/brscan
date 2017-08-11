@@ -308,9 +308,6 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 dist_noinst_DATA = libbrscandec.so.1.0.0
 noinst_HEADERS = brother_deccom.h brother_scandec.h
 all: all-am

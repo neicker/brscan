@@ -30,6 +30,3 @@ do_subst = sed \
 
 %: %.in
 	$(subst_verbose)$(do_subst) < $^ > $@ && chmod --reference $^ $@
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins

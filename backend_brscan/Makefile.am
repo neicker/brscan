@@ -18,8 +18,6 @@ AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
 
 AM_CFLAGS += -O0 -W -Wall
 
-# AM_LDFLAGS += -lpthread @todo
-
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 

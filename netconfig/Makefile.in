@@ -342,9 +342,6 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 noinst_HEADERS = resource.h
 brsaneconfig_SOURCES = brsaneconfig.c ../backend_brscan/brother_advini.c
 brsaneconfig_CPPFLAGS = $(AM_CPPFLAGS) -DBRSANESUFFIX=1	\

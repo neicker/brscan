@@ -63,4 +63,4 @@ exit 0
 %exclude %{_libdir}/sane/libsane-brother.la
 %exclude %{_libdir}/sane/libsane-brother.so
 %{_libexecdir}/brscan
-%{_datadir}/brscan
+%{_datadir}/sane/brother

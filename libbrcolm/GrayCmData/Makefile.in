@@ -316,10 +316,7 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
-graycmdatadir = $(pkgdatadir)/GrayCmData
+graycmdatadir = $(datadir)/sane/brother/GrayCmData
 nobase_dist_graycmdata_DATA = BHL/brmfgray.bin BHL2/brmsi06.bin		\
 	BHL2FB/brmsi06f.bin BHLFB/brmfgray.bin BHMFB/brmfgray.bin	\
 	BHminiFB/brmfgray.bin YL4/brmfgray.bin YL4FB/brlutcm.dat	\

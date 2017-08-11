@@ -306,9 +306,6 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 noinst_HEADERS = sanei.h sanei_backend.h sanei_config.h sanei_debug.h	\
 	saneopts.h
 

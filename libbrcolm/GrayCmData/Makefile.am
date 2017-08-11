@@ -9,7 +9,7 @@
 
 include $(top_srcdir)/common.am
 
-graycmdatadir = $(pkgdatadir)/GrayCmData
+graycmdatadir = $(datadir)/sane/brother/GrayCmData
 
 nobase_dist_graycmdata_DATA = BHL/brmfgray.bin BHL2/brmsi06.bin		\
 	BHL2FB/brmsi06f.bin BHLFB/brmfgray.bin BHMFB/brmfgray.bin	\

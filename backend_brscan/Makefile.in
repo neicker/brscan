@@ -378,14 +378,9 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 V_MAJOR = 1
 V_MINOR = 0
 V_REV = 7
-
-# AM_LDFLAGS += -lpthread @todo
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 libsane_brother_la_SOURCES = brother.c sane_strstatus.c			\

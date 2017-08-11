@@ -118,7 +118,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 	$(am__configure_deps) $(dist_pkgexec_SCRIPTS) \
-	$(dist_noinst_DATA) $(dist_pkgdata_DATA) $(am__DIST_COMMON)
+	$(dist_brscandata_DATA) $(dist_noinst_DATA) $(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
@@ -151,7 +151,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(pkgexecdir)" "$(DESTDIR)$(pkgdatadir)"
+am__installdirs = "$(DESTDIR)$(pkgexecdir)" \
+	"$(DESTDIR)$(brscandatadir)"
 SCRIPTS = $(dist_pkgexec_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -180,7 +181,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-DATA = $(dist_noinst_DATA) $(dist_pkgdata_DATA)
+DATA = $(dist_brscandata_DATA) $(dist_noinst_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -406,9 +407,6 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include/sane backend_brscan libbrcolm libbrscandec netconfig
 
@@ -416,7 +414,8 @@ SUBDIRS = include/sane backend_brscan libbrcolm libbrscandec netconfig
 dist_noinst_DATA = Copying copying.brother brscan.spec
 pkgexecdir = $(libexecdir)/brscan
 dist_pkgexec_SCRIPTS = mk_package/setupSaneScan
-dist_pkgdata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
+brscandatadir = $(datadir)/sane/brother
+dist_brscandata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
 all: all-recursive
 
 .SUFFIXES:
@@ -498,27 +497,27 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool config.lt
-install-dist_pkgdataDATA: $(dist_pkgdata_DATA)
+install-dist_brscandataDATA: $(dist_brscandata_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	@list='$(dist_brscandata_DATA)'; test -n "$(brscandatadir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(pkgdatadir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(brscandatadir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(brscandatadir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pkgdatadir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pkgdatadir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(brscandatadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(brscandatadir)" || exit $$?; \
 	done
 
-uninstall-dist_pkgdataDATA:
+uninstall-dist_brscandataDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
+	@list='$(dist_brscandata_DATA)'; test -n "$(brscandatadir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(pkgdatadir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(brscandatadir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -819,7 +818,7 @@ check: check-recursive
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(pkgexecdir)" "$(DESTDIR)$(pkgdatadir)"; do \
+	for dir in "$(DESTDIR)$(pkgexecdir)" "$(DESTDIR)$(brscandatadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -874,7 +873,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-dist_pkgdataDATA
+install-data-am: install-dist_brscandataDATA
 
 install-dvi: install-dvi-recursive
 
@@ -920,7 +919,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-dist_pkgdataDATA uninstall-dist_pkgexecSCRIPTS
+uninstall-am: uninstall-dist_brscandataDATA \
+	uninstall-dist_pkgexecSCRIPTS
 
 .MAKE: $(am__recursive_targets) install-am install-strip
 
@@ -932,7 +932,7 @@ uninstall-am: uninstall-dist_pkgdataDATA uninstall-dist_pkgexecSCRIPTS
 	distclean-libtool distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-dist_pkgdataDATA install-dist_pkgexecSCRIPTS \
+	install-dist_brscandataDATA install-dist_pkgexecSCRIPTS \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
 	install-man install-pdf install-pdf-am install-ps \
@@ -940,7 +940,7 @@ uninstall-am: uninstall-dist_pkgdataDATA uninstall-dist_pkgexecSCRIPTS
 	installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-dist_pkgdataDATA \
+	uninstall-am uninstall-dist_brscandataDATA \
 	uninstall-dist_pkgexecSCRIPTS
 
 .PRECIOUS: Makefile

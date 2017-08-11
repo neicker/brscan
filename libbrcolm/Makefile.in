@@ -350,9 +350,6 @@ do_subst = sed \
 	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g'
 
-
-# should be $(libdir)/psmgmt-plugins or similar @todo
-plugindir = $(prefix)/plugins
 SUBDIRS = GrayCmData
 dist_noinst_DATA = libbrcolm.so.1.0.1
 noinst_HEADERS = brcolor.h
