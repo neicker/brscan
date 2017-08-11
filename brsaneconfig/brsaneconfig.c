@@ -56,14 +56,6 @@ extern  sane_model_info *root_adv_model;
 
 #include "resource.h"
 
-
-
-
-
-
-
-
-
 #define SAVECONFIG 0
 #define LOADCONFIG 1
 
@@ -169,7 +161,7 @@ int get_config_from_commandline(char **arg,  int argc,
     return -1;
   }
 
-  if(get_net_ini_value_by_name(friendly ,KEY_DEVICE, check, 
+  if(get_net_ini_value_by_name(friendly ,KEY_DEVICE, check,
 			       sizeof(check)) != NULL){
     printf(INVALIDFNAME2,friendly);
     return -1;
@@ -221,7 +213,7 @@ int check_ipaddress_is_valid(char *ip){
       dot ++;
       continue;
     }
-    if( (c > '9' ||  c < '0') &&  (c != '.')  )      return 0;    
+    if( (c > '9' ||  c < '0') &&  (c != '.')  )      return 0;
   }
   if(dot != 3)return 0;
   return 1;
@@ -313,12 +305,12 @@ int add_network_device(char **arg,int argc){
       if(fp == NULL){
 	return -1;
       }
-      if(node && *node){
+      if(*node){
 	fprintf(fp,NODEDEVICEFORMAT,
 		friendly,model,id,node);
       }
-	 
-      else if(ip && *ip){
+
+      else if(*ip){
 	fprintf(fp,IPDEVICEFORMAT,
 		friendly,model,id,ip);
       }
@@ -348,7 +340,7 @@ int remove_network_device(char *label[], int n){
   char tmpconffile[32]=BRSANETMPFILE;
   int tmp;
   int i;
-  
+
   tmp = mkstemp(tmpconffile);
   if(tmp == -1)return -1;
   else close(tmp);
@@ -404,7 +396,7 @@ int query_available_models(){
     get_net_ini_value(i,KEY_IP ,ip,sizeof(ip));
     get_net_ini_value(i,KEY_NODE ,node,sizeof(node));
 
-    iname = imodel = 0; 
+    iname = imodel = 0;
     if(name[0] )iname  =strlen(name);
     if(model[0])imodel =strlen(model);
 
@@ -420,10 +412,10 @@ int query_available_models(){
     if(imodel < (TAB-1))ii = TAB - imodel;
     while(ii--)putchar(' ');
 
-    if(node && node[0]){
+    if(node[0]){
       printf("N:%s",node);
     }
-    else if(ip && ip[0]){
+    else if(ip[0]){
       printf("I:%s",ip);
     }
     printf("\n");
@@ -431,7 +423,7 @@ int query_available_models(){
   return 1;
 }
 
-int set_sane_initial_config(){
+int set_sane_initial_config(void){
   return 1;
 }
 
@@ -455,7 +447,7 @@ int test_ping(){
     get_net_ini_value(i,KEY_DEVICE,value,sizeof(value));
     printf("test %s\n",value);
     if(!get_net_ini_value(i,KEY_NODE,value,sizeof(value))){
-        get_net_ini_value(i,KEY_IP,value,sizeof(value));
+	get_net_ini_value(i,KEY_IP,value,sizeof(value));
     }
     if(*value){
       sprintf(ss,"ping %s -w 10\n",value);
@@ -471,7 +463,7 @@ int scan_and_cat_for_diagnosis(){
   DIR *dir;
   struct dirent *entry;
   char command[1024];
-  
+
   if(root_adv_model != NULL)return -1;
 
   if ( NULL != (dir = opendir(MODELINIDIR)) ){
@@ -552,7 +544,7 @@ int make_filename(char *arg,char *file,int size){
   while(*arg == ' '|| *arg == '\t')arg ++;
   strcpy(file,CONFDIR);
   strcat(file, arg + sizeof("-S:") -1);
-  strcat(file,SANESAVEFILE);  
+  strcat(file,SANESAVEFILE);
   return 1;
 }
 
@@ -608,7 +600,7 @@ int main(int argc , char *argv[]){
   else{
     option = 0;
   }
-  
+
   //printf("option = %x\n",option);
   switch(option){
   case OPTION_S:
@@ -634,7 +626,7 @@ int main(int argc , char *argv[]){
     remove_network_device(argv,argc);
     break;
   case OPTION_I:
-    set_sane_initial_config(NULL);
+    set_sane_initial_config();
     break;
   case OPTION_D:
     brsane_diagnosis();
@@ -682,11 +674,11 @@ int get_config_from_by_ui(
   if(nport  <= 4 )return -1;
   if(nnode  <= 16)return -1;
   if(nmodel <= 32)return -1;
-  
+
   *model = 0;
   *port = 0;
   *ip = 0;
-  *node = 0; 
+  *node = 0;
   *id = 0;
 
   scan_model_directory();
