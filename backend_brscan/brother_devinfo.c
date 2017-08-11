@@ -33,13 +33,14 @@
 
 #include <pthread.h>
 
-#include "brother.h"
+//#include "brother_mfcinfo.h"
 
 #include "brother_cmatch.h"
 #include "brother_mfccmd.h"
 #include "brother_devaccs.h"
 #include "brother_misc.h"
 #include "brother_log.h"
+#include "brother_bugchk.h"
 
 #include "brother_devinfo.h"
 
@@ -66,17 +67,15 @@
 BOOL
 ExecQueryThread( Brother_Scanner *this, void *lpQueryProc)
 {
-	pthread_t   tid;
-        
-        /*  Create receving thread */
-	if (pthread_create(&tid,NULL, lpQueryProc,(void*)this))
-		return TRUE;
+    pthread_t   tid;
 
-        /*  Wait end of receving thread.  */	
-	if (pthread_join(tid,NULL)) 
-		return TRUE;
+    /*  Create receving thread */
+    if (pthread_create(&tid,NULL, lpQueryProc,(void*)this)) return TRUE;
 
-	return TRUE;
+    /*  Wait end of receving thread.  */
+    if (pthread_join(tid,NULL))	return TRUE;
+
+    return TRUE;
 }
 // #define FOR_THREAD
 //-----------------------------------------------------------------------------
@@ -168,7 +167,7 @@ QueryScannerInfo( Brother_Scanner *this )
 	WriteLog( "Query scanner info" );
 
 	// If device's PC-scan protcol is later than 2000 ver. and
-        // has capability to inquire resolution, execute I-command
+	// has capability to inquire resolution, execute I-command
 	//
 #ifdef FOR_THREAD
 	bResult = ExecQueryThread( this, QueryScanInfoProc);
@@ -179,7 +178,7 @@ QueryScannerInfo( Brother_Scanner *this )
 	if( bResult == FALSE ){
 	  WriteLog("I command Fault");
 		//If I-commnad is filed or no-support,
-                //use defult value of scanner information.
+		//use defult value of scanner information.
 
 		CnvResoNoToDeviceResoValue( this, this->devScanInfo.wResoType, this->devScanInfo.wColorType );
 		SetDefaultScannerInfo( this );
@@ -213,7 +212,7 @@ SetDefaultScannerInfo( Brother_Scanner *this )
 	this->devScanInfo.wScanSource = MFCSCANSRC_ADF;
 
 	//
-	// Max width of scan. (in unit of 0.1 mm) 
+	// Max width of scan. (in unit of 0.1 mm)
 	this->devScanInfo.dwMaxScanWidth = MFCSCANMAXWIDTH;
 
 	//
@@ -290,7 +289,7 @@ QCommandProc( void *lpParameter )
 	Brother_Scanner *this;
 	BOOL bResult = FALSE;
 	DWORD  dwQcmdTimeOut;
-	
+
 	int nReadSize;
 	char *pReadBuf;
 
@@ -304,7 +303,7 @@ QCommandProc( void *lpParameter )
 	//WriteDeviceCommand( this->hScanner, MFCMD_QUERYDEVINFO, strlen( MFCMD_QUERYDEVINFO ) );
 	//2005/11/11 Add SeriesNnumber information for L4CFB
 	WriteDeviceCommand( this->hScanner, MFCMD_QUERYDEVINFO, strlen( MFCMD_QUERYDEVINFO ),this->modelInf.seriesNo  );
-	
+
 	// Set value of timeout
 	//
 	dwQcmdTimeOut = QUERYTIMEOUY ;
@@ -322,13 +321,12 @@ QCommandProc( void *lpParameter )
 		this->mfcDevInfoHeader.nProtcolType = *(BYTE *)(pReadBuf+3);
 
 		memset( &this->mfcDeviceInfo, 0, sizeof( MFCDEVICEINFO ) );
-		this->mfcDeviceInfo.nColorType.val = *(BYTE *)(pReadBuf+5); 
-		this->mfcDeviceInfo.nHardwareVersion = *(BYTE *)(pReadBuf+13); 
-		this->mfcDeviceInfo.nMainScanDpi = *(BYTE *)(pReadBuf+14); 
-		this->mfcDeviceInfo.nPaperSizeMax = *(BYTE *)(pReadBuf+15); 
+		this->mfcDeviceInfo.nColorType.val = *(BYTE *)(pReadBuf+5);
+		this->mfcDeviceInfo.nHardwareVersion = *(BYTE *)(pReadBuf+13);
+		this->mfcDeviceInfo.nMainScanDpi = *(BYTE *)(pReadBuf+14);
+		this->mfcDeviceInfo.nPaperSizeMax = *(BYTE *)(pReadBuf+15);
 		bResult=TRUE;
-	}	
-	else {
+	} else {
 		//Fail to read to return value of Q-command.
 		//
 		WriteLog( "SENDQ : read err@timeout " );
@@ -405,7 +403,7 @@ QueryScanInfoProc(
 #if       BRSANESUFFIX == 2
 		LPSTR  lpDataBuff;
 		int    timesX,timesY;
- 
+
 		timesX=1;
 		timesY=1;
 
@@ -423,29 +421,28 @@ QueryScanInfoProc(
 		this->devScanInfo.DeviceScan.wResoY = StrToWord( GetToken( &lpDataBuff ) );
 
 		//BH3 and later model (ALL,AL,L4CFB etc.) don't send the command that is set to above 1200dpi.		
-	        if(this->devScanInfo.DeviceScan.wResoX > 600){
+		if(this->devScanInfo.DeviceScan.wResoX > 600){
 		  timesX = this->devScanInfo.DeviceScan.wResoX / 600;
 		  this->devScanInfo.DeviceScan.wResoX = 600;
-		}		
+		}
 		if(this->devScanInfo.DeviceScan.wResoY > 600){
 		  timesY = this->devScanInfo.DeviceScan.wResoY / 600;
 		  this->devScanInfo.DeviceScan.wResoY = 600;
 		}
-		
-	        if(this->devScanInfo.DeviceScan.wResoX > 400 && this->devScanInfo.wColorType == COLOR_TG){
+
+		if(this->devScanInfo.DeviceScan.wResoX > 400 && this->devScanInfo.wColorType == COLOR_TG){
 		  timesX = this->devScanInfo.DeviceScan.wResoX / 300;
 		  this->devScanInfo.DeviceScan.wResoX = 300;
 		  timesY = this->devScanInfo.DeviceScan.wResoY / 300;
 		  this->devScanInfo.DeviceScan.wResoY = 300;
 		}
 
-                //If RGB converting is executed and color setting is 24bit,don't use 400dpi setting
+		//If RGB converting is executed and color setting is 24bit,don't use 400dpi setting
 		//if(this->modelInf.seriesNo >= 10 && this->devScanInfo.DeviceScan.wResoX == 400 && ( this->devScanInfo.wColorType == COLOR_FUL || this->devScanInfo.wColorType == COLOR_FUL_NOCM  )){
 		//  timesX = 2;
 		//  this->devScanInfo.DeviceScan.wResoX = 200;
 		//}
-		
-		
+
 		if( this->devScanInfo.DeviceScan.wResoX == 0 || this->devScanInfo.DeviceScan.wResoY == 0 ){
 			// Resolution setting is wrong
 			bResult = FALSE;
@@ -462,11 +459,11 @@ QueryScanInfoProc(
 		// Get information of Max width with FlatBed(unit of 0.1mm)
 		this->devScanInfo.dwMaxScanHeight = StrToWord( GetToken( &lpDataBuff ) ) * 10;
 		this->devScanInfo.dwMaxScanRaster = ( StrToWord( GetToken( &lpDataBuff ) ) ) / timesY;
-		
+
 		bResult = TRUE;
 #elif  BRSANESUFFIX == 1
 		LPSTR  lpDataBuff;
- 
+
 		lpDataBuff = pReadBuf+2; // サイズの領域分、ポインタを進める。
 		wReadSize = nRealReadSize-2;
 		//
@@ -501,19 +498,19 @@ QueryScanInfoProc(
 		// FB読み取り最大長の情報を取得（0.1mm単位、ラスタ数）
 		this->devScanInfo.dwMaxScanHeight = StrToWord( GetToken( &lpDataBuff ) ) * 10;
 		this->devScanInfo.dwMaxScanRaster = StrToWord( GetToken( &lpDataBuff ) );
-		
+
 		bResult = TRUE;
 #else    //BRSANESUFFIX
   force causing compile error
 #endif   //BRSANESUFFIX
 	}
 	FREE( pReadBuf );
-	
+
 	return bResult;
 }
 
 //
-// Table of scan resolution 
+// Table of scan resolution
 //			 ZL series	 BY series	YL series(BW)  YL series(Gray)
 //  100 x  100 dpi	{ 100, 100 },	{ 200, 100 },	{ 200, 100 },	{ 200, 100 }
 //  150 x  150 dpi	{ 150, 150 },	{ 150, 150 },	{ 150, 150 },	{ 150, 150 }
@@ -530,7 +527,7 @@ QueryScanInfoProc(
 // Reasolution table of each device.
 // ZL series：main scan line is 100dpi,200dpi or 300dpi models.
 //
-static RESOLUTION  tblDecScanReso100[] = 
+static RESOLUTION  tblDecScanReso100[] =
 {
 	{ 100, 100 },	//  100 x  100 dpi
 	{ 150, 150 },	//  150 x  150 dpi
@@ -550,7 +547,7 @@ static RESOLUTION  tblDecScanReso100[] =
 //
 // BY/New-YL series：main scan line is 200dpi or 300dpi models.
 //
-static RESOLUTION  tblDecScanReso300[] = 
+static RESOLUTION  tblDecScanReso300[] =
 {
 	{ 200, 100 },	//  100 x  100 dpi
 	{ 150, 150 },	//  150 x  150 dpi
@@ -570,7 +567,7 @@ static RESOLUTION  tblDecScanReso300[] =
 //
 // YL series：main scan line is 200dpi model（B/W）
 //
-static RESOLUTION  tblDecScanReso200BW[] = 
+static RESOLUTION  tblDecScanReso200BW[] =
 {
 	{ 200, 100 },	//  100 x  100 dpi
 	{ 150, 150 },	//  150 x  150 dpi
@@ -590,7 +587,7 @@ static RESOLUTION  tblDecScanReso200BW[] =
 //
 // YL series：main scan line is 200dpi model
 //
-static RESOLUTION  tblDecScanReso200Gray[] = 
+static RESOLUTION  tblDecScanReso200Gray[] =
 {
 	{ 200, 100 },	//  100 x  100 dpi
 	{ 150, 150 },	//  150 x  150 dpi

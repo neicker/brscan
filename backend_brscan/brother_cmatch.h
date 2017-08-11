@@ -34,17 +34,11 @@
 #ifndef _BROTHER_CMATCH_H_
 #define _BROTHER_CMATCH_H_
 
+#include "brother.h"
+
 #include "brcolor.h"
 
 #define GRAY_TABLE_NO  1  // 1で固定
-
-//
-// ColorMatch/GrayTableのファイル名
-//
-#define COLORMATCHDLL  "Brcolm32.dll"
-#define COLORMATCHLUT  "BrLutCm.dat"
-#define GRAYTABLEFILE  "brmfgray.bin"
-
 
 //
 // ColorMatch処理の状態

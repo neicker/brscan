@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_misc.h
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -34,6 +34,7 @@
 #ifndef _BROTHER_MISC_H_
 #define _BROTHER_MISC_H_
 
+#include "brother_dtype.h"
 
 //
 // 関数のプロトタイプ宣言
@@ -49,6 +50,5 @@ DWORD   StrToDword( LPSTR lpszText );
 LPSTR   DwordToStr( DWORD dwValue, LPSTR lpszTextTop );
 
 #endif //_BROTHER_MISC_H_
-
 
 //////// end of brother_misc.h ////////

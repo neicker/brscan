@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_log.h
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -34,11 +34,9 @@
 #ifndef _BROTHER_LOG_H_
 #define _BROTHER_LOG_H_
 
+#include "brother.h"
 
 #define LOGFILENAME  "/BrMfc32.log"
-
-
-#define RAWFILENAME  "/ScanData.raw"
 
 #define LOGSTRMAXLEN  1024
 

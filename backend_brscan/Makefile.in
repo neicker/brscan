@@ -153,8 +153,9 @@ LTLIBRARIES = $(noinst_LTLIBRARIES) $(sanelib_LTLIBRARIES)
 libsane_brother_la_DEPENDENCIES = libstubs.la
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libsane_brother_la_OBJECTS = brother.lo brother_cmatch.lo \
-	brother_devaccs.lo sane_strstatus.lo ../sanei/sanei_config.lo \
-	../sanei/sanei_constrain_value.lo ../sanei/sanei_init_debug.lo
+	brother_devaccs.lo brother_devinfo.lo sane_strstatus.lo \
+	../sanei/sanei_config.lo ../sanei/sanei_constrain_value.lo \
+	../sanei/sanei_init_debug.lo
 libsane_brother_la_OBJECTS = $(am_libsane_brother_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -384,17 +385,17 @@ V_REV = 7
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
 libsane_brother_la_SOURCES = brother.c brother_cmatch.c			\
-	brother_devaccs.c sane_strstatus.c ../sanei/sanei_config.c	\
-	../sanei/sanei_constrain_value.c ../sanei/sanei_init_debug.c
+	brother_devaccs.c brother_devinfo.c sane_strstatus.c		\
+	../sanei/sanei_config.c ../sanei/sanei_constrain_value.c	\
+	../sanei/sanei_init_debug.c
 
 noinst_HEADERS = brother.h brother_bugchk.c brother_bugchk.h		\
-	brother_cmatch.h brother_devaccs.h brother_devinfo.c		\
-	brother_devinfo.h brother_dtype.h brother_log.c brother_log.h	\
-	brother_mfccmd.c brother_mfccmd.h brother_mfcinfo.h		\
-	brother_misc.c brother_misc.h brother_modelinf.c		\
-	brother_modelinf.h brother_scanner.c brother_scanner.h		\
-	brother_netdev.c brother_netdev.h brother_advini.c		\
-	brother_advini.h
+	brother_cmatch.h brother_devaccs.h brother_devinfo.h		\
+	brother_dtype.h brother_log.c brother_log.h brother_mfccmd.c	\
+	brother_mfccmd.h brother_mfcinfo.h brother_misc.c		\
+	brother_misc.h brother_modelinf.c brother_modelinf.h		\
+	brother_scanner.c brother_scanner.h brother_netdev.c		\
+	brother_netdev.h brother_advini.c brother_advini.h
 
 noinst_LTLIBRARIES = libstubs.la
 libstubs_la_SOURCES = stubs.c
@@ -516,6 +517,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_cmatch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_devaccs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/brother_devinfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libstubs_la-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sane_strstatus.Plo@am__quote@
 

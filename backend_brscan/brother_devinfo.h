@@ -33,7 +33,7 @@
 #ifndef _BROTHER_DEVINFO_H_
 #define _BROTHER_DEVINFO_H_
 
-#include "brother_mfcinfo.h"
+#include "brother.h"
 
 //
 // prototype
@@ -48,6 +48,5 @@ DWORD QCommandProc( void *lpParameter );
 DWORD QueryScanInfoProc( void *lpParameter );
 
 #endif //_BROTHER_DEVINFO_H_
-
 
 //////// end of brother_devinfo.h ////////
