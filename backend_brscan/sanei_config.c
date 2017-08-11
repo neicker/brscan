@@ -50,9 +50,6 @@
 #include "sane/sanei.h"
 #include "sane/sanei_config.h"
 
-#define BACKEND_NAME	sanei_config
-#include "sane/sanei_debug.h"
-
 #ifndef PATH_MAX
 # define PATH_MAX	1024
 #endif
@@ -68,60 +65,50 @@ sanei_config_skip_whitespace (const char *str)
 const char *
 sanei_config_get_string (const char *str, char **string_const)
 {
-  const char *start;
-  size_t len;
+    const char *start;
+    size_t len;
 
-  str = sanei_config_skip_whitespace (str);
+    str = sanei_config_skip_whitespace (str);
 
-  if (*str == '"')
-    {
-      start = ++str;
-      while (*str && *str != '"')
-	++str;
-      len = str - start;
-      if (*str == '"')
-	++str;
-      else
-	start = 0;		/* final double quote is missing */
+    if (*str == '"') {
+	start = ++str;
+	while (*str && *str != '"') ++str;
+	len = str - start;
+	if (*str == '"') {
+	    ++str;
+	} else {
+	    start = 0;		/* final double quote is missing */
+	}
+    } else {
+	start = str;
+	while (*str && !isspace (*str)) ++str;
+	len = str - start;
     }
-  else
-    {
-      start = str;
-      while (*str && !isspace (*str))
-	++str;
-      len = str - start;
-    }
-  if (start)
-    *string_const = strndup (start, len);
-  return str;
+    if (start) *string_const = strndup (start, len);
+
+    return str;
 }
 
 char *
 sanei_config_read (char *str, int n, FILE *stream)
 {
-   char* rc;
-   char* start;
-   int   len;
+    char* rc;
+    char* start;
+    int   len;
 
-      /* read line from stream */
-   rc = fgets( str, n, stream);
-   if (rc == NULL)
-      return NULL;
+    /* read line from stream */
+    rc = fgets( str, n, stream);
+    if (rc == NULL) return NULL;
 
-      /* remove ending whitespaces */
-   len = strlen( str);
-   while( (0 < len) && (isspace( str[--len])) )
-      str[len] = '\0';
+    /* remove ending whitespaces */
+    len = strlen( str);
+    while((0 < len) && (isspace(str[--len]))) str[len] = '\0';
 
-      /* remove starting whitespaces */
-   start = str;
-   while( isspace( *start))
-      start++;
+    /* remove starting whitespaces */
+    start = str;
+    while( isspace( *start)) start++;
 
-   if (start != str)
-      do {
-	  *str++ = *start++;
-      } while( *str);
+    if (start != str) do { *str++ = *start++; } while( *str);
 
-   return rc;
+    return rc;
 }
