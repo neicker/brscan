@@ -21,7 +21,7 @@
 ;==============================================================================
 ;	file name		: brother_modelinf.h
 ;	create-date		: 2003.08.07
-;       memo	        	: 
+;       memo			:
 ;==============================================================================
 ;	history
 ;	date		modifier	 comment
@@ -32,10 +32,7 @@
 #ifndef _H_BROTHER_MODELINF
 #define _H_BROTHER_MODELINF
 
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 #include "brother_advini.h"        //for OEM  kado
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 
 /*======================*/
 /* fundamental constant	*/
@@ -221,21 +218,19 @@ int ChangeEndpoint[] = {};
 
 
 /*==========================================*/
-/* 	 definition of structures           */
+/*	 definition of structures           */
 /*==========================================*/
 
 /*** structure of model information ***/
 struct model_inf{
-	struct	model_inf *next;		/* pointer to the next model information structure */
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
-        int             index;
-        int             expcaps;                /* expanded capability flags */ 
-	int		vendorID;		/* Vendor ID					 */
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-	int		productID;				/* Product ID					 */
-	int		seriesNo;				/* series Number					 */
-	char	*modelName;				/* Model name						 */
-	char	*modelTypeName;			/* Model type			 */
+      struct model_inf *next;	/* pointer to next model info structure */
+      int index;
+      int expcaps;              /* expanded capability flags */
+      int vendorID;		/* Vendor ID */
+      int productID;		/* Product ID */
+      int seriesNo;		/* series Number */
+      char *modelName;		/* Model name */
+      char *modelTypeName;	/* Model type */
 };
 typedef struct model_inf MODELINF;
 typedef struct model_inf * PMODELINF;

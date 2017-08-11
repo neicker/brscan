@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_scanner.c
 //
-//		Copyright(c) 1995-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1995-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:
@@ -242,26 +242,6 @@ ScanStart( Brother_Scanner *this )
 
 #ifndef DEBUG_No39
 
-
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-		/* open and prepare USB scanner handle */
-		this->hScanner=usb_open(g_pdev->pdev);
-		if (!this->hScanner)
-			return SANE_STATUS_IO_ERROR;
-
-		//05/11/11 Fix to escape I/O error
-		//if (usb_set_configuration(this->hScanner, 1))
-		//	return SANE_STATUS_IO_ERROR;
-
-		usb_set_configuration(this->hScanner, 1);
-
-		if (usb_claim_interface(this->hScanner, 1))
-			return SANE_STATUS_IO_ERROR;
-
-
-
-
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		{
 		  //if(this->hScanner ==NULL){
 		  //  this->hScanner = calloc(sizeof(dev_handle),1);
@@ -291,8 +271,6 @@ ScanStart( Brother_Scanner *this )
 		    //(05/11/11 Fix to escape I/O error)     return SANE_STATUS_IO_ERROR;
 		  }
 		}
-
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 		// Open Device
 		rc= OpenDevice(this->hScanner, this->modelInf.seriesNo);
@@ -1544,14 +1522,6 @@ ReadTrash( Brother_Scanner *this )
 		usleep(30 * 1000); // wait for 30ms
 
 		// discard the data
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-		nResultSize = usb_bulk_read(this->hScanner,
-		nEndPoint,
-		lpBrBuff,
-		32000,
-		2000
-		);
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		if (IFTYPE_NET != this->hScanner->device){
 		  nResultSize = usb_bulk_read(this->hScanner->usb,
 					      nEndPoint,
@@ -1570,7 +1540,6 @@ ReadTrash( Brother_Scanner *this )
 				  &net_timeout);
 
 		}
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 		WriteLog( "AbortPageScan Read end nResultSize = %d %d", nResultSize,nEndPoint) ;
 
@@ -1631,60 +1600,48 @@ AbortPageScan( Brother_Scanner *this )
 void
 ScanEnd( Brother_Scanner *this )
 {
-	this->scanState.nPageCnt = 0;
-	bTxScanCmd = FALSE;		// Clear the begining-of-scan flag
+    this->scanState.nPageCnt = 0;
+    bTxScanCmd = FALSE;		// Clear the begining-of-scan flag
 
 #ifndef DEBUG_No39
-	if ( this->hScanner != NULL ) {
+    if ( this->hScanner != NULL ) {
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
+	if (IFTYPE_USB == this->hScanner->device){
+	    if (this->hScanner->usb){
 		CloseDevice(this->hScanner);
-		usb_release_interface(this->hScanner, 1);
-		usb_close(this->hScanner);
-		this->hScanner=NULL;
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		if (IFTYPE_USB == this->hScanner->device){
-		  if(this->hScanner->usb){
-		    CloseDevice(this->hScanner);
-		    usb_release_interface(this->hScanner->usb, 1);
-		    usb_close(this->hScanner->usb);
-		    this->hScanner->usb = NULL;
-		  }
-		}
-		else {
-		  if(this->hScanner->net){
-		    CloseDevice(this->hScanner);
-		    this->hScanner->net = NULL;
-		  }
-		}
-
-		// this->hScanner must be available until sane is closed
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
+		usb_release_interface(this->hScanner->usb, 1);
+		usb_close(this->hScanner->usb);
+		this->hScanner->usb = NULL;
+	    }
+	} else {
+	    if (this->hScanner->net){
+		CloseDevice(this->hScanner);
+		this->hScanner->net = NULL;
+	    }
 	}
+    }
 #endif
-	if( hGray && ( hGray != this->cmatch.hGrayTbl ) ){
-		FREE( hGray );
-		hGray = NULL;
-		WriteLog( "free hGray" );
-	}
+    if( hGray && ( hGray != this->cmatch.hGrayTbl ) ){
+	FREE( hGray );
+	hGray = NULL;
+	WriteLog( "free hGray" );
+    }
 
-	FreeReceiveBuffer();
-	if (lpRxTempBuff) {
-		FREE(lpRxTempBuff);
-		lpRxTempBuff = NULL;
-	}
-	if (lpFwTempBuff) {
-		FREE(lpFwTempBuff);
-		lpFwTempBuff = NULL;
-	}
-	//
-	// end of the decode/stretch process
-	//
-	this->scanDec.lpfnScanDecClose();
+    FreeReceiveBuffer();
+    if (lpRxTempBuff) {
+	FREE(lpRxTempBuff);
+	lpRxTempBuff = NULL;
+    }
+    if (lpFwTempBuff) {
+	FREE(lpFwTempBuff);
+	lpFwTempBuff = NULL;
+    }
+    //
+    // end of the decode/stretch process
+    //
+    this->scanDec.lpfnScanDecClose();
 
-	WriteLog( "<<<<< Terminate Scanning <<<<<" );
-
+    WriteLog( "<<<<< Terminate Scanning <<<<<" );
 }
 
 

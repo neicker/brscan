@@ -74,44 +74,6 @@ extern HANDLE	hOrg;		//Gray Adjsut table from scanner
 //
 //-----------------------------------------------------------------------------
 //	LoadColorMatchDll（旧DllMainの一部）
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-
-BOOL
-LoadColorMatchDll( Brother_Scanner *this )
-{
-	BOOL  bResult = TRUE;
-
-
-	this->cmatch.hColorMatch = dlopen ( szColorMatchDl, RTLD_LAZY );
-
-	if( this->cmatch.hColorMatch != NULL ){
-		//
-		// ColorMatchファンクション・ポインタの取得
-		//
-		this->cmatch.lpfnColorMatchingInit    = dlsym ( this->cmatch.hColorMatch, "ColorMatchingInit" );
-		this->cmatch.lpfnColorMatchingEnd     = dlsym ( this->cmatch.hColorMatch, "ColorMatchingEnd" );
-		this->cmatch.lpfnColorMatchingFnc     = dlsym ( this->cmatch.hColorMatch, "ColorMatching" );
-		this->cmatch.nColorMatchStatus = COLORMATCH_NONE;
-
-		if(  this->cmatch.lpfnColorMatchingInit == NULL ||
-			 this->cmatch.lpfnColorMatchingEnd  == NULL ||
-			 this->cmatch.lpfnColorMatchingFnc  == NULL )
-		{
-			// DLLはあるが、アドレスが取れないのは異常
-			dlclose ( this->cmatch.hColorMatch );
-			this->cmatch.hColorMatch = NULL;
-			bResult = FALSE;
-		}
-	}else{
-		this->cmatch.lpfnColorMatchingInit    = NULL;
-		this->cmatch.lpfnColorMatchingEnd     = NULL;
-		this->cmatch.lpfnColorMatchingFnc     = NULL;
-		bResult = FALSE;
-	}
-	return bResult;
-}
-
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 BOOL
 LoadColorMatchDll( Brother_Scanner *this ,int index){
 	BOOL  bResult = TRUE;
@@ -179,10 +141,6 @@ LoadColorMatchDll( Brother_Scanner *this ,int index){
 	}
 	return bResult;
 }
-
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
 
 //-----------------------------------------------------------------------------
 //

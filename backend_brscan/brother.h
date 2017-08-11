@@ -100,9 +100,7 @@ TOptionValue;
 typedef struct TDevice {
   struct TDevice        *pNext;
   struct usb_device     *pdev;
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
   int                   index;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
   SANE_Device            sane;
   MODELINF               modelInf;
 } TDevice;
@@ -161,11 +159,6 @@ typedef struct TCorlorMATCH {
   void              *hGrayTbl;              // GrayTableのハンドル
 } TCorlorMATCH;
 
-
-
-
-
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 typedef struct tagDEVHANDLE {
   br_net_dev_handle      net;
   usb_dev_handle   *usb;
@@ -174,9 +167,6 @@ typedef struct tagDEVHANDLE {
   int              usb_w_ep;
   int              usb_r_ep;
 } dev_handle;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
 
 
 typedef struct Brother_Scanner {
@@ -188,11 +178,7 @@ typedef struct Brother_Scanner {
   MODELINF                   modelInf;		// オープンされたデバイス情報
   MODELCONFIG                modelConfig;       // オープンされたデバイスの各種設定情報
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-  usb_dev_handle            *hScanner;		// USBスキャナのハンドル
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
   dev_handle                 *hScanner;		// USBスキャナのハンドル
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   UISETTING                  uiSetting;         //
   TCorlorMATCH               cmatch;            // カラーマッチング用構造体
@@ -205,10 +191,7 @@ typedef struct Brother_Scanner {
   TScanState                 scanState;         // スキャン時のステータス情報
 } Brother_Scanner;
 
-
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 #define  usb_dev_handle   dev_handle
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 // from DS_INFO.H
 //

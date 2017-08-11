@@ -70,9 +70,7 @@ static int iReadStatus;			// the status when ZERO is read
 static struct timeval save_tv;		// the valiables of the information of time (sec,msec)
 static struct timezone save_tz;		// the valiables of the information of time (min)
 
-#ifdef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 #define   TIMEOUTREADWRITE   2
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 int  init_usb_criticalsection();
 int discard_usb_criticalsection();
@@ -144,21 +142,6 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	int nEndPoint;
 	char data[BREQ_GET_LENGTH];
 
-
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	rc = 0;
-
-	//2005/11/11 Add SeriesNnumber information for L4CFB and later
-	nEndPoint = 0x84;
-
-	for(i=0; i < ANOTHERENDPOINT; i++){
-	  if(seriesNo == ChangeEndpoint[i]){
-	    nEndPoint = 0x85;
-	    break;
-	  }
-	}
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 	rc = 0;
 	if (IFTYPE_NET == hScanner->device){
 	  //int scan_socket = -1;
@@ -208,8 +191,6 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	}
 	//printf("OpenDevice : endpoint %x\n",nEndPoint);
 
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 	WriteLog( "Set EndPoint = %d", nEndPoint) ;
 	  //if(seriesNo == L4CFB ||seriesNo == AL_FB_DCP )
 	  //nEndPoint = 0x85;
@@ -222,19 +203,13 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	enter_usb_criticalsection();
 #endif
 	for (i = 0; i < RETRY_CNT;i++) {
-
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-		rc = usb_control_msg(hScanner,       /* handle */
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		rc = usb_control_msg(hScanner->usb,       /* handle */
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-		    BREQ_TYPE,           /* request type */
-		    BREQ_GET_OPEN,  /* request */    /* GET_OPEN */
-		    BCOMMAND_SCANNER,/* value */      /* scanner  */
-		    0,              /* index */
-		    data, BREQ_GET_LENGTH,        /* bytes, size */
-		    2000            /* Timeout */
+	    rc = usb_control_msg(hScanner->usb,       /* handle */
+				 BREQ_TYPE,           /* request type */
+				 BREQ_GET_OPEN,  /* request */   /* GET_OPEN */
+				 BCOMMAND_SCANNER,/* value */    /* scanner */
+				 0,              /* index */
+				 data, BREQ_GET_LENGTH,   /* bytes, size */
+				 2000            /* Timeout */
 		);
 		if (rc >= 0) {
 				break;
@@ -266,9 +241,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	if (nValue != BCOMMAND_SCANNER)
 		return FALSE;
 
-#ifdef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 	OPEN_POST_PROC:
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 	// recovery
 	{
@@ -329,14 +302,6 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 		WriteLog( "OpenDevice Recovery Read start" );
 
 		// discard the read data
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-		nResultSize = usb_bulk_read(hScanner,
-		nEndPoint,
-		lpBrBuff,
-		32000,
-		2000
-		);
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		if (IFTYPE_NET == hScanner->device){
 		  struct timeval net_timeout = NETTIMEOUTST;
 		  // (sec, micro sec)
@@ -356,9 +321,6 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 						  2000
 						  );
 		}
-
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 
 		WriteLog( "TEST OpenDevice Recovery Read end nResultSize = %d %d", nResultSize,nEndPoint) ;
 
@@ -407,34 +369,25 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 void
 CloseDevice( usb_dev_handle *hScanner )
 {
-	int rc;
-	int i;
-	char data[BREQ_GET_LENGTH];
+    int rc;
+    int i;
+    char data[BREQ_GET_LENGTH];
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	for (i = 0; i < RETRY_CNT;i++) {
-		rc = usb_control_msg(hScanner,       /* handle */
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-	if (IFTYPE_NET == hScanner->device){
-	  close_device_net(hScanner->net);
-	  return ;
-	}
-	for (i = 0; i < RETRY_CNT;i++) {
-		rc = usb_control_msg(hScanner->usb,       /* handle */
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
-
-		    BREQ_TYPE,           /* request type */
-		    BREQ_GET_CLOSE,  /* request */    /* GET_OPEN */
-		    BCOMMAND_SCANNER,/* value */      /* scanner  */
-		    0,              /* index */
-		    data, BREQ_GET_LENGTH,        /* bytes, size */
-		    2000            /* Timeout */
-		);
-		if (rc >= 0)
-			break;
-	}
+    if (IFTYPE_NET == hScanner->device){
+	close_device_net(hScanner->net);
+	return ;
+    }
+    for (i = 0; i < RETRY_CNT;i++) {
+	rc = usb_control_msg(hScanner->usb,       /* handle */
+			     BREQ_TYPE,           /* request type */
+			     BREQ_GET_CLOSE,  /* request */    /* GET_OPEN */
+			     BCOMMAND_SCANNER,/* value */      /* scanner  */
+			     0,              /* index */
+			     data, BREQ_GET_LENGTH,        /* bytes, size */
+			     2000            /* Timeout */
+	    );
+	if (rc >= 0) break;
+    }
 #ifdef SKEY_USBSEM
 				     release_usb_criticalsection();
 				     discard_usb_criticalsection();
@@ -475,23 +428,6 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 
 	WriteLog( "ReadDeviceData Start nReadSize =%d\n", nReadSize ) ;
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	//2005/11/11 Add SeriesNnumber information for L4CFB and later
-	nEndPoint = 0x84;
-	for(i=0; i < ANOTHERENDPOINT; i++){
-	  if(seriesNo == ChangeEndpoint[i]){
-	    nEndPoint = 0x85;
-	    break;
-	  }
-	}
-	/*
-	if(seriesNo == L4CFB || seriesNo == AL_FB_DCP )
-	  nEndPoint = 0x85;
-	else
-	  nEndPoint = 0x84;
-	*/
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 	if (IFTYPE_NET != hScanner->device){
 	  nEndPoint = hScanner->usb_r_ep;
 	  //printf("ReadDeviceData : endpoint %x\n",nEndPoint);
@@ -514,8 +450,6 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 	else{
 	  nEndPoint = 0;    //not be used
 	}
-
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 
 	if (iReadStatus > 0) { // The case  the status of "zero byte read" is available
@@ -551,14 +485,6 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 		}
 	}
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	nResultSize = usb_bulk_read(hScanner,
-	nEndPoint,
-	lpRxBuffer,
-	nReadSize,
-	nTimeOut
-	);
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 	if (IFTYPE_NET != hScanner->device){
 	  nResultSize = usb_bulk_read(hScanner->usb,
 				      nEndPoint,
@@ -575,9 +501,6 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 			  &nResultSize,
 			  &net_timeout);
 	}
-
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 
 	WriteLog( " ReadDeviceData ReadEnd nResultSize = %d\n", nResultSize ) ;
 
@@ -839,16 +762,6 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 	int i;
 	int  nResultSize = 0;
 	int  nEndPoint;
-#ifndef   NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
-	//2005/11/11 Add SeriesNnumber information for L4CFB and later
-	nEndPoint = 0x03;
-	for(i=0; i < ANOTHERENDPOINT; i++){
-	  if(seriesNo == ChangeEndpoint[i]){
-	    nEndPoint = 0x04;
-	    break;
-	  }
-	}
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 	if (IFTYPE_NET == hScanner->device){
 	  int iWritten,rc;
@@ -877,7 +790,6 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 	    }
 	  }
 	}
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 	  /*
 	if(seriesNo == L4CFB || seriesNo == AL_FB_DCP)
@@ -887,18 +799,12 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 	  */
 
 	for (i = 0; i < RETRY_CNT;i++) {
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-		nResultSize = usb_bulk_write(hScanner,
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		nResultSize = usb_bulk_write(hScanner->usb,
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		nEndPoint,
-		lpTxBuffer,
-		nWriteSize,
-		2000
-		);
-		if ( nResultSize >= 0)
-			break;
+	    nResultSize = usb_bulk_write(hScanner->usb,
+					 nEndPoint,
+					 lpTxBuffer,
+					 nWriteSize,
+					 2000);
+	    if ( nResultSize >= 0) break;
 	}
 
 	return nResultSize;
@@ -931,24 +837,21 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 int
 WriteDeviceCommand( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
 {
-	int  nResultSize;
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
-	if (IFTYPE_NET == hScanner->device){
-	  int iWritten;
-	  struct timeval net_timeout = NETTIMEOUTST;
-	  write_device_net(hScanner->net,
-			   lpTxBuffer,
-			   nWriteSize ,
-			   &iWritten,
-			   &net_timeout);
-	  return iWritten;
-	}
+    int  nResultSize;
+    if (IFTYPE_NET == hScanner->device){
+	int iWritten;
+	struct timeval net_timeout = NETTIMEOUTST;
+	write_device_net(hScanner->net,
+			 lpTxBuffer,
+			 nWriteSize ,
+			 &iWritten,
+			 &net_timeout);
+	return iWritten;
+    }
 
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
+    nResultSize = WriteDeviceData(hScanner, lpTxBuffer, nWriteSize, seriesNo);
 
-	nResultSize = WriteDeviceData( hScanner, lpTxBuffer, nWriteSize, seriesNo );
-
-	return nResultSize;
+    return nResultSize;
 }
 
 

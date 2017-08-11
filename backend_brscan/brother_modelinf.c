@@ -140,14 +140,8 @@ int init_model_info(void)
 
 	strcpy( szFileName, BROTHER_SANE_DIR );
 	strcat( szFileName, INIFILE_NAME );
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	modelListGetEnable = ReadModelInfoSize(SUPORT_MODEL_SECTION,NULL, &size, &record, szFileName);/* Get size of model information from init fil */
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 	modelListGetEnable = ReadModelInfoSize2(
 	       &size, &record);/* Get size of model information from init fil */
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
 
 	if(modelListGetEnable != TRUE)
 	    /* Fail to get size */
@@ -160,17 +154,12 @@ int init_model_info(void)
 		modelListGetEnable = FALSE;
 		return modelListGetEnable;		/* error return */
 	}
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	modelListGetEnable = ReadModelInfo(SUPORT_MODEL_SECTION, readModelInfo, size, szFileName);	/*Get model information from file  */
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-        modelListGetEnable = ReadModelInfo2(
-		  readModelInfo, 
-		  size);	/*Get model information from file  */ 
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-	if(modelListGetEnable != TRUE)			/* Fail to get model information */
+	/*Get model information from file  */
+	modelListGetEnable = ReadModelInfo2(readModelInfo, size);
+	if(modelListGetEnable != TRUE)	/* Fail to get model information */
 	{
-		FREE(readModelInfo);			/* Free allocated area */
-		return modelListGetEnable;		/* error return */
+	    FREE(readModelInfo);		/* Free allocated area */
+	    return modelListGetEnable;		/* error return */
 	}
 	if(NULL == (modelListStart = MALLOC( (structSize=sizeof(MODELINF)) * (record+1))))	/* Allocate memory for storing model name  */
 	{
@@ -184,36 +173,32 @@ int init_model_info(void)
 	count = 0;
 	while(1)
 	{
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
-	        model->index = count;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		count++;						 /* Add record number */
-		model->next = NULL_C;				         /* Add null to pointer of next model. */
-		recordLength = strlen(readInfoPoint);			 /* count length of record */
-		if(NULL == ( modelRecord = MALLOC(recordLength+1)))	 /* Allocate memory for 1 record.*/
-		{
-			/* ERR処理 */
-			(model-1)->next = NULL_C;
-			exit_model_info();			         /* Free all alocated area */
-			modelListGetEnable = FALSE;
-			break;
-		}
-		strcpy(modelRecord,readInfoPoint);			 /* separate to 1 record1 */
-		readInfoPoint += recordLength+1;			 /* Move recoed ponter */
-		recordPoint = modelRecord;				 /* Set to pointer that indicated to array */
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
-		res = GetDecInfo(recordPoint,&(model->expcaps));	 /* M-LNX-20 get advanced capability flags */
-		recordPoint += NextPoint(recordPoint);			 /* M-LNX-20 Move pointer that indicated array */
-		res = GetHexInfo(recordPoint,&(model->vendorID));	 /* get product ID */
-		recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-		res = GetHexInfo(recordPoint,&(model->productID));	 /* get product ID */
-		recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
-		res *= GetDecInfo(recordPoint,&(model->seriesNo));	 /* get siries number */
-		recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
-		res *= GetModelNo(recordPoint,modelTypeNo);		 /* get model type number */
-		modelTypeSize =0;
-		if(res == TRUE)
+	    model->index = count;
+	    count++;			/* Add record number */
+	    model->next = NULL_C;	/* Add null to pointer of next model. */
+	    recordLength = strlen(readInfoPoint); /* count length of record */
+	    if(NULL == ( modelRecord = MALLOC(recordLength+1)))	 /* Allocate memory for 1 record.*/
+	    {
+		/* ERR処理 */
+		(model-1)->next = NULL_C;
+		exit_model_info();			         /* Free all alocated area */
+		modelListGetEnable = FALSE;
+		break;
+	    }
+	    strcpy(modelRecord,readInfoPoint);	 /* separate to 1 record1 */
+	    readInfoPoint += recordLength+1;	 /* Move recoed ponter */
+	    recordPoint = modelRecord;		 /* Set to pointer that indicated to array */
+	    res = GetDecInfo(recordPoint,&(model->expcaps));	 /* M-LNX-20 get advanced capability flags */
+	    recordPoint += NextPoint(recordPoint);			 /* M-LNX-20 Move pointer that indicated array */
+	    res = GetHexInfo(recordPoint,&(model->vendorID));	 /* get product ID */
+	    recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
+	    res = GetHexInfo(recordPoint,&(model->productID));	 /* get product ID */
+	    recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
+	    res *= GetDecInfo(recordPoint,&(model->seriesNo));	 /* get siries number */
+	    recordPoint += NextPoint(recordPoint);			 /* Move pointer that indicated array */
+	    res *= GetModelNo(recordPoint,modelTypeNo);		 /* get model type number */
+	    modelTypeSize =0;
+	    if(res == TRUE)
 			/* get size of model type name */
 			res *= ReadModelInfoSize(MODEL_TYPE_NAME_SECTION,modelTypeNo, &modelTypeSize, &dummy, szFileName);
 		if(NULL == (model->modelTypeName = MALLOC(modelTypeSize+1)) || res == FALSE)	/* allocate memory for model type name */
@@ -427,11 +412,9 @@ int get_model_info(PMODELINF modelInfList)
 		modelInfList->modelName = modelListStart->modelName;		/* Pass the information of model list */
 		modelInfList->modelTypeName = modelListStart->modelTypeName;	/* Pass model type name  */
 		modelInfList->next = modelListStart->next;		        /* Pass pointer of next model information structure */
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 		modelInfList->expcaps = modelListStart->expcaps;		/* M-LNX-20 */
 		modelInfList->vendorID = modelListStart->vendorID;		/* Pass product ID */
 		modelInfList->index = modelListStart->index;	      
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 		modelInfList->productID = modelListStart->productID;		/* Pass product ID */
 		modelInfList->seriesNo = modelListStart->seriesNo;		/* Pass serial ID */
 		res = TRUE;

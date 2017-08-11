@@ -57,12 +57,7 @@
 //
 // 関数のプロトタイプ宣言
 //
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-BOOL     LoadColorMatchDll( Brother_Scanner *this );
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 BOOL     LoadColorMatchDll( Brother_Scanner *this ,int index);
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 
 void     FreeColorMatchDll( Brother_Scanner *this );
 void     InitColorMatchingFunc( Brother_Scanner *this, WORD nColorType, int nRgbDataType );

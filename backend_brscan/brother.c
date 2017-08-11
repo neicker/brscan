@@ -57,12 +57,8 @@ Not support (force causing compile error)
 #include "sane/sanei_config.h"
 #include "sane/saneopts.h"
 
-#define  NET_AND_ADVINI
-
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 #include "brother_netdev.h"
 #include "brother_advini.h"
-#endif   //NET_AND_ADVINI  for network and inifile extension  (M-LNX16,17) kado
 
 #include "brother.h"
 #include "brother_mfcinfo.h"
@@ -91,10 +87,8 @@ static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
 #include "brother_scanner.c"
 #include "brother_bugchk.c"
 #include "brother_log.c"
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
 #include "brother_netdev.c"
 #include "brother_advini.c"
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
 /* ======================================================================
 
@@ -343,41 +337,6 @@ InitOptions (Brother_Scanner *this)
   return SANE_STATUS_GOOD;
 }
 
-
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-
-
-static SANE_Status
-RegisterSaneDev (struct usb_device *pdevUSB, char *szName, PMODELINF pModelInf){
-
-  TDevice * q;
-
-  errno = 0;
-
-  q = MALLOC (sizeof (*q));
-  if (!q)
-    return SANE_STATUS_NO_MEM;
-
-  memset (q, 0, sizeof (*q)); /* clear every field */
-  q->sane.name   = strdup (szName);
-  q->sane.vendor = "Brother";
-  q->sane.model  = q->modelInf.modelName = strdup (pModelInf->modelName);
-  q->sane.type   = q->modelInf.modelTypeName = strdup (pModelInf->modelTypeName);
-
-  q->modelInf.productID = pModelInf->productID;
-  q->modelInf.seriesNo = pModelInf->seriesNo;
-
-  q->pdev=pdevUSB;
-
-  ++num_devices;
-  q->pNext = pdevFirst; /* link backwards */
-  pdevFirst = q;
-
-  return SANE_STATUS_GOOD;
-}
-
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 static SANE_Status
 RegisterSaneDev (struct usb_device *pdevUSB,
 		 char *szName, PMODELINF pModelInf,
@@ -424,9 +383,6 @@ RegisterSaneDev (struct usb_device *pdevUSB,
   return SANE_STATUS_GOOD;
 }
 
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
 SANE_Status
 sane_init (SANE_Int *version_code, SANE_Auth_Callback authCB)
 {
@@ -434,10 +390,7 @@ sane_init (SANE_Int *version_code, SANE_Auth_Callback authCB)
   struct usb_device *pdev;
   int                iBus,rc;
   MODELINF          modelInfList;
-
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
   int i,nnetdev;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   WriteLog( "<<< sane_init start >>> " );
 #if       BRSANESUFFIX == 2
@@ -462,10 +415,6 @@ Not support (force causing compile error)
   usb_init();
   usb_find_busses();
   usb_find_devices();
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-  if (!usb_busses)
-    return SANE_STATUS_IO_ERROR;
-#endif  //NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
 
   rc=init_model_info();
   if (!rc)
@@ -475,12 +424,10 @@ Not support (force causing compile error)
   if (!rc)
     return SANE_STATUS_IO_ERROR;
 
-#ifdef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-    nnetdev=get_net_device_num();
-    if (!usb_busses && nnetdev==0){
-      return SANE_STATUS_IO_ERROR;
-    }
-#endif  //NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
+  nnetdev=get_net_device_num();
+  if (!usb_busses && nnetdev==0){
+    return SANE_STATUS_IO_ERROR;
+  }
 
   iBus=0;
   DBG(DEBUG_INFO,"starting bus scan\n");
@@ -502,19 +449,6 @@ Not support (force causing compile error)
 
 	  for (pModelInf=&modelInfList; pModelInf; pModelInf = pModelInf->next)
 	  {
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-	      if (pdev->descriptor.idVendor  ==  SCANNER_VENDOR &&
-		  pdev->descriptor.idProduct == pModelInf->productID)
-		{
-		  char ach[100];
-		  sprintf(ach,"bus%d;dev%d",iBus,iDev);
-		  RegisterSaneDev(pdev,ach,pModelInf);
-		  break;
-		}
-	  }
-	}
-  }
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 	      if (pdev->descriptor.idVendor  ==  pModelInf->vendorID &&
 		  pdev->descriptor.idProduct == pModelInf->productID)
 		{
@@ -544,7 +478,6 @@ Not support (force causing compile error)
 	      }
 	  }
     }
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   rc=exit_model_info();
   if (!rc)
@@ -579,10 +512,8 @@ sane_exit (void)
     }
   if (devlist) FREE(devlist);
   devlist=NULL;
-#ifdef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
   free_inifile_tree();
   free_net_inifile_tree();
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   WriteLog( "<<< sane_exit end >>> " );
 }
@@ -643,25 +574,6 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
   pinstFirst=this;
   /* open and prepare USB scanner handle */
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-
-  this->hScanner=usb_open(pdev->pdev);
-#ifndef DEBUG_No39
-  g_pdev = pdev;
-#endif
-  if (!this->hScanner)
-    return SANE_STATUS_IO_ERROR;
-
-  //2005/11/10 not check returned value from usb_set_configuration()
-  //if (usb_set_configuration(this->hScanner, 1))
-  //   return SANE_STATUS_IO_ERROR;
-
-  usb_set_configuration(this->hScanner, 1);
-
-  if (usb_claim_interface(this->hScanner, 1))
-    return SANE_STATUS_IO_ERROR;
-
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
  {
 		  this->hScanner = calloc(sizeof(dev_handle),1);
 		  if(strncmp(devicename,"net1;dev",strlen("net1;dev")) == 0){
@@ -699,9 +611,6 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 		  }
  }
 
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
-
   // デバイスオープン
   rc= OpenDevice(this->hScanner, pdev->modelInf.seriesNo);
   if (!rc)
@@ -715,11 +624,9 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 
   // 各種設定情報を取得
   this->modelInf.productID = pdev->modelInf.productID;
-#ifdef    NET_AND_ADVINI  //for network and inifile extension (M-LNX16,17) kado
   this->modelInf.expcaps = pdev->modelInf.expcaps;     //M-LNX-20
   this->modelInf.vendorID = pdev->modelInf.vendorID;
   this->modelInf.index = pdev->modelInf.index;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   this->modelInf.seriesNo = pdev->modelInf.seriesNo;
   this->modelInf.modelName = pdev->modelInf.modelName;
@@ -747,19 +654,6 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
   if (!QueryDeviceInfo(this)) // Qコマンドを発行して、デバイス情報を取得
       return SANE_STATUS_INVAL;
 
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-#ifndef DEBUG_No39
-  CloseDevice(this->hScanner);
-  usb_release_interface(this->hScanner, 1);
-  usb_close(this->hScanner);
-  this->hScanner=NULL;
-#endif
-
-  //
-  // ColorMatch DLLのロード
-  //
-  LoadColorMatchDll( this );
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 #ifndef DEBUG_No39
    if (IFTYPE_USB == this->hScanner->device){       //check i/f
      if(this->hScanner->usb){
@@ -781,7 +675,6 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
    ///
    this->modelInf.index = pdev->modelInf.index;     // cp index
    LoadColorMatchDll( this ,this->modelInf.index);  // load dll
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
 
   //
   // Scan Decode DLLのロード
@@ -815,12 +708,6 @@ sane_close (SANE_Handle handle)
       FreeScanDecDll( this );
 
 #ifdef DEBUG_No39
-#ifndef  NET_AND_ADVINI //for network and inifile extension (M-LNX16,17) kado
-      CloseDevice(this->hScanner);
-      usb_release_interface(this->hScanner, 1);
-      usb_close(this->hScanner);
-      this->hScanner=NULL;
-#else    //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
       if (IFTYPE_USB == this->hScanner->device){
 	if(this->hScanner->usb){
 	  CloseDevice(this->hScanner);
@@ -836,8 +723,6 @@ sane_close (SANE_Handle handle)
       }
       free(this->hScanner);
       this->hScanner = NULL;
-#endif   //NET_AND_ADVINI//for network and inifile extension (M-LNX16,17) kado
-
 #endif
     }
 
