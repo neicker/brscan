@@ -18,10 +18,10 @@ SUBDIRS = include/sane backend_brscan libbrcolm libbrscandec netconfig
 dist_noinst_DATA = Copying copying.brother brscan.spec
 
 pkgexecdir = $(libexecdir)/brscan
-dist_pkgexec_SCRIPTS = mk_package/setupSaneScan
+dist_pkgexec_SCRIPTS = data/setupSaneScan
 
 brscandatadir = $(datadir)/sane/brother
-dist_brscandata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
+dist_brscandata_DATA = data/brsanenetdevice.cfg data/Brsane.ini
 
 .PHONY: rpm
 rpm: dist
