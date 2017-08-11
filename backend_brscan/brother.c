@@ -51,8 +51,7 @@ Not support (force causing compile error)
 #endif   //BRSANESUFFIX
 #endif
 
-#include "sane/sane.h"
-#include "sane/config.h"
+#include <sane/sane.h>
 #include "sane/sanei.h"
 #include "sane/sanei_backend.h"
 #include "sane/sanei_config.h"

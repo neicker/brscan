@@ -34,7 +34,7 @@
 
 #include <usb.h>
 
-#include "sane/sane.h"
+#include <sane/sane.h>
 
 #include "brother_dtype.h"
 
@@ -86,7 +86,7 @@ int    nWriteLineCount;
 #if       BRSANESUFFIX == 2
 static char  szScanDecDl[] = "libbrscandec2.so";
 #elif  BRSANESUFFIX == 1
-static char  szScanDecDl[] = "libbrscandec.so";
+static char  szScanDecDl[] = "libbrscandec.so.1";
 #else
 Not support (force causing compile error)
 #endif   //BRSANESUFFIX

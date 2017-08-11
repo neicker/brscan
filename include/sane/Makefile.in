@@ -309,8 +309,8 @@ do_subst = sed \
 
 # should be $(libdir)/psmgmt-plugins or similar @todo
 plugindir = $(prefix)/plugins
-noinst_HEADERS = config.h config.h.in sane.h sanei.h sanei_backend.h	\
-	sanei_config.h sanei_debug.h saneopts.h
+noinst_HEADERS = sanei.h sanei_backend.h sanei_config.h sanei_debug.h	\
+	saneopts.h
 
 all: all-am
 

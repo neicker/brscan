@@ -38,23 +38,17 @@
    whether to permit this exception to apply to your modifications.
    If you do not wish that, delete this exception notice.  */
 
-#include "../include/sane/config.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 #include <string.h>
 #include <stdarg.h>
 #include <syslog.h>
 #ifdef HAVE_OS2_H
 #include <sys/types.h>
 #endif
-#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#endif
 #include <sys/stat.h>
 
 #ifdef HAVE_OS2_H

@@ -14,8 +14,7 @@ V_MINOR = 0
 V_REV = 7
 
 AM_CPPFLAGS += -I$(top_srcdir)/libbrscandec -I$(top_srcdir)/libbrcolm
-AM_CPPFLAGS += -D_GNU_SOURCE -DPATH_SANE_CONFIG_DIR=$(configdir)
-AM_CPPFLAGS += -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
+AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
 
 AM_CFLAGS += -O0 -W -Wall
 
@@ -39,8 +38,8 @@ noinst_HEADERS = brother.h brother_bugchk.c brother_bugchk.h		\
 
 noinst_LTLIBRARIES = libstubs.la
 
-libstubs_la_CPPFLAGS = $(AM_CPPFLAGS) -DSTUBS -DBACKEND_NAME=brother
 libstubs_la_SOURCES = stubs.c
+libstubs_la_CPPFLAGS = $(AM_CPPFLAGS) -DSTUBS -DBACKEND_NAME=brother
 
 libsane_brother_la_LIBADD = libstubs.la
 libsane_brother_la_LDFLAGS = $(AM_LDFLAGS) -lpthread -lnsl -lusb -lm	\

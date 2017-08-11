@@ -11756,8 +11756,6 @@ ac_config_files="$ac_config_files Makefile"
 
 ac_config_files="$ac_config_files backend_brscan/Makefile"
 
-ac_config_files="$ac_config_files include/Makefile"
-
 ac_config_files="$ac_config_files include/sane/Makefile"
 
 ac_config_files="$ac_config_files libbrcolm/Makefile"
@@ -12796,7 +12794,6 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "backend_brscan/Makefile") CONFIG_FILES="$CONFIG_FILES backend_brscan/Makefile" ;;
-    "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "include/sane/Makefile") CONFIG_FILES="$CONFIG_FILES include/sane/Makefile" ;;
     "libbrcolm/Makefile") CONFIG_FILES="$CONFIG_FILES libbrcolm/Makefile" ;;
     "libbrcolm/GrayCmData/Makefile") CONFIG_FILES="$CONFIG_FILES libbrcolm/GrayCmData/Makefile" ;;

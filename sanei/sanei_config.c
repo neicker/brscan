@@ -40,8 +40,6 @@
 
    This file provides generic configuration support.  */
 
-#include  "sane/config.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,72 +56,6 @@
 #ifndef PATH_MAX
 # define PATH_MAX	1024
 #endif
-
-#if defined(HAVE_OS2_H)
-# define DIR_SEP	";"
-# define PATH_SEP	'\\'
-#else
-# define DIR_SEP	":"
-# define PATH_SEP	'/'
-#endif
-
-#define DEFAULT_DIRS	"." DIR_SEP STRINGIFY(PATH_SANE_CONFIG_DIR)
-
-static const char *dir_list;
-
-FILE *
-sanei_config_open (const char *filename)
-{
-  char *copy, *next, *dir, result[PATH_MAX];
-  FILE *fp = 0;
-  size_t len;
-  void *mem = 0;
-
-  if (!dir_list)
-    {
-      DBG_INIT();
-
-      dir_list = getenv ("SANE_CONFIG_DIR");
-      if (dir_list)
-	{
-	  len = strlen (dir_list);
-	  if ((len > 0) && (dir_list[len - 1] == DIR_SEP[0]))
-	    {
-	      /* append default search directories: */
-	      mem = malloc (len + sizeof (DEFAULT_DIRS));
-
-	      memcpy (mem, dir_list, len);
-	      memcpy ((char *) mem + len, DEFAULT_DIRS, sizeof (DEFAULT_DIRS));
-	      dir_list = mem;
-	    }
-	}
-      else
-	dir_list = DEFAULT_DIRS;
-    }
-
-  copy = strdup (dir_list);
-
-  if (mem)
-    free(mem);
-
-  for (next = copy; (dir = strsep (&next, DIR_SEP)) != 0; )
-    {
-      snprintf (result, sizeof (result), "%s%c%s", dir, PATH_SEP, filename);
-      DBG(4, "sanei_config_open: attempting to open `%s'\n", result);
-      fp = fopen (result, "r");
-      if (fp)
-	{
-	  DBG(3, "sanei_config_open: using file `%s'\n", result);
-	  break;
-	}
-    }
-  free (copy);
-
-  if (!fp)
-    DBG(2, "sanei_config_open: could not find config file `%s'\n", filename);
-
-  return fp;
-}
 
 const char *
 sanei_config_skip_whitespace (const char *str)

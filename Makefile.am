@@ -11,7 +11,7 @@ include $(top_srcdir)/common.am
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = include backend_brscan libbrcolm libbrscandec netconfig
+SUBDIRS = include/sane backend_brscan libbrcolm libbrscandec netconfig
 
 # EXTRA_DIST = Copying copying.brother README tests/psid
 

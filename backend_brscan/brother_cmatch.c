@@ -47,7 +47,7 @@
 #if       BRSANESUFFIX == 2
 static char  szColorMatchDl[] = "libbrcolm2.so";
 #elif  BRSANESUFFIX == 1
-static char  szColorMatchDl[] = "libbrcolm.so";
+static char  szColorMatchDl[] = "libbrcolm.so.1";
 #else
 Not support (cause compile error)
 #endif   //BRSANESUFFIX

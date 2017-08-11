@@ -9,5 +9,5 @@
 
 include $(top_srcdir)/common.am
 
-noinst_HEADERS = config.h config.h.in sane.h sanei.h sanei_backend.h	\
-	sanei_config.h sanei_debug.h saneopts.h
+noinst_HEADERS = sanei.h sanei_backend.h sanei_config.h sanei_debug.h	\
+	saneopts.h

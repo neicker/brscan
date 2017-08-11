@@ -54,7 +54,7 @@ Start: 2.4.2001
 
 /* ====================================================================== */
 
-#include "sane/sane.h"
+#include <sane/sane.h>
 
 #include "brother_dtype.h"
 
