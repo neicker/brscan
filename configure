@@ -11756,6 +11756,8 @@ ac_config_files="$ac_config_files Makefile"
 
 ac_config_files="$ac_config_files backend_brscan/Makefile"
 
+ac_config_files="$ac_config_files brsaneconfig/Makefile"
+
 ac_config_files="$ac_config_files include/sane/Makefile"
 
 ac_config_files="$ac_config_files libbrcolm/Makefile"
@@ -11763,8 +11765,6 @@ ac_config_files="$ac_config_files libbrcolm/Makefile"
 ac_config_files="$ac_config_files libbrcolm/GrayCmData/Makefile"
 
 ac_config_files="$ac_config_files libbrscandec/Makefile"
-
-ac_config_files="$ac_config_files netconfig/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -12794,11 +12794,11 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "backend_brscan/Makefile") CONFIG_FILES="$CONFIG_FILES backend_brscan/Makefile" ;;
+    "brsaneconfig/Makefile") CONFIG_FILES="$CONFIG_FILES brsaneconfig/Makefile" ;;
     "include/sane/Makefile") CONFIG_FILES="$CONFIG_FILES include/sane/Makefile" ;;
     "libbrcolm/Makefile") CONFIG_FILES="$CONFIG_FILES libbrcolm/Makefile" ;;
     "libbrcolm/GrayCmData/Makefile") CONFIG_FILES="$CONFIG_FILES libbrcolm/GrayCmData/Makefile" ;;
     "libbrscandec/Makefile") CONFIG_FILES="$CONFIG_FILES libbrscandec/Makefile" ;;
-    "netconfig/Makefile") CONFIG_FILES="$CONFIG_FILES netconfig/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
