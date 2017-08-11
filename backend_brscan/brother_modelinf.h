@@ -32,7 +32,7 @@
 #ifndef _H_BROTHER_MODELINF
 #define _H_BROTHER_MODELINF
 
-#include "brother_advini.h"        //for OEM  kado
+#include "brother_dtype.h"
 
 /*======================*/
 /* fundamental constant	*/

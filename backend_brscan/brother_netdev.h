@@ -21,11 +21,9 @@
 #ifndef __NETSCANL___
 #define __NETSCANL___
 
-//#ifdef  NETSCANLIBMAIN
-//int log_flags = 0;
-//#else
-//extern int log_flags;
-//#endif
+#include <stdio.h>
+#include <sys/time.h>
+
 
 #define   DLF_OPENCLOSE_FUNC      (1<<0)
 #define   DLF_OPENCLOSE_DETAIL    (1<<1)
@@ -47,19 +45,13 @@
 #define ADRTYPE_DEPENDONINI   2
 #define ADRTYPE_UNKNOWN       -1
 
-
-
 void logprintf(int level, const char * format,...);
 void logprintf_error(const char * format,...);
-
-
 
 typedef struct {
   int scan_socket_fd;
   int index;
 }  *br_net_dev_handle;
-
-
 
 br_net_dev_handle open_device_net(int dev_index,
 		    const char *address,
@@ -69,10 +61,7 @@ int open_device_net_sub(br_net_dev_handle h_dev,
 		    const char *address,
 		    const char *nodename);
 
-
 int close_device_net(br_net_dev_handle h_dev);
-
-
 
 int read_device_net(br_net_dev_handle h_dev,
 		    char *buffer,
@@ -80,23 +69,19 @@ int read_device_net(br_net_dev_handle h_dev,
 		    int *preadsize,
 		    struct timeval *ptimeout);
 
-
 int write_device_net(br_net_dev_handle h_dev,
 		     char *buffer,
 		     int size,
 		     int *pwritesize,
 		     struct timeval *ptimeout);
 
-void set_log_flag(int   flags ,char *mode);
-
+void set_log_flag(int flags ,char *mode);
 
 void set_log_fp(FILE *fp);
 
 void set_log_by_filename(char *filename);
 
 void close_log();
-
-
 
 //GLOBAL FUNC
 //    int get_interface_type()
@@ -113,10 +98,6 @@ int get_interface_type();
 #define   IFTYPE_USB       1
 #define   IFTYPE_UNKNOWN   2
 
-
-
 int get_device_id(int index,int *idvendor,int *idproduct);
-
-
 
 #endif

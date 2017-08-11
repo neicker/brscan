@@ -22,7 +22,7 @@
 //
 //	Source filename: brother_devinfo.c
 //
-//		Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
+//	Copyright(c) 1997-2000 Brother Industries, Ltd.  All Rights Reserved.
 //
 //
 //	Abstract:Module of getting device information
@@ -32,11 +32,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <pthread.h>
-
-//#include "brother_mfcinfo.h"
+#include <string.h>
 
 #include "brother_cmatch.h"
 #include "brother_mfccmd.h"
+#include "brother_mfcinfo.h"
 #include "brother_devaccs.h"
 #include "brother_misc.h"
 #include "brother_log.h"
@@ -653,6 +653,5 @@ CnvResoNoToDeviceResoValue( Brother_Scanner *this, WORD nResoNo, WORD nColorType
 		this->devScanInfo.DeviceScan.wResoY = tblDecScanReso100[ nResoNo ].wResoY;
 	}
 }
-
 
 //////// end of brother_devinfo.c ////////

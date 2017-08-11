@@ -32,15 +32,16 @@
 /*		include			    */
 /*==========================================*/
 
-#include	<stdio.h>
-#include	<string.h>
-#include	<stdlib.h>
-#include	<ctype.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-#include	"brother.h"
-#include	"brother_dtype.h"
-#include	"brother_modelinf.h"
-#include	"brother_advini.h"                             // L-LNX-20
+#include "brother.h"
+#include "brother_advini.h"                             // L-LNX-20
+#include "brother_bugchk.h"
+
+#include "brother_modelinf.h"
 
 /*==========================================*/
 /*		prototype		    */
@@ -181,7 +182,7 @@ int init_model_info(void)
 	    {
 		/* ERR½èÍý */
 		(model-1)->next = NULL_C;
-		exit_model_info();			         /* Free all alocated area */
+		exit_model_info();		 /* Free all alocated area */
 		modelListGetEnable = FALSE;
 		break;
 	    }
@@ -208,7 +209,7 @@ int init_model_info(void)
 				FREE(model->modelTypeName);
 			FREE(modelRecord);
 			(model-1)->next = NULL_C;
-			exit_model_info();			        /* Free all alocated area */
+			exit_model_info();	/* Free all alocated area */
 			modelListGetEnable = FALSE;
 			break;
 		}
@@ -234,7 +235,7 @@ int init_model_info(void)
 			modelListGetEnable = FALSE;
 			break;
 		}
-		modelNameSize = strlen(recordPoint);				        /* get size of model name */
+		modelNameSize = strlen(recordPoint); /* get size of model name */
 		if(*recordPoint == '\"' && *(recordPoint+modelNameSize-1) == '\"')	/* delete "" from model name */
 		{
 			*(recordPoint+modelNameSize-1) = NULL_C;
@@ -260,8 +261,8 @@ int init_model_info(void)
 			modelListGetEnable = TRUE;
 			break;
 		}
-		model->next = model+1;			        /* Add pointer to next model information */
-		model = model->next;				/* Move to next model structure */
+		model->next = model+1;	/* Add pointer to next model information */
+		model = model->next;	/* Move to next model structure */
 	}
 
 	FREE(readModelInfo);
@@ -288,7 +289,7 @@ int GetHexInfo(char *modelRecord,int *receiveInfo)
 	int		res;
 
 	res = FALSE;
-	comma_pt = strchr(modelRecord,',');			/* check position of "," */
+	comma_pt = strchr(modelRecord,',');	/* check position of "," */
 	if(comma_pt != NULL)
 	{
 		*comma_pt = NULL_C;
@@ -320,7 +321,7 @@ int GetDecInfo(char *modelRecord,int *receiveInfo)
 	int		res;
 
 	res = FALSE;
-	comma_pt = strchr(modelRecord,',');			/* check position of ","  */
+	comma_pt = strchr(modelRecord,',');	/* check position of ","  */
 	if(comma_pt != NULL)
 	{
 		strcpy(para,modelRecord);
@@ -350,10 +351,10 @@ int NextPoint(char *point)
 {
 	int length;
 
-	if(1 <= (length = strlen(point)))	     /* count length of string */
-		length++;			     /* if string is exist,increase length +1 */
+	if(1 <= (length = strlen(point)))   /* count length of string */
+		length++;		    /* if string is exist,increase length +1 */
 	else
-		length = 0;			     /* if string not exist,length is 0 */
+		length = 0;		    /* if string not exist,length is 0 */
 	return length;
 }
 
@@ -371,18 +372,17 @@ int NextPoint(char *point)
 ;------------------------------------------------------------------------------
 */
 
-int GetModelNo(char *modelRecord,char *modelTypeNo)	      /* get model type number */
+int GetModelNo(char *modelRecord,char *modelTypeNo)      /* get model type number */
 {
 	int		length;
 	int		res;
 
 	res = FALSE;
-	length = strcspn(modelRecord,",");				/* check position of "," */
-	if(length != 0)
-	{
-		strncpy(modelTypeNo,modelRecord,length);	/* Copy last element */
-		*(modelTypeNo+length) = NULL_C;			/* Add NULL */
-		res = TRUE;
+	length = strcspn(modelRecord,",");	/* check position of "," */
+	if (length != 0) {
+	    strncpy(modelTypeNo,modelRecord,length);	/* Copy last element */
+	    *(modelTypeNo+length) = NULL_C;		/* Add NULL */
+	    res = TRUE;
 	}
 	return res;
 }

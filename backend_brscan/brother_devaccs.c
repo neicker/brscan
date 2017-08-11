@@ -37,8 +37,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/time.h>
-#include <signal.h>
 #include <errno.h>
 
 #include <usb.h>
