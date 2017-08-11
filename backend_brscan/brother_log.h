@@ -52,8 +52,6 @@ void  CloseRawData( void );
 void  SaveRawData( BYTE *lpRawData, int nDataSize );
 void  GetLogSwitch( Brother_Scanner *this );
 
-
 #endif //_BROTHER_LOG_H_
-
 
 //////// end of brother_log.h ////////

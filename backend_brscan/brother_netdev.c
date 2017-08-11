@@ -18,7 +18,6 @@
 
 */
 
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -29,12 +28,11 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include "brother_advini.h"
 
-#define  NETSCANLIBMAIN
+#include "brother_advini.h"
+#include "brother_log.h"
 
 #include "brother_netdev.h"
-
 
 #define  SOCKET_TYPE  SOCK_STREAM
 //#define  SOCKET_TYPE  SOCK_RAW
@@ -225,8 +223,6 @@ int open_device_net_sub(br_net_dev_handle h_dev,
     return -1;
   }
 
-
-
   //
   //  fill the scoket address structure
   //
@@ -276,7 +272,6 @@ int open_device_net_sub(br_net_dev_handle h_dev,
 
 }
 
-
 //GLOBAL FUNCTION
 //   close_device_net(int h_dev->scan_socket_fd)
 //
@@ -290,9 +285,6 @@ int close_device_net(br_net_dev_handle h_dev){
   free(h_dev);
   return 0;
 }
-
-
-
 
 //GLOBAL FUNCTION
 //int read_device_net(int scan_socket_fd,        port handle
@@ -336,7 +328,6 @@ int read_device_net(br_net_dev_handle h_dev,
   return 0;
 }
 
-
 //GLOBAL FUNC
 //int write_device_net(int scan_socket_fd,          port handle
 //		     char *buffer,                  buffer write data are stored in
@@ -344,13 +335,11 @@ int read_device_net(br_net_dev_handle h_dev,
 //		     int *pwritesize,               written data size
 //		     struct timeval *ptimeout){     timeout
 //
-
 int write_device_net(br_net_dev_handle h_dev,
 		     char *buffer,
 		     int size ,
 		     int *pwritesize,
 		     struct timeval *ptimeout){
-
 
   int rc;
   fd_set  fds;
@@ -378,10 +367,6 @@ int write_device_net(br_net_dev_handle h_dev,
 
 }
 
-
-
-
-
 int get_device_id(int index ,  int *idvendor,int *idproduct){
   static char idstring[500],*pid;
   int gidvendor=0,gidproduct=0;
@@ -408,11 +393,6 @@ int get_device_id(int index ,  int *idvendor,int *idproduct){
   return 0;
 }
 
-
-
-
-
-
 //--------------------for debug----------------------
 
 //  DLF_OPENCLOSE_FUNC
@@ -432,7 +412,6 @@ int  set_log_flags_done = 0;
 extern int   g_loglevel;
 extern char  g_logfile[];
 extern char  g_logmode;
-
 
 #define USE_STDOUT_FP 1
 #define USE_SANE_LOG  2
@@ -477,7 +456,6 @@ void logprintf(int flag, const char * format,...){
     fclose(fp_log);
   }
 }
-
 
 void logprintf_error(const char * format,...){
   char buffer[500];
