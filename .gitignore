@@ -1,0 +1,6 @@
+*.d
+!*.d/
+*.o
+*~
+*.swp
+/autom4te.cache

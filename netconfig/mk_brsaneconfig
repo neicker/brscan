@@ -1,9 +1,0 @@
-#! /usr/bash
-
-target="brsaneconfig"
-ccflag1="-DBRSANESUFFIX=1 "
-
-ccflag2="-Wall -O0 -idirafter ../backend_brscan"
-
-echo "gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_brscan/brother_advini.c"
-gcc $ccflag1 $ccflag2 -o $target brsaneconfig.c ../backend_brscan/brother_advini.c

@@ -1,0 +1,35 @@
+#
+# Brother sane backend Driver
+#
+# Copyright (C) 2017 Norbert Eicker <norbert.eicker@gmx.de>
+#
+# This file may be distributed under the terms of the GNU GENERAL PUBLIC LICENSE
+# as defined in the file Copying included in the packaging of this file.
+#
+
+# AM_CPPFLAGS = -I$(top_srcdir)/include -DNDEBUG @todo NDEBUG might be good
+AM_CPPFLAGS = -I$(top_srcdir)/include
+
+subst_verbose = $(subst_verbose_$(V))
+subst_verbose_ = $(subst_verbose_$(AM_DEFAULT_VERBOSITY))
+subst_verbose_0 = @echo "  SUBST   " $(@F);
+
+do_subst = sed \
+	-e 's,[@]bindir[@],$(bindir),g' \
+	-e 's,[@]configdir[@],$(configdir),g' \
+	-e 's,[@]docdir[@],$(docdir),g' \
+	-e 's,[@]includedir[@],$(includedir),g' \
+	-e 's,[@]libdir[@],$(libdir),g' \
+	-e 's,[@]mandir[@],$(mandir),g' \
+	-e 's,[@]prefix[@],$(prefix),g' \
+	-e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
+	-e 's,[@]sbindir[@],$(sbindir),g' \
+	-e 's,[@]scriptsdir[@],$(scriptsdir),g' \
+	-e 's,[@]sysconfdir[@],$(sysconfdir),g' \
+	-e 's,[@]localstatedir[@],$(localstatedir),g'
+
+%: %.in
+	$(subst_verbose)$(do_subst) < $^ > $@ && chmod --reference $^ $@
+
+# should be $(libdir)/psmgmt-plugins or similar @todo
+plugindir = $(prefix)/plugins

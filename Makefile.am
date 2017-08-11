@@ -1,0 +1,30 @@
+#
+# Brother sane backend Driver
+#
+# Copyright (C) 2017 Norbert Eicker <norbert.eicker@gmx.de>
+#
+# This file may be distributed under the terms of the GNU GENERAL PUBLIC LICENSE
+# as defined in the file Copying included in the packaging of this file.
+#
+
+include $(top_srcdir)/common.am
+
+ACLOCAL_AMFLAGS = -I m4
+
+SUBDIRS = include backend_brscan libbrcolm libbrscandec netconfig
+
+# EXTRA_DIST = Copying copying.brother README tests/psid
+
+dist_noinst_DATA = Copying copying.brother brscan.spec
+
+pkgexecdir = $(libexecdir)/brscan
+dist_pkgexec_SCRIPTS = mk_package/setupSaneScan
+
+dist_pkgdata_DATA = mk_package/brsanenetdevice.cfg mk_package/Brsane.ini
+
+.PHONY: rpm
+rpm: dist
+	rpmbuild -ta --clean --define="_srcrpmdir $$PWD" \
+	--define "_rpmdir $$PWD" \
+	--define="_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm" \
+	$(DIST_ARCHIVES)
