@@ -659,6 +659,12 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
     if (IFTYPE_USB == this->hScanner->device){       //check i/f
 	if(this->hScanner->usb){
 	    CloseDevice(this->hScanner);
+
+	    int res = libusb_set_interface_alt_setting(this->hScanner->usb,
+						       1, 0);
+	    if (res) fprintf(stderr, "%s: libusb_set_interface_alt_setting()"
+			     " complains %s\n", __func__, libusb_strerror(res));
+
 	    libusb_release_interface(this->hScanner->usb, 1); //   USB
 	    libusb_close(this->hScanner->usb);                //   USB
 	    this->hScanner->usb = NULL;
@@ -711,6 +717,11 @@ sane_close (SANE_Handle handle)
       if (IFTYPE_USB == this->hScanner->device){
 	if(this->hScanner->usb){
 	  CloseDevice(this->hScanner);
+
+	  int res = libusb_set_interface_alt_setting(this->hScanner->usb, 1, 0);
+	  if (res) fprintf(stderr, "%s: libusb_set_interface_alt_setting()"
+			   " complains %s\n", __func__, libusb_strerror(res));
+
 	  libusb_release_interface(this->hScanner->usb, 1);
 	  libusb_close(this->hScanner->usb);
 	}
