@@ -633,6 +633,11 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
     if (IFTYPE_USB == this->hScanner->device){       //check i/f
 	if(this->hScanner->usb){
 	    CloseDevice(this->hScanner);
+
+	    int res = usb_set_altinterface(this->hScanner->usb, 0);
+	    if (res) fprintf(stderr, "%s: usb_set_altinterface()"
+			     " complains %s\n", __func__, usb_strerror());
+
 	    usb_release_interface(this->hScanner->usb, 1); //   USB
 	    usb_close(this->hScanner->usb);                //   USB
 	    this->hScanner->usb = NULL;
@@ -685,6 +690,11 @@ sane_close (SANE_Handle handle)
       if (IFTYPE_USB == this->hScanner->device){
 	if(this->hScanner->usb){
 	  CloseDevice(this->hScanner);
+
+	  int res = usb_set_altinterface(this->hScanner->usb, 0);
+	  if (res) fprintf(stderr, "%s: usb_set_altinterface()"
+			   " complains %s\n", __func__, usb_strerror());
+
 	  usb_release_interface(this->hScanner->usb, 1);
 	  usb_close(this->hScanner->usb);
 	}

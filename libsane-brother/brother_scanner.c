@@ -1611,6 +1611,11 @@ ScanEnd( Brother_Scanner *this )
 	if (IFTYPE_USB == this->hScanner->device){
 	    if (this->hScanner->usb){
 		CloseDevice(this->hScanner);
+
+		int res = usb_set_altinterface(this->hScanner->usb, 0);
+		if (res) fprintf(stderr, "%s: usb_set_altinterface()"
+				 " complains %s\n", __func__, usb_strerror());
+
 		usb_release_interface(this->hScanner->usb, 1);
 		usb_close(this->hScanner->usb);
 		this->hScanner->usb = NULL;
