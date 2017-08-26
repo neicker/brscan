@@ -55,7 +55,7 @@ Start: 2.4.2001
 /* ====================================================================== */
 
 #include <sane/sane.h>
-#include <usb.h>
+#include <libusb.h>
 
 #include "brother_dtype.h"
 
@@ -102,7 +102,7 @@ TOptionValue;
 
 typedef struct TDevice {
   struct TDevice        *pNext;
-  struct usb_device     *pdev;
+  struct libusb_device  *pdev;
   int                   index;
   SANE_Device            sane;
   MODELINF               modelInf;
@@ -166,7 +166,7 @@ typedef struct TCorlorMATCH {
 
 typedef struct tagDEVHANDLE {
   br_net_dev_handle      net;
-  usb_dev_handle   *usb;
+  libusb_device_handle *usb;
   int              device;
   int              net_device_index;
   int              usb_w_ep;
@@ -196,7 +196,7 @@ typedef struct Brother_Scanner {
   TScanState                 scanState;         // スキャン時のステータス情報
 } Brother_Scanner;
 
-#define  usb_dev_handle   dev_handle
+#define  libusb_device_handle   dev_handle
 
 // from DS_INFO.H
 //

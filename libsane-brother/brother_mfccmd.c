@@ -69,7 +69,7 @@ BOOL  bTxCancelCmd = FALSE;
 //-----------------------------------------------------------------------------
 //
 void
-SendCancelCommand( usb_dev_handle *hScanner, int seriesNo )
+SendCancelCommand( libusb_device_handle *hScanner, int seriesNo )
 {
     if (bTxScanCmd) {
 	//

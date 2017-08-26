@@ -31,10 +31,7 @@ AM_PROG_CC_C_O
 
 LT_INIT([dlopen disable-static])
 
-# This is just a placeholder....
-AC_CHECK_LIB([popt], [poptGetContext],
-  [AC_SUBST([POPT_LIBS], [-lpopt])],
-  [AC_MSG_ERROR([please install the popt devel package])])
+PKG_CHECK_MODULES([USB], [libusb-1.0 >= 1.0.20])
 
 AX_CHECK_COMPILE_FLAG([-Wall -Wextra -Wno-unused-parameter],
   [AM_CFLAGS="$AM_CFLAGS -Wall -Wextra -Wno-unused-parameter"])

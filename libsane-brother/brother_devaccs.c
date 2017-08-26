@@ -37,11 +37,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <unistd.h>
 #include <errno.h>
 
-#include <usb.h>
+#include <libusb.h>
 
 #include "brother.h"
 
@@ -138,7 +140,7 @@ GetDeviceAccessParam( Brother_Scanner *this )
 //-----------------------------------------------------------------------------
 //
 int
-OpenDevice(usb_dev_handle *hScanner, int seriesNo)
+OpenDevice(libusb_device_handle *hScanner, int seriesNo)
 {
 	int rc, nValue;
 	int i;
@@ -206,16 +208,19 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	enter_usb_criticalsection();
 #endif
 	for (i = 0; i < RETRY_CNT;i++) {
-	    rc = usb_control_msg(hScanner->usb,       /* handle */
+	    rc = libusb_control_transfer(hScanner->usb,       /* handle */
 				 BREQ_TYPE,           /* request type */
 				 BREQ_GET_OPEN,  /* request */   /* GET_OPEN */
 				 BCOMMAND_SCANNER,/* value */    /* scanner */
 				 0,              /* index */
-				 data, BREQ_GET_LENGTH,   /* bytes, size */
+				 (unsigned char*)data, BREQ_GET_LENGTH,   /* bytes, size */
 				 2000            /* Timeout */
 		);
 		if (rc >= 0) {
 				break;
+		} else {
+		    fprintf(stderr, "%s: usb_control_msg() complains %s\n",
+			    __func__, libusb_strerror(rc));
 		}
 	}
 	if (rc < 0)
@@ -317,12 +322,15 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 
 		}
 		else{
-		  nResultSize = usb_bulk_read(hScanner->usb,
+		  int rc = libusb_bulk_transfer(hScanner->usb,
 						  nEndPoint,
-						  lpBrBuff,
+						  (unsigned char *)lpBrBuff,
 						  32000,
+						  &nResultSize,
 						  2000
 						  );
+		  if (rc) fprintf(stderr, "%s: libusb_bulk_transfer(): %s\n",
+				  __func__, libusb_strerror(rc));
 		}
 
 		WriteLog( "TEST OpenDevice Recovery Read end nResultSize = %d %d", nResultSize,nEndPoint) ;
@@ -370,7 +378,7 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 //-----------------------------------------------------------------------------
 //
 void
-CloseDevice( usb_dev_handle *hScanner )
+CloseDevice( libusb_device_handle *hScanner )
 {
     int rc;
     int i;
@@ -381,12 +389,12 @@ CloseDevice( usb_dev_handle *hScanner )
 	return ;
     }
     for (i = 0; i < RETRY_CNT;i++) {
-	rc = usb_control_msg(hScanner->usb,       /* handle */
+	rc = libusb_control_transfer(hScanner->usb,       /* handle */
 			     BREQ_TYPE,           /* request type */
 			     BREQ_GET_CLOSE,  /* request */    /* GET_OPEN */
 			     BCOMMAND_SCANNER,/* value */      /* scanner  */
 			     0,              /* index */
-			     data, BREQ_GET_LENGTH,        /* bytes, size */
+			     (unsigned char*)data, BREQ_GET_LENGTH,        /* bytes, size */
 			     2000            /* Timeout */
 	    );
 	if (rc >= 0) break;
@@ -423,7 +431,7 @@ CloseDevice( usb_dev_handle *hScanner )
 //-----------------------------------------------------------------------------
 //
 int
-ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
+ReadDeviceData( libusb_device_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
 {
 	int  nResultSize = 0;
 	int  nTimeOut = 20000;
@@ -489,12 +497,15 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 	}
 
 	if (IFTYPE_NET != hScanner->device){
-	  nResultSize = usb_bulk_read(hScanner->usb,
+	  int ret = libusb_bulk_transfer(hScanner->usb,
 				      nEndPoint,
-				      lpRxBuffer,
+				      (unsigned char *)lpRxBuffer,
 				      nReadSize,
+				      &nResultSize,
 				      nTimeOut
 				      );
+	  if (ret) fprintf(stderr, "%s: libusb_bulk_transfer() complains: %s\n",
+			   __func__, libusb_strerror(ret));
 	}
 	else{
 	  struct timeval net_timeout = {nTimeOut/1000,(nTimeOut%1000)*1000};    // (sec, micro sec)
@@ -554,7 +565,7 @@ ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int s
 //-----------------------------------------------------------------------------
 //
 int
-ReadNonFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec ,int seriesNo)
+ReadNonFixedData( libusb_device_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec ,int seriesNo)
 {
 	int   nReadDataSize = 0;
 
@@ -643,7 +654,7 @@ ReadNonFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWOR
 //-----------------------------------------------------------------------------
 //	ReadBidiFixedData° µÏReadBidiComm32_q°À
 BOOL
-ReadFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec, int seriesNo )
+ReadFixedData( libusb_device_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOutMsec, int seriesNo )
 {
 	BOOL  bResult = TRUE;
 	WORD  wReadCount = 0;
@@ -725,7 +736,7 @@ ReadFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD d
 //-----------------------------------------------------------------------------
 //
 int
-ReadDeviceCommand( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
+ReadDeviceCommand( libusb_device_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo )
 {
 	int  nResultSize;
 
@@ -760,7 +771,7 @@ ReadDeviceCommand( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, in
 //-----------------------------------------------------------------------------
 //
 int
-WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
+WriteDeviceData( libusb_device_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
 {
 	int i;
 	int  nResultSize = 0;
@@ -802,11 +813,14 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 	  */
 
 	for (i = 0; i < RETRY_CNT;i++) {
-	    nResultSize = usb_bulk_write(hScanner->usb,
+	    int ret = libusb_bulk_transfer(hScanner->usb,
 					 nEndPoint,
-					 lpTxBuffer,
+					 (unsigned char *)lpTxBuffer,
 					 nWriteSize,
+					 &nResultSize,
 					 2000);
+	    if (ret) fprintf(stderr, "%s: libusb_bulk_transfer complains: %s\n",
+			     __func__, libusb_strerror(ret));
 	    if ( nResultSize >= 0) break;
 	}
 
@@ -838,7 +852,7 @@ WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int
 //-----------------------------------------------------------------------------
 //
 int
-WriteDeviceCommand( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
+WriteDeviceCommand( libusb_device_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo)
 {
     int  nResultSize;
     if (IFTYPE_NET == hScanner->device){
@@ -936,7 +950,7 @@ int  usb_set_configuration_or_reset_toggle(
 		   int configuration){
   int errornum,nEndPoint,i;
 
-  errornum = usb_set_configuration(this->hScanner->usb, configuration);
+  errornum = libusb_set_configuration(this->hScanner->usb, configuration);
   if(errornum){
     nEndPoint = this->hScanner->usb_w_ep;
     if(nEndPoint <  0x1 || nEndPoint > 0x7f){
@@ -948,7 +962,7 @@ int  usb_set_configuration_or_reset_toggle(
 	}
       }
     }
-    usb_clear_halt(this->hScanner->usb, nEndPoint);
+    libusb_clear_halt(this->hScanner->usb, nEndPoint);
   }
   return errornum;
 }
@@ -959,7 +973,6 @@ int  usb_set_configuration_or_reset_toggle(
 #include <sys/ipc.h>
 #include <sys/sem.h>
 
-#include <usb.h>
 #include <stdio.h>
 #include <string.h>
 

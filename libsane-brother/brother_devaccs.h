@@ -34,6 +34,8 @@
 #ifndef _BROTHER_DEVACCS_H_
 #define _BROTHER_DEVACCS_H_
 
+#include <libusb.h>
+
 #include "brother.h"
 
 //
@@ -76,14 +78,14 @@ extern UINT  gnScanTimeout;		// スキャン開始／スキャン中のタイムアウト時間
 // 関数のプロトタイプ宣言
 //
 void    GetDeviceAccessParam( Brother_Scanner *this );
-int     OpenDevice( usb_dev_handle *hScanner, int seriesNo );
-void    CloseDevice( usb_dev_handle *hScanner );
-int     ReadDeviceData( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
-int     ReadNonFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
-BOOL    ReadFixedData( usb_dev_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
-int     ReadDeviceCommand( usb_dev_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
-int     WriteDeviceData( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
-int     WriteDeviceCommand( usb_dev_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
+int     OpenDevice( libusb_device_handle *hScanner, int seriesNo );
+void    CloseDevice( libusb_device_handle *hScanner );
+int     ReadDeviceData( libusb_device_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
+int     ReadNonFixedData( libusb_device_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
+BOOL    ReadFixedData( libusb_device_handle *hScanner, LPSTR lpBuffer, WORD wReadSize, DWORD dwTimeOut, int seriesNo );
+int     ReadDeviceCommand( libusb_device_handle *hScanner, LPSTR lpRxBuffer, int nReadSize, int seriesNo );
+int     WriteDeviceData( libusb_device_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
+int     WriteDeviceCommand( libusb_device_handle *hScanner, LPSTR lpTxBuffer, int nWriteSize, int seriesNo );
 HANDLE  AllocReceiveBuffer( DWORD  dwBuffSize );
 void    FreeReceiveBuffer( void );
 

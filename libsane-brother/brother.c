@@ -37,7 +37,7 @@ Start: 2.4.2001
 #include <string.h>
 #include <errno.h>
 
-#include <usb.h>
+#include <libusb.h>
 
 #define BUILD	1
 
@@ -73,6 +73,8 @@ TDevice *g_pdev;
 static int      num_devices;	// USB上に検出されたBrotherデバイス数
 static TDevice  *pdevFirst;	// USB上に検出されたBrotherデバイスリスト
 static Brother_Scanner   *pinstFirst;	// オープンしたデバイスの各種情報
+
+static libusb_context *br_usb_ctx = NULL;
 
 /* ======================================================================
 
@@ -322,7 +324,7 @@ InitOptions (Brother_Scanner *this)
 }
 
 static SANE_Status
-RegisterSaneDev (struct usb_device *pdevUSB,
+RegisterSaneDev (struct libusb_device *pdevUSB,
 		 char *szName, PMODELINF pModelInf,
 		 int index){
   TDevice * q;
@@ -370,11 +372,11 @@ RegisterSaneDev (struct usb_device *pdevUSB,
 SANE_Status
 sane_init (SANE_Int *version_code, SANE_Auth_Callback authCB)
 {
-  struct usb_bus    *pbus;
-  struct usb_device *pdev;
-  int                iBus,rc;
+  int               rc;
   MODELINF          modelInfList;
   int i,nnetdev;
+  libusb_device **devlist;
+  ssize_t ndev;
 
   WriteLog( "<<< sane_init start >>> " );
 #if       BRSANESUFFIX == 2
@@ -396,9 +398,20 @@ Not support (force causing compile error)
 
   pdevFirst=NULL;
 
-  usb_init();
-  usb_find_busses();
-  usb_find_devices();
+  if (!br_usb_ctx) {
+      int ret = libusb_init(&br_usb_ctx);
+      if (ret < 0) {
+	  fprintf(stderr, "%s: failed to initialize libusb-1.0, error %d\n",
+		  __func__, ret);
+	  return SANE_STATUS_IO_ERROR;
+      }
+  }
+  ndev = libusb_get_device_list(br_usb_ctx, &devlist);
+  if (ndev < 0) {
+      fprintf(stderr, "%s: failed to get libusb-1.0 device list, error %d\n",
+	      __func__, (int)ndev);
+      return SANE_STATUS_IO_ERROR;
+  }
 
   rc=init_model_info();
   if (!rc)
@@ -409,41 +422,53 @@ Not support (force causing compile error)
     return SANE_STATUS_IO_ERROR;
 
   nnetdev=get_net_device_num();
-  if (!usb_busses && nnetdev==0){
+  if (ndev==0 && nnetdev==0){
     return SANE_STATUS_IO_ERROR;
   }
 
-  iBus=0;
   DBG(DEBUG_INFO,"starting bus scan\n");
-  for (pbus = usb_busses; pbus; pbus = pbus->next)
-  {
-      int iDev=0;
-      iBus++;
-      /* 0.1.3b no longer has a "busnum" member */
-      DBG(DEBUG_JUNK,"scanning bus %s\n", pbus->dirname);
-      for (pdev=pbus->devices; pdev; pdev  = pdev->next)
-	{
-	  PMODELINF       pModelInf;
+  for (i = 0; i < ndev; i++) {
+      libusb_device *dev = devlist[i];
+      struct libusb_device_descriptor desc;
+      unsigned char busno, address;
+      unsigned short vid, pid;
+      PMODELINF       pModelInf;
+      int ret;
 
-	  iDev++;
-	  DBG(DEBUG_JUNK,"found dev %04X/%04X\n",
-		  pdev->descriptor.idVendor,
-		  pdev->descriptor.idProduct);
+      busno = libusb_get_bus_number(dev);
+      address = libusb_get_device_address(dev);
+
+      ret = libusb_get_device_descriptor(dev, &desc);
+      if (ret < 0) {
+	  fprintf(stderr, "%s: could not get device descriptor for device"
+		  " at %03d:%03d (err %d)\n", __func__, busno, address, ret);
+	  continue;
+      }
+
+      vid = desc.idVendor;
+      pid = desc.idProduct;
+
+      if (!vid || !pid) {
+	  fprintf(stderr, "%s: device 0x%04x/0x%04x at %03d:%03d looks"
+		  " like a root hub\n", __func__, vid, pid, busno, address);
+	  continue;
+      }
+      DBG(DEBUG_JUNK,"found dev %04X/%04X\n", vid, pid);
 	  /* the loop is not SO effective, but straight! */
 
 	  for (pModelInf=&modelInfList; pModelInf; pModelInf = pModelInf->next)
 	  {
-	      if (pdev->descriptor.idVendor  ==  pModelInf->vendorID &&
-		  pdev->descriptor.idProduct == pModelInf->productID)
+	      if (vid ==  pModelInf->vendorID &&
+		  pid == pModelInf->productID)
 		{
 		  char ach[100];
-		  sprintf(ach,"bus%d;dev%d",iBus,iDev);
-		  RegisterSaneDev(pdev,ach,pModelInf,-1);
+		  sprintf(ach,"bus%d;dev%d",busno,address);
+		  RegisterSaneDev(libusb_ref_device(dev),ach,pModelInf,-1);
 		  break;
 		}
 	  }
-	}
   }
+  libusb_free_device_list(devlist, 1);
 
     WriteLog( "<<< sane_init Check Interface >>> " );
     for(i = 0 ; i < nnetdev ; i ++){
@@ -568,11 +593,12 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 
     if (IFTYPE_USB == this->hScanner->device){
 	this->hScanner->net_device_index = -1;
-	this->hScanner->usb = usb_open(pdev->pdev);
+	int ret = libusb_open(pdev->pdev, &this->hScanner->usb);
+	if (ret) fprintf(stderr, "%s: libusb_open(): %s\n", __func__,
+			 libusb_strerror(ret));
 #ifndef DEBUG_No39
 	g_pdev = pdev;
 #endif
-	if (!this->hScanner->usb) return SANE_STATUS_IO_ERROR;
 
 	//2005/11/10 not check returned value from usb_set_configuration()
 	//if (usb_set_configuration(this->hScanner, 1))
@@ -581,7 +607,7 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
 	//errornum = usb_set_configuration(this->hScanner->usb, 1);
 	usb_set_configuration_or_reset_toggle(this, 1);
 
-	if (usb_claim_interface(this->hScanner->usb, 1))
+	if (libusb_claim_interface(this->hScanner->usb, 1))
 	    return SANE_STATUS_IO_ERROR;
     } else {
 	sscanf(devicename,"net1;dev%d",&this->hScanner->net_device_index);
@@ -633,8 +659,8 @@ sane_open (SANE_String_Const devicename, SANE_Handle *handle)
     if (IFTYPE_USB == this->hScanner->device){       //check i/f
 	if(this->hScanner->usb){
 	    CloseDevice(this->hScanner);
-	    usb_release_interface(this->hScanner->usb, 1); //   USB
-	    usb_close(this->hScanner->usb);                //   USB
+	    libusb_release_interface(this->hScanner->usb, 1); //   USB
+	    libusb_close(this->hScanner->usb);                //   USB
 	    this->hScanner->usb = NULL;
 	}
     } else {
@@ -685,8 +711,8 @@ sane_close (SANE_Handle handle)
       if (IFTYPE_USB == this->hScanner->device){
 	if(this->hScanner->usb){
 	  CloseDevice(this->hScanner);
-	  usb_release_interface(this->hScanner->usb, 1);
-	  usb_close(this->hScanner->usb);
+	  libusb_release_interface(this->hScanner->usb, 1);
+	  libusb_close(this->hScanner->usb);
 	}
       }
       else{

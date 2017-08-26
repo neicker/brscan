@@ -34,7 +34,8 @@
 
 #include <dlfcn.h>
 #include <string.h>
-#include <usb.h>
+#include <unistd.h>
+#include <libusb.h>
 #include <sys/time.h>
 
 #include <sane/sane.h>
@@ -254,9 +255,12 @@ ScanStart( Brother_Scanner *this )
 		    = get_p_model_info_by_index(this->modelInf.index)->r_endpoint;
 
 		  if (IFTYPE_USB == this->hScanner->device){
-		    this->hScanner->usb=usb_open(g_pdev->pdev);
-		    if (!this->hScanner->usb)
-		      return SANE_STATUS_IO_ERROR;
+		    int ret = libusb_open(g_pdev->pdev, &this->hScanner->usb);
+		    if (ret) {
+			fprintf(stderr, "%s: libusb_open(): %s\n",
+				__func__, libusb_strerror(ret));
+			return SANE_STATUS_IO_ERROR;
+		    }
 
 		    //05/11/11 Fix to escape I/O error
 		    //if (usb_set_configuration(this->hScanner->usb, 1))
@@ -266,7 +270,7 @@ ScanStart( Brother_Scanner *this )
 		    //(M-LNX-24 2006/04/11 kado for Fedora5 USB2.0)
 		    //errornum = usb_set_configuration(this->hScanner->usb, 1);
 		    usb_set_configuration_or_reset_toggle(this, 1);
-		    if (usb_claim_interface(this->hScanner->usb, 1))
+		    if (libusb_claim_interface(this->hScanner->usb, 1))
 		      return SANE_STATUS_IO_ERROR;
 
 		    //(05/11/11 Fix to escape I/O error)   if (usb_set_configuration(this->hScanner->usb, 1))
@@ -1525,12 +1529,16 @@ ReadTrash( Brother_Scanner *this )
 
 		// discard the data
 		if (IFTYPE_NET != this->hScanner->device){
-		  nResultSize = usb_bulk_read(this->hScanner->usb,
+		  int ret = libusb_bulk_transfer(this->hScanner->usb,
 					      nEndPoint,
-					      lpBrBuff,
+					      (unsigned char *)lpBrBuff,
 					      32000,
+					      &nResultSize,
 					      2000
 					      );
+		  if (ret) fprintf(stderr, "%s: libusb_bulk_transfer(%d) "
+				   "complains %s\n", __func__, nEndPoint,
+				   libusb_strerror(ret));
 		}
 		else{
 		  struct timeval net_timeout = NETTIMEOUTST;
@@ -1611,8 +1619,8 @@ ScanEnd( Brother_Scanner *this )
 	if (IFTYPE_USB == this->hScanner->device){
 	    if (this->hScanner->usb){
 		CloseDevice(this->hScanner);
-		usb_release_interface(this->hScanner->usb, 1);
-		usb_close(this->hScanner->usb);
+		libusb_release_interface(this->hScanner->usb, 1);
+		libusb_close(this->hScanner->usb);
 		this->hScanner->usb = NULL;
 	    }
 	} else {

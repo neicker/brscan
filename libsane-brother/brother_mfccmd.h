@@ -34,6 +34,8 @@
 #ifndef _BROTHER_MFCCMD_H_
 #define _BROTHER_MFCCMD_H_
 
+#include <libusb.h>
+
 #include "brother.h"
 
 //
@@ -94,7 +96,7 @@ extern BOOL  bTxCancelCmd;
 //
 // 関数のプロトタイプ宣言
 //
-void  SendCancelCommand( usb_dev_handle *hScanner,int seriesNo );
+void  SendCancelCommand( libusb_device_handle *hScanner,int seriesNo );
 void  MakeupColorTypeCommand( WORD nColorType, LPSTR lpszColorCmd );
 int   MakeupScanQueryCmd( Brother_Scanner *this, LPSTR lpszCmdStr );
 int   MakeupScanStartCmd( Brother_Scanner *this, LPSTR lpszCmdStr );
