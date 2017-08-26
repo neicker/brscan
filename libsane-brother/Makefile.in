@@ -295,12 +295,13 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
-POPT_LIBS = @POPT_LIBS@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+USB_CFLAGS = @USB_CFLAGS@
+USB_LIBS = @USB_LIBS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -362,7 +363,7 @@ top_srcdir = @top_srcdir@
 # AM_CPPFLAGS = -I$(top_srcdir)/include -DNDEBUG @todo NDEBUG might be good
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/libbrscandec \
 	-I$(top_srcdir)/libbrcolm -D_GNU_SOURCE -DV_MAJOR=1 \
-	-DV_MINOR=0 -DBRSANESUFFIX=1
+	-DV_MINOR=0 -DBRSANESUFFIX=1 $(USB_CFLAGS)
 subst_verbose = $(subst_verbose_$(V))
 subst_verbose_ = $(subst_verbose_$(AM_DEFAULT_VERBOSITY))
 subst_verbose_0 = @echo "  SUBST   " $(@F);
@@ -402,8 +403,9 @@ noinst_LTLIBRARIES = libstubs.la
 libstubs_la_SOURCES = stubs.c
 libstubs_la_CPPFLAGS = $(AM_CPPFLAGS) -DSTUBS -DBACKEND_NAME=brother
 libsane_brother_la_LIBADD = libstubs.la
-libsane_brother_la_LDFLAGS = $(AM_LDFLAGS) -lpthread -lnsl -lusb -lm	\
-	-ldl -rpath=$(libdir)/sane -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
+libsane_brother_la_LDFLAGS = $(AM_LDFLAGS) -lpthread -lnsl     \
+       $(USB_LIBS) -lm -ldl -rpath=$(libdir)/sane              \
+       -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
 
 all: all-am
 

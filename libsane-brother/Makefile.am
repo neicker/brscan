@@ -15,6 +15,7 @@ V_REV = 7
 
 AM_CPPFLAGS += -I$(top_srcdir)/libbrscandec -I$(top_srcdir)/libbrcolm
 AM_CPPFLAGS += -D_GNU_SOURCE -DV_MAJOR=1 -DV_MINOR=0 -DBRSANESUFFIX=1
+AM_CPPFLAGS += $(USB_CFLAGS)
 
 sanelibdir = $(libdir)/sane
 sanelib_LTLIBRARIES = libsane-brother.la
@@ -38,5 +39,7 @@ libstubs_la_SOURCES = stubs.c
 libstubs_la_CPPFLAGS = $(AM_CPPFLAGS) -DSTUBS -DBACKEND_NAME=brother
 
 libsane_brother_la_LIBADD = libstubs.la
-libsane_brother_la_LDFLAGS = $(AM_LDFLAGS) -lpthread -lnsl -lusb -lm	\
-	-ldl -rpath=$(libdir)/sane -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)
+
+libsane_brother_la_LDFLAGS = $(AM_LDFLAGS) -lpthread -lnsl     \
+       $(USB_LIBS) -lm -ldl -rpath=$(libdir)/sane              \
+       -version-info $(V_MAJOR):$(V_REV):$(V_MINOR)

@@ -15,7 +15,7 @@ License:   2003 Brother Industries, Ltd. All Rights Reserved
 Group:     Applications
 Packager:  norbert.eicker@gmx.de
 Source0:   brscan-0.2.4.tar.gz
-BuildRequires:	sane-backends-devel libusb-1_0-devel
+BuildRequires:	sane-backends-devel libusb-compat-devel
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
