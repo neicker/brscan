@@ -250,58 +250,13 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 	{
 	CHAR *lpBrBuff;
 	int nResultSize;
-	int iFirstData;
-
-	struct timeval start_tv, tv;
-	struct timezone tz;
-	long   nSec, nUsec;
-	long   nTimeOutSec, nTimeOutUsec;
-
-	if (gettimeofday(&start_tv, &tz) == -1)
-		return FALSE;
+	int iFirstData = 1;
 
 	lpBrBuff = MALLOC( 32000 );
 	if (!lpBrBuff)
 		return FALSE;
 
-	if (gettimeofday(&start_tv, &tz) == -1) {
-		FREE(lpBrBuff);
-		return FALSE;
-	}
-
-	// calculate the second-order of timeout value
-	nTimeOutSec = 1;
-	// calculate the micro-second-order of timeout value
-	nTimeOutUsec = 0;
-
-	iFirstData = 1;
-	nResultSize = 1;
-	while (1) {
-		if (gettimeofday(&tv, &tz) == 0) {
-			if (tv.tv_usec < start_tv.tv_usec) {
-				tv.tv_usec += 1000 * 1000 ;
-				tv.tv_sec-- ;
-			}
-			nSec = tv.tv_sec - start_tv.tv_sec;
-			nUsec = tv.tv_usec - start_tv.tv_usec;
-
-			WriteLog( "OpenDevice Recovery nSec = %d Usec = %d\n", nSec, nUsec ) ;
-
-			if (nSec > nTimeOutSec) { // break if nSec is larger than timeout value 
-				break;
-			}
-			else if( nSec == nTimeOutSec) {      // break if nSec is same with the timeout value 
-				if (nUsec >= nTimeOutUsec) { //     and nUsec is larger than timeout value 
-					break;
-				}
-			}
-		}
-		else {
-			FREE(lpBrBuff);
-			return FALSE;
-		}
-
-		usleep(30 * 1000); // wait for  30ms
+	do {
 		WriteLog( "OpenDevice Recovery Read start" );
 
 		// discard the read data
@@ -337,12 +292,9 @@ OpenDevice(usb_dev_handle *hScanner, int seriesNo)
 				WriteDeviceData( hScanner, MFCMD_QUERYDEVINFO, strlen( MFCMD_QUERYDEVINFO ), seriesNo );
 				iFirstData = 0;
 			}
-			if (gettimeofday(&start_tv, &tz) == -1) {
-				FREE(lpBrBuff);
-				return FALSE;
-			}
 		}
-	}
+		usleep(30 * 1000); // wait for  30ms
+	} while (nResultSize > 0);
 	FREE(lpBrBuff);
 
 	} //  end of recovery proccess
